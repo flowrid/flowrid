@@ -1,18 +1,12 @@
 import { createServerClient } from "@/lib/supabase";
-import { rankThreePLs } from "@/lib/scoring";
-import { generateSEOMetadata } from "@/lib/seo";
-import ThreePLCard from "@/components/3PLCard";
-import FAQ from "@/components/FAQ";
-import ComparisonTable from "@/components/ComparisonTable";
+import DirectoryResults from "@/components/DirectoryResults";
 import MobileCTA from "@/components/mobile/MobileCTA";
-import type { Metadata } from "next";
 import type { ThreePL } from "@/types/3pl";
 
 export const dynamic = "force-dynamic";
 
 /**
- * 3PL Directory — 全部列表页
- * 支持 URL: /3pl, /3pl?state=xxx, /3pl?category=xxx, /3pl?platform=xxx
+ * 3PL Directory — 全部列表页，支持筛选 + 对比选择
  */
 export default async function Page({
   searchParams,
@@ -26,7 +20,7 @@ export default async function Page({
       <div className="max-w-[1200px] mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Database Not Configured</h1>
         <p className="mt-2 text-text-secondary">
-          Please configure Supabase environment variables to see 3PL listings.
+          Please configure Supabase environment variables.
         </p>
       </div>
     );
@@ -46,44 +40,39 @@ export default async function Page({
 
   const { data: threePLs } = await query;
 
-  if (!threePLs || threePLs.length === 0) {
-    return (
-      <div className="max-w-[1200px] mx-auto px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold text-text">No 3PLs Found</h1>
-        <p className="mt-2 text-text-secondary">
-          Try adjusting your search filters or{" "}
-          <a href="/rfq" className="text-primary hover:underline">
-            submit an RFQ
-          </a>{" "}
-          to get matched.
-        </p>
-      </div>
-    );
-  }
+  const title = params.state
+    ? `3PLs in ${formatName(params.state)}`
+    : params.category
+      ? `${formatName(params.category)} 3PL Providers`
+      : params.platform
+        ? `${params.platform} 3PL Providers`
+        : "All 3PL Providers";
 
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-8 pb-20">
-      <h1 className="text-2xl font-bold text-text mb-2">
-        {params.state
-          ? `3PLs in ${formatName(params.state)}`
-          : params.category
-            ? `${formatName(params.category)} 3PL Providers`
-            : params.platform
-              ? `${params.platform} 3PL Providers`
-              : "All 3PL Providers"}
-      </h1>
+      <h1 className="text-2xl font-bold text-text mb-2">{title}</h1>
       <p className="text-text-secondary mb-6">
-        {threePLs.length} fulfillment centers found
+        {threePLs?.length || 0} fulfillment centers found
+        {threePLs && threePLs.length >= 2 && (
+          <span className="ml-2 text-xs">
+            — check the box on any card to compare
+          </span>
+        )}
       </p>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {threePLs.map((item: ThreePL) => (
-          <ThreePLCard
-            key={item.id}
-            data={{ ...item, score: 50 }}
-          />
-        ))}
-      </div>
+      <DirectoryResults
+        threePLs={(threePLs as ThreePL[]) || []}
+        emptyTitle="No 3PLs Found"
+        emptyMessage={
+          <>
+            Try adjusting your search filters or{" "}
+            <a href="/rfq" className="text-primary hover:underline">
+              submit an RFQ
+            </a>{" "}
+            to get matched.
+          </>
+        }
+      />
 
       <MobileCTA />
     </div>
