@@ -19,9 +19,16 @@ export const metadata: Metadata = {
   },
   description:
     "Compare top third-party logistics (3PL) providers in the US. Search by state, category, and platform. AI-powered matching for Shopify, TikTok, and Amazon sellers.",
-  keywords: ["3PL", "fulfillment", "logistics", "warehouse", "ecommerce", "Shopify", "TikTok", "Amazon"],
+  keywords: ["3PL", "fulfillment", "logistics", "warehouse", "ecommerce", "Shopify", "TikTok", "Amazon", "RFQ", "warehouse comparison"],
   other: {
     "google-site-verification": "zS1-Muod3xXvewJwS1MW2s9HEAvT5PWDVXTtSHFBgZ8",
+  },
+  openGraph: {
+    title: "Flowrid — Find the Best 3PL for Your E-commerce Brand",
+    description: "Compare top third-party logistics (3PL) providers in the US.",
+    url: "https://www.flowrid.com",
+    siteName: "Flowrid",
+    type: "website",
   },
 };
 
