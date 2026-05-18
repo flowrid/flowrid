@@ -52,8 +52,10 @@ export interface RFQRequest {
 
 export interface AISummary {
   summary: string;
-  why_section: string;
-  faq: string[];
+  cost_guide: string;
+  shipping_insights: string;
+  key_considerations: string[];
+  faq: { q: string; a: string }[];
 }
 
 export interface SEOData {

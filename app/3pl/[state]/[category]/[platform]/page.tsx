@@ -8,7 +8,7 @@ import FAQ from "@/components/FAQ";
 import ComparisonTable from "@/components/ComparisonTable";
 import Link from "next/link";
 import type { Metadata } from "next";
-import type { ThreePL } from "@/types/3pl";
+import type { ThreePL, AISummary } from "@/types/3pl";
 
 export const dynamic = "force-dynamic";
 
@@ -61,24 +61,12 @@ export default async function FullSEOPage({ params }: Props) {
     : [];
 
   // 3. AI 摘要
-  let aiSummary = "";
-  let whySection = "";
-  let faqItems: string[] = [];
+  let aiContent: AISummary | null = null;
 
   try {
-    const ai = await generateAISummary(state, category, platform);
-    aiSummary = ai.summary;
-    whySection = ai.why_section;
-    faqItems = ai.faq;
+    aiContent = await generateAISummary(state, category, platform);
   } catch {
-    // AI 失败时使用 fallback
-    aiSummary = `${formatName(state)} is a key logistics hub for ${category.toLowerCase()} brands using ${platform}, offering competitive warehousing and fast fulfillment across the United States.`;
-    whySection = `- Competitive warehousing costs\n- Strong ${platform} integration ecosystem\n- Fast nationwide shipping coverage`;
-    faqItems = [
-      `What is the average cost of 3PL for ${category} in ${formatName(state)}?`,
-      `How fast can ${platform} orders be fulfilled in ${formatName(state)}?`,
-      `Which ${category} 3PLs in ${formatName(state)} have the best reviews?`,
-    ];
+    // fallback built into generateAISummary
   }
 
   // 4. 内链
@@ -95,11 +83,50 @@ export default async function FullSEOPage({ params }: Props) {
         Best {platform} {formatName(category)} 3PLs in {formatName(state)}
       </h1>
 
-      {/* AI Summary */}
-      {aiSummary && (
-        <p className="mt-3 text-text-secondary leading-relaxed max-w-3xl">
-          {aiSummary}
-        </p>
+      {aiContent && (
+        <>
+          {/* Executive Summary */}
+          <p className="mt-3 text-text-secondary leading-relaxed max-w-3xl">
+            {aiContent.summary}
+          </p>
+
+          {/* Cost Guide */}
+          <section className="mt-8 p-4 bg-card border border-border rounded-xl">
+            <h2 className="text-lg font-bold text-text mb-2">
+              Cost Guide for {formatName(category)} Fulfillment in {formatName(state)}
+            </h2>
+            <p className="text-sm text-text-secondary leading-relaxed">
+              {aiContent.cost_guide}
+            </p>
+          </section>
+
+          {/* Shipping Insights */}
+          <section className="mt-4 p-4 bg-card border border-border rounded-xl">
+            <h2 className="text-lg font-bold text-text mb-2">
+              Shipping & Delivery from {formatName(state)}
+            </h2>
+            <p className="text-sm text-text-secondary leading-relaxed">
+              {aiContent.shipping_insights}
+            </p>
+          </section>
+
+          {/* Key Considerations */}
+          {aiContent.key_considerations.length > 0 && (
+            <section className="mt-8">
+              <h2 className="text-lg font-bold text-text mb-3">
+                What to Look for in a {formatName(category)} 3PL
+              </h2>
+              <ul className="space-y-2">
+                {aiContent.key_considerations.map((item, i) => (
+                  <li key={i} className="flex gap-2 text-sm text-text-secondary">
+                    <span className="text-primary shrink-0 mt-0.5">&#10003;</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </>
       )}
 
       {/* Top Match Cards */}
@@ -146,20 +173,11 @@ export default async function FullSEOPage({ params }: Props) {
         </div>
       )}
 
-      {/* Why Section */}
-      {whySection && (
-        <section className="mt-8 p-4 bg-card border border-border rounded-xl">
-          <h2 className="text-lg font-bold text-text mb-2">
-            Why {formatName(state)} for {formatName(category)} Fulfillment?
-          </h2>
-          <div className="text-sm text-text-secondary whitespace-pre-line">
-            {whySection}
-          </div>
-        </section>
-      )}
-
       {/* Comparison Table */}
       {scored.length >= 2 && <ComparisonTable data={scored.slice(0, 5)} />}
+
+      {/* FAQ */}
+      {aiContent && <FAQ items={aiContent.faq} />}
 
       {/* Internal Links (SEO Graph) */}
       <section className="mt-8">
@@ -178,9 +196,6 @@ export default async function FullSEOPage({ params }: Props) {
           ))}
         </div>
       </section>
-
-      {/* FAQ */}
-      <FAQ items={faqItems} />
 
       {/* Sticky CTA */}
       <MobileCTA />
