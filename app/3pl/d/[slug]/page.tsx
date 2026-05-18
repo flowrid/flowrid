@@ -2,6 +2,7 @@ import { createServerClient } from "@/lib/supabase";
 import ScoreBadge from "@/components/ScoreBadge";
 import { StickyCTA } from "@/components/CTAButton";
 import FAQ from "@/components/FAQ";
+import { localBusinessSchema } from "@/lib/jsonld";
 import type { Metadata } from "next";
 import type { ThreePL } from "@/types/3pl";
 import Link from "next/link";
@@ -68,6 +69,22 @@ export default async function ThreePLDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-8 pb-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            localBusinessSchema({
+              name: p.name,
+              description: p.description || "",
+              city: p.city || "",
+              state: p.state || "",
+              rating: p.rating || 0,
+              reviewCount: p.review_count || 0,
+              url: `https://www.flowrid.com/3pl/d/${p.slug}`,
+            })
+          ),
+        }}
+      />
       {/* Back link */}
       <Link
         href={`/3pl/${p.state}`}
