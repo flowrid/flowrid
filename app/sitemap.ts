@@ -1,6 +1,8 @@
 import { MetadataRoute } from "next";
 import { createServerClient } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 /**
  * 动态 Sitemap 生成
  *
