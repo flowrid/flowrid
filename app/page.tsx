@@ -1,65 +1,148 @@
-import Image from "next/image";
+import HeroSearch from "@/components/HeroSearch";
+import ThreePLCard from "@/components/3PLCard";
+import { createServerClient } from "@/lib/supabase";
+import { rankThreePLs } from "@/lib/scoring";
+import Link from "next/link";
+import type { ThreePL } from "@/types/3pl";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+/**
+ * Flowrid 首页 — 搜索入口 + 真实数据导航 + 精选 3PL
+ */
+export default async function Home() {
+  const supabase = createServerClient();
+
+  // 拉取所有 3PL 数据
+  const query = supabase
+    ?.from("pl_providers")
+    .select("*")
+    .order("rating", { ascending: false });
+  const allProviders = query ? (await query).data : null;
+
+  const providers = (allProviders as ThreePL[]) || [];
+
+  // 提取唯一 Categories
+  const categories = [
+    ...new Set(providers.flatMap((p) => p.categories || [])),
+  ].sort();
+
+  // 提取唯一 States
+  const states = [...new Set(providers.map((p) => p.state).filter(Boolean))].sort();
+
+  // 精选推荐：评分排序取前 3
+  const featured = providers
+    .map((p) => ({
+      ...p,
+      score: (p.rating || 0) * 20, // 简化评分：rating × 20
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+
+  // Category 显示名映射
+  const categoryLabels: Record<string, string> = {
+    apparel: "Apparel",
+    electronics: "Electronics",
+    jewelry: "Jewelry",
+    beauty: "Beauty & Cosmetics",
+    home: "Home & Garden",
+    toys: "Toys & Hobbies",
+    sports: "Sports & Outdoors",
+    food: "Food & Beverage",
+  };
+
+  // State 显示名映射
+  const stateLabels: Record<string, string> = {
+    california: "California",
+    texas: "Texas",
+    florida: "Florida",
+    "new-york": "New York",
+    "new-jersey": "New Jersey",
+    georgia: "Georgia",
+    illinois: "Illinois",
+    nevada: "Nevada",
+    washington: "Washington",
+    oregon: "Oregon",
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div>
+      <HeroSearch />
+
+      {/* Featured 3PLs */}
+      {featured.length > 0 && (
+        <section className="max-w-[1200px] mx-auto px-4 py-12">
+          <h2 className="text-xl font-bold text-text text-center mb-2">
+            Top-Rated 3PL Providers
+          </h2>
+          <p className="text-text-secondary text-center text-sm mb-8">
+            Highest rated fulfillment centers on Flowrid
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {featured.map((item) => (
+              <ThreePLCard key={item.id} data={item} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Dynamic Category Entry Points */}
+      {categories.length > 0 && (
+        <section className="max-w-[1200px] mx-auto px-4 py-8">
+          <h2 className="text-xl font-bold text-text text-center mb-8">
+            Find 3PLs by Category
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {categories.map((cat) => (
+              <Link
+                key={cat}
+                href={`/3pl?category=${cat}`}
+                className="border border-border rounded-xl p-4 bg-card hover:shadow-md hover:border-primary transition-all text-center"
+              >
+                <span className="text-sm font-medium">
+                  {categoryLabels[cat] || cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Dynamic State Entry Points */}
+      {states.length > 0 && (
+        <section className="max-w-[1200px] mx-auto px-4 py-8">
+          <h2 className="text-xl font-bold text-text text-center mb-8">
+            Find 3PLs by State
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {states.map((s) => (
+              <Link
+                key={s}
+                href={`/3pl/${s}`}
+                className="border border-border rounded-lg p-3 bg-card hover:shadow-sm hover:border-primary transition-all text-center text-sm"
+              >
+                {stateLabels[s] || s.charAt(0).toUpperCase() + s.slice(1)}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* CTA */}
+      <section className="text-center py-12 px-4">
+        <h2 className="text-2xl font-bold text-text">
+          Ready to Find Your Perfect 3PL?
+        </h2>
+        <p className="mt-2 text-text-secondary">
+          Get matched with top fulfillment centers in under 60 seconds.
+        </p>
+        <a
+          href="/rfq"
+          className="inline-block mt-6 bg-primary text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-dark transition-colors text-lg"
+        >
+          Get Matched Free
+        </a>
+      </section>
     </div>
   );
 }
