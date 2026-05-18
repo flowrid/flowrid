@@ -11,7 +11,10 @@ function getClient(): OpenAI | null {
     clientCache = null;
     return null;
   }
-  clientCache = new OpenAI({ apiKey: key });
+  clientCache = new OpenAI({
+    apiKey: key,
+    baseURL: "https://oa.api2d.net/v1",
+  });
   return clientCache;
 }
 
