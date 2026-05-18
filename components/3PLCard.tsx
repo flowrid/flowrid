@@ -52,7 +52,7 @@ export default function ThreePLCard({ data }: { data: ThreePLCardData }) {
       {/* CTA */}
       <div className="flex gap-2 mt-3">
         <a
-          href={`/3pl/${data.state.toLowerCase()}/${data.slug}`}
+          href={`/3pl/d/${data.slug}`}
           className="flex-1 text-center text-sm border border-border rounded-lg py-2 hover:bg-gray-50 transition-colors font-medium"
         >
           View Details
