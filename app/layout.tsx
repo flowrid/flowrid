@@ -20,9 +20,6 @@ export const metadata: Metadata = {
   description:
     "Compare top third-party logistics (3PL) providers in the US. Search by state, category, and platform. AI-powered matching for Shopify, TikTok, and Amazon sellers.",
   keywords: ["3PL", "fulfillment", "logistics", "warehouse", "ecommerce", "Shopify", "TikTok", "Amazon"],
-  verification: {
-    google: "zS1-Muod3xXvewJwS1MW2s9HEAvT5PWDVXTtSHFBgZ8",
-  },
 };
 
 export default function RootLayout({
@@ -35,6 +32,9 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <meta name="google-site-verification" content="zS1-Muod3xXvewJwS1MW2s9HEAvT5PWDVXTtSHFBgZ8" />
+      </head>
       <body className="min-h-full flex flex-col">
         <header className="border-b border-border bg-card">
           <nav className="max-w-[1200px] mx-auto px-4 h-14 flex items-center justify-between">
