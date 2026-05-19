@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { label: "Orders", href: "/saas/orders", icon: "􀐚" },
   { label: "Inventory", href: "/saas/inventory", icon: "􀍞" },
   { label: "Receiving", href: "/saas/receiving", icon: "􀐛" },
+  { label: "Analytics", href: "/saas/analytics", icon: "􀍡" },
   { label: "Billing", href: "/saas/billing", icon: "􀌯" },
   { label: "Settings", href: "/saas/settings", icon: "􀍟" },
 ];
