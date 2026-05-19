@@ -14,7 +14,7 @@ const NAV_ITEMS = [
 
 export default function SaasLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  if (pathname === "/saas/login") return <>{children}</>;
+  if (pathname === "/saas/login" || pathname === "/saas/register") return <>{children}</>;
 
   return (
     <div className="min-h-screen flex bg-[#F5F5F7]">
