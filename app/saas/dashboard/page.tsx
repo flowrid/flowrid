@@ -1,128 +1,147 @@
-/**
- * SaaS Dashboard — 3PL 运营总览
- */
+"use client";
 
-import { createServerClient } from "@/lib/supabase";
+import { useEffect, useState } from "react";
 
-export const dynamic = "force-dynamic";
+interface KPI {
+  orders_today: number;
+  orders_30d: number;
+  pending_orders: number;
+  total_inventory_units: number;
+  avg_pick_time_minutes: number;
+  revenue_mtd: number;
+  recent_orders: {
+    id: string;
+    customer: string;
+    items: number;
+    status: string;
+    time: string;
+    source: string;
+  }[];
+}
 
-export default async function DashboardPage() {
-  // 模拟 KPI 数据（实际生产环境从 saas-analytics 引擎获取）
-  const kpis = {
-    orders_today: 142,
-    orders_30d: 3847,
-    pending_orders: 28,
-    total_inventory_units: 125430,
-    avg_pick_time_minutes: 12,
-  };
+const STATUS_STYLES: Record<string, string> = {
+  Shipped: "bg-[#34C759]/10 text-[#34C759]",
+  Picking: "bg-[#0071E3]/10 text-[#0071E3]",
+  Allocated: "bg-[#AF52DE]/10 text-[#AF52DE]",
+  Packed: "bg-[#FF9500]/10 text-[#FF9500]",
+  Pending: "bg-[#8E8E93]/10 text-[#8E8E93]",
+  Delivered: "bg-[#34C759]/10 text-[#34C759]",
+  Returned: "bg-[#FF3B30]/10 text-[#FF3B30]",
+};
 
-  const recentOrders = [
-    { id: "#ORD-2024", customer: "Acme Apparel", items: 12, status: "Shipped", time: "2 min ago" },
-    { id: "#ORD-2023", customer: "Zen Beauty", items: 3, status: "Picking", time: "5 min ago" },
-    { id: "#ORD-2022", customer: "Peak Nutrition", items: 45, status: "Allocated", time: "8 min ago" },
-    { id: "#ORD-2021", customer: "Gear Up Sports", items: 8, status: "Packed", time: "15 min ago" },
-    { id: "#ORD-2020", customer: "Luxe Jewelry", items: 2, status: "Pending", time: "22 min ago" },
-  ];
+export default function DashboardPage() {
+  const [kpi, setKpi] = useState<KPI | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/saas/dashboard")
+      .then((r) => r.json())
+      .then(setKpi)
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="p-8 space-y-6 animate-pulse">
+        <div className="h-8 w-48 bg-black/5 rounded-xl" />
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-24 bg-white/50 rounded-2xl" />
+          ))}
+        </div>
+        <div className="h-64 bg-white/50 rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (!kpi) return null;
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-text">Dashboard</h1>
-        <p className="text-sm text-text-secondary">
+    <div className="p-6 md:p-8 max-w-[1280px]">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">
+          Dashboard
+        </h1>
+        <p className="text-[#86868B] text-sm mt-1">
           {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
         </p>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-        <KPICard label="Orders Today" value={kpis.orders_today} color="primary" />
-        <KPICard label="30-Day Orders" value={kpis.orders_30d.toLocaleString()} color="primary" />
-        <KPICard label="Pending" value={kpis.pending_orders} color="warning" />
-        <KPICard label="Inventory Units" value={kpis.total_inventory_units.toLocaleString()} color="success" />
-        <KPICard label="Avg Pick Time" value={`${kpis.avg_pick_time_minutes}m`} color="text" />
+      {/* KPI Tiles */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+        <KPITile label="Orders Today" value={kpi.orders_today} subtitle="since midnight" />
+        <KPITile label="30-Day Total" value={kpi.orders_30d.toLocaleString()} subtitle="orders processed" />
+        <KPITile label="Pending" value={kpi.pending_orders} subtitle="needs action" accent="amber" />
+        <KPITile label="Inventory" value={kpi.total_inventory_units.toLocaleString()} subtitle="units on hand" accent="green" />
+        <KPITile label="Revenue MTD" value={`$${(kpi.revenue_mtd / 1000).toFixed(1)}k`} subtitle="month to date" accent="blue" />
       </div>
 
       {/* Recent Orders */}
-      <div className="bg-card border border-border rounded-xl">
-        <div className="p-4 border-b border-border flex justify-between items-center">
-          <h2 className="font-bold text-text">Recent Orders</h2>
-          <a href="/saas/orders" className="text-sm text-primary hover:underline">
+      <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">
+        <div className="px-5 py-4 border-b border-black/5 flex items-center justify-between">
+          <h2 className="text-[17px] font-semibold text-[#1D1D1F]">Recent Orders</h2>
+          <a href="/saas/orders" className="text-[13px] text-[#0071E3] hover:underline font-medium">
             View All
           </a>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-text-secondary">
-                <th className="px-4 py-3 font-medium">Order</th>
-                <th className="px-4 py-3 font-medium">Customer</th>
-                <th className="px-4 py-3 font-medium">Items</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">Time</th>
+        <table className="w-full">
+          <thead>
+            <tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
+              <th className="px-5 py-3">Order</th>
+              <th className="px-5 py-3">Customer</th>
+              <th className="px-5 py-3">Source</th>
+              <th className="px-5 py-3">Status</th>
+              <th className="px-5 py-3 text-right">Time</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-black/5">
+            {kpi.recent_orders.map((o) => (
+              <tr key={o.id} className="hover:bg-black/[0.02] transition-colors">
+                <td className="px-5 py-3 text-sm font-medium text-[#1D1D1F]">{o.id}</td>
+                <td className="px-5 py-3 text-sm text-[#1D1D1F]">{o.customer}</td>
+                <td className="px-5 py-3 text-xs">
+                  <span className="bg-black/5 text-[#86868B] px-2 py-0.5 rounded-full">{o.source}</span>
+                </td>
+                <td className="px-5 py-3">
+                  <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${STATUS_STYLES[o.status] || ""}`}>
+                    {o.status}
+                  </span>
+                </td>
+                <td className="px-5 py-3 text-xs text-[#86868B] text-right">{o.time}</td>
               </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {recentOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium">{order.id}</td>
-                  <td className="px-4 py-3">{order.customer}</td>
-                  <td className="px-4 py-3">{order.items}</td>
-                  <td className="px-4 py-3">
-                    <StatusBadge status={order.status} />
-                  </td>
-                  <td className="px-4 py-3 text-text-secondary">{order.time}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 }
 
-function KPICard({
+function KPITile({
   label,
   value,
-  color,
+  subtitle,
+  accent,
 }: {
   label: string;
   value: string | number;
-  color: string;
+  subtitle: string;
+  accent?: string;
 }) {
-  const colorMap: Record<string, string> = {
-    primary: "text-primary",
-    success: "text-success",
-    warning: "text-warning",
-    text: "text-text",
+  const colors: Record<string, string> = {
+    blue: "text-[#0071E3]",
+    green: "text-[#34C759]",
+    amber: "text-[#FF9500]",
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl p-4">
-      <p className="text-xs text-text-secondary uppercase tracking-wide">{label}</p>
-      <p className={`text-2xl font-bold mt-1 ${colorMap[color] || "text-text"}`}>
+    <div className="bg-white rounded-2xl p-5 shadow-sm border border-black/5 hover:shadow-md transition-shadow">
+      <p className="text-[11px] font-medium text-[#86868B] uppercase tracking-wide">{label}</p>
+      <p className={`text-[28px] font-bold tracking-tight mt-1.5 ${colors[accent || ""] || "text-[#1D1D1F]"}`}>
         {value}
       </p>
+      <p className="text-[11px] text-[#86868B] mt-1">{subtitle}</p>
     </div>
-  );
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    Shipped: "bg-green-100 text-green-700",
-    Picking: "bg-blue-100 text-blue-700",
-    Allocated: "bg-purple-100 text-purple-700",
-    Packed: "bg-yellow-100 text-yellow-700",
-    Pending: "bg-gray-100 text-gray-700",
-  };
-
-  return (
-    <span
-      className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${
-        styles[status] || "bg-gray-100 text-gray-700"
-      }`}
-    >
-      {status}
-    </span>
   );
 }

@@ -4,110 +4,81 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
-  {
-    label: "Dashboard",
-    href: "/saas/dashboard",
-    icon: "📊",
-  },
-  {
-    label: "Orders",
-    href: "/saas/orders",
-    icon: "📦",
-  },
-  {
-    label: "Inventory",
-    href: "/saas/inventory",
-    icon: "🏗️",
-  },
-  {
-    label: "Receiving",
-    href: "/saas/receiving",
-    icon: "📥",
-  },
-  {
-    label: "Billing",
-    href: "/saas/billing",
-    icon: "💰",
-  },
-  {
-    label: "Settings",
-    href: "/saas/settings",
-    icon: "⚙️",
-  },
+  { label: "Dashboard", href: "/saas/dashboard", icon: "􀍟" },
+  { label: "Orders", href: "/saas/orders", icon: "􀐚" },
+  { label: "Inventory", href: "/saas/inventory", icon: "􀍞" },
+  { label: "Receiving", href: "/saas/receiving", icon: "􀐛" },
+  { label: "Billing", href: "/saas/billing", icon: "􀌯" },
+  { label: "Settings", href: "/saas/settings", icon: "􀍟" },
 ];
 
 export default function SaasLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-
-  // 登录页不使用 Dashboard 布局
-  if (pathname === "/saas/login") {
-    return <>{children}</>;
-  }
+  if (pathname === "/saas/login") return <>{children}</>;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <aside className="w-56 bg-card border-r border-border shrink-0 hidden md:flex flex-col">
-        <div className="p-4 border-b border-border">
-          <Link href="/saas/dashboard" className="text-lg font-bold text-primary">
-            Flowrid WMS
+    <div className="min-h-screen flex bg-[#F5F5F7]">
+      {/* Sidebar — frosted glass */}
+      <aside className="w-60 shrink-0 hidden md:flex flex-col bg-white/70 backdrop-blur-xl border-r border-black/5">
+        <div className="px-5 py-6">
+          <Link href="/saas/dashboard" className="text-xl font-bold tracking-tight text-[#1D1D1F]">
+            Flowrid
           </Link>
-          <p className="text-xs text-text-secondary mt-0.5">
-            3PL Operating System
-          </p>
+          <p className="text-xs text-[#86868B] mt-0.5 tracking-wide">3PL OS</p>
         </div>
 
-        <nav className="flex-1 p-3 space-y-1">
+        <nav className="flex-1 px-3 space-y-0.5">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
+            const active = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                  isActive
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-text-secondary hover:bg-gray-100 hover:text-text"
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  active
+                    ? "bg-[#0071E3] text-white shadow-sm"
+                    : "text-[#1D1D1F] hover:bg-black/5"
                 }`}
               >
-                <span className="text-base">{item.icon}</span>
+                <span className="text-[13px] w-5 text-center">{item.icon}</span>
                 <span>{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-3 border-t border-border">
+        <div className="p-3 border-t border-black/5">
           <Link
             href="/"
-            className="flex items-center gap-2 px-3 py-2 text-xs text-text-secondary hover:text-text transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#86868B] hover:text-[#1D1D1F] hover:bg-black/5 transition-all"
           >
-            &larr; Back to Site
+            <span>&larr;</span> Back to Site
           </Link>
         </div>
       </aside>
 
-      {/* Mobile nav */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50 flex overflow-x-auto">
+      {/* Mobile bottom nav */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-black/5 z-50 flex">
         {NAV_ITEMS.slice(0, 5).map((item) => {
-          const isActive = pathname === item.href;
+          const active = pathname === item.href;
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex-1 flex flex-col items-center py-2 text-[10px] transition-colors ${
-                isActive ? "text-primary" : "text-text-secondary"
+              className={`flex-1 flex flex-col items-center py-2.5 text-[10px] font-medium transition-colors ${
+                active ? "text-[#0071E3]" : "text-[#86868B]"
               }`}
             >
-              <span className="text-sm">{item.icon}</span>
+              <span className="text-base mb-0.5">{item.icon}</span>
               <span>{item.label}</span>
             </Link>
           );
         })}
       </div>
 
-      {/* Main content */}
-      <main className="flex-1 pb-16 md:pb-0">{children}</main>
+      <main className="flex-1 pb-20 md:pb-0 overflow-x-hidden">
+        {children}
+      </main>
     </div>
   );
 }

@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flowrid Design System — 设计系统预览</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#2563EB',
+          'primary-dark': '#1D4ED8',
+          success: '#16A34A',
+          warning: '#F59E0B',
+          danger: '#EF4444',
+          bg: '#F9FAFB',
+          card: '#FFFFFF',
+          border: '#E5E7EB',
+          text: '#111827',
+          'text-secondary': '#6B7280',
+        },
+        maxWidth: {
+          'page': '1200px',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+  .preview-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #9CA3AF; margin-bottom: 8px; }
+  .section-title { font-size: 28px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+  .section-desc { font-size: 14px; color: #6B7280; margin-bottom: 32px; }
+
+  /* Mobile frame */
+  .mobile-frame {
+    width: 375px; height: 700px; border: 8px solid #1F2937; border-radius: 40px;
+    overflow-y: auto; overflow-x: hidden; background: #F9FAFB; position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+  .mobile-frame::-webkit-scrollbar { width: 0; }
+  .mobile-notch { width: 120px; height: 24px; background: #1F2937; border-radius: 0 0 16px 16px; position: sticky; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; }
+
+  @media (max-width: 768px) {
+    .mobile-frame { width: 100%; height: auto; border-radius: 0; border: none; box-shadow: none; }
+    .mobile-notch { display: none; }
+  }
+</style>
+</head>
+<body class="bg-bg text-text">
+
+<!-- ===== NAV ===== -->
+<nav class="border-b border-border bg-card sticky top-0 z-50">
+  <div class="max-w-page mx-auto px-4 h-14 flex items-center justify-between">
+    <div class="flex items-center gap-8">
+      <span class="text-xl font-bold text-primary">Flowrid</span>
+      <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">Design System v1.0</span>
+    </div>
+    <div class="flex items-center gap-6 text-sm text-text-secondary">
+      <a href="#tokens" class="hover:text-primary transition-colors">Tokens</a>
+      <a href="#components" class="hover:text-primary transition-colors">组件</a>
+      <a href="#pages" class="hover:text-primary transition-colors">页面</a>
+      <a href="#mobile" class="hover:text-primary transition-colors">移动端</a>
+    </div>
+  </div>
+</nav>
+
+<div class="max-w-page mx-auto px-4 py-12">
+
+<!-- ===== HEADER ===== -->
+<div class="text-center mb-16">
+  <h1 class="text-4xl font-bold text-text mb-3">Flowrid Design System</h1>
+  <p class="text-lg text-text-secondary max-w-2xl mx-auto">
+    电商物流搜索与决策平台 — 设计不是美学，是降低认知成本
+  </p>
+</div>
+
+<!-- ========================================== -->
+<!-- TOKENS -->
+<!-- ========================================== -->
+<section id="tokens" class="mb-20">
+  <h2 class="section-title">Design Tokens</h2>
+  <p class="section-desc">全局设计变量，定义 Flowrid 的视觉语言</p>
+
+  <!-- Colors -->
+  <div class="mb-12">
+    <h3 class="text-lg font-semibold mb-4">颜色系统</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <div>
+        <div class="h-16 bg-primary rounded-lg mb-2"></div>
+        <p class="text-xs font-semibold">Primary</p>
+        <p class="text-xs text-text-secondary">#2563EB</p>
+      </div>
+      <div>
+        <div class="h-16 bg-primary-dark rounded-lg mb-2"></div>
+        <p class="text-xs font-semibold">Primary Dark</p>
+        <p class="text-xs text-text-secondary">#1D4ED8</p>
+      </div>
+      <div>
+        <div class="h-16 bg-success rounded-lg mb-2"></div>
+        <p class="text-xs font-semibold">Success</p>
+        <p class="text-xs text-text-secondary">#16A34A</p>
+      </div>
+      <div>
+        <div class="h-16 bg-warning rounded-lg mb-2"></div>
+        <p class="text-xs font-semibold">Warning</p>
+        <p class="text-xs text-text-secondary">#F59E0B</p>
+      </div>
+      <div>
+        <div class="h-16 bg-danger rounded-lg mb-2"></div>
+        <p class="text-xs font-semibold">Danger</p>
+        <p class="text-xs text-text-secondary">#EF4444</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-5 gap-4 mt-4">
+      <div>
+        <div class="h-12 bg-bg rounded-lg mb-2 border border-border"></div>
+        <p class="text-xs text-text-secondary">Bg #F9FAFB</p>
+      </div>
+      <div>
+        <div class="h-12 bg-card rounded-lg mb-2 border border-border"></div>
+        <p class="text-xs text-text-secondary">Card #FFFFFF</p>
+      </div>
+      <div>
+        <div class="h-12 bg-border rounded-lg mb-2"></div>
+        <p class="text-xs text-text-secondary">Border #E5E7EB</p>
+      </div>
+      <div>
+        <div class="h-12 bg-text rounded-lg mb-2"></div>
+        <p class="text-xs text-text-secondary">Text #111827</p>
+      </div>
+      <div>
+        <div class="h-12 bg-text-secondary rounded-lg mb-2"></div>
+        <p class="text-xs text-text-secondary">Secondary #6B7280</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Score Colors -->
+  <div class="mb-12 p-6 bg-card border border-border rounded-xl">
+    <h3 class="text-sm font-semibold mb-3">评分颜色规则</h3>
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center bg-success text-white text-sm font-bold rounded-lg w-12 h-8">95</span>
+        <span class="text-xs text-text-secondary">90+ 绿色</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center bg-primary text-white text-sm font-bold rounded-lg w-12 h-8">78</span>
+        <span class="text-xs text-text-secondary">70-89 蓝色</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center bg-gray-400 text-white text-sm font-bold rounded-lg w-12 h-8">55</span>
+        <span class="text-xs text-text-secondary">&lt;70 灰色</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Typography -->
+  <div class="mb-12">
+    <h3 class="text-lg font-semibold mb-4">字体系统 (Geist Sans)</h3>
+    <div class="bg-card border border-border rounded-xl p-6 space-y-6">
+      <div class="flex items-baseline gap-8">
+        <span class="text-xs text-text-secondary w-20 shrink-0">H1 · 32-40px Bold</span>
+        <span class="text-4xl font-bold">Find the Best 3PL</span>
+      </div>
+      <div class="flex items-baseline gap-8">
+        <span class="text-xs text-text-secondary w-20 shrink-0">H2 · 24-28px Semibold</span>
+        <span class="text-2xl font-semibold">Top-Rated Providers</span>
+      </div>
+      <div class="flex items-baseline gap-8">
+        <span class="text-xs text-text-secondary w-20 shrink-0">Body · 14-16px</span>
+        <span class="text-base">Compare top fulfillment centers by state, product category, and platform.</span>
+      </div>
+      <div class="flex items-baseline gap-8">
+        <span class="text-xs text-text-secondary w-20 shrink-0">Caption · 12px</span>
+        <span class="text-xs text-text-secondary">California · Apparel · Shopify</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spacing -->
+  <div>
+    <h3 class="text-lg font-semibold mb-4">间距系统 (4px base)</h3>
+    <div class="bg-card border border-border rounded-xl p-6 flex flex-wrap items-end gap-2">
+      <div><div class="w-1 h-1 bg-primary rounded"></div><span class="text-[10px] text-text-secondary mt-1 block">4</span></div>
+      <div><div class="w-2 h-2 bg-primary rounded"></div><span class="text-[10px] text-text-secondary mt-1 block">8</span></div>
+      <div><div class="w-3 h-3 bg-primary rounded"></div><span class="text-[10px] text-text-secondary mt-1 block">12</span></div>
+      <div><div class="w-4 h-4 bg-primary rounded"></div><span class="text-[10px] text-text-secondary mt-1 block">16</span></div>
+      <div><div class="w-6 h-6 bg-primary rounded"></div><span class="text-[10px] text-text-secondary mt-1 block">24</span></div>
+      <div><div class="w-8 h-8 bg-primary rounded"></div><span class="text-[10px] text-text-secondary mt-1 block">32</span></div>
+      <div><div class="w-12 h-12 bg-primary rounded"></div><span class="text-[10px] text-text-secondary mt-1 block">48</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== -->
+<!-- COMPONENTS -->
+<!-- ========================================== -->
+<section id="components" class="mb-20">
+  <h2 class="section-title">组件库</h2>
+  <p class="section-desc">所有 UI 组件及使用规范</p>
+
+  <!-- CTA Button -->
+  <div class="mb-10">
+    <div class="preview-label">01 · CTA Button</div>
+    <div class="bg-card border border-border rounded-xl p-6">
+      <div class="flex flex-wrap items-end gap-4 mb-4">
+        <!-- Primary CTA -->
+        <div>
+          <span class="text-[10px] text-text-secondary block mb-1">Primary</span>
+          <button class="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors">Get Matched Free</button>
+        </div>
+        <!-- Large CTA -->
+        <div>
+          <span class="text-[10px] text-text-secondary block mb-1">Large</span>
+          <button class="bg-primary text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-dark transition-colors text-lg">Get Matched Free</button>
+        </div>
+        <!-- Secondary -->
+        <div>
+          <span class="text-[10px] text-text-secondary block mb-1">Secondary</span>
+          <button class="border border-border rounded-lg px-6 py-3 font-medium hover:bg-gray-50 transition-colors">View Details</button>
+        </div>
+        <!-- Full Width -->
+        <div class="w-full">
+          <span class="text-[10px] text-text-secondary block mb-1">Full Width</span>
+          <button class="w-full bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors">Get Quote</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Score Badge -->
+  <div class="mb-10">
+    <div class="preview-label">02 · Score Badge</div>
+    <div class="bg-card border border-border rounded-xl p-6">
+      <div class="flex items-center gap-4">
+        <span class="inline-flex items-center justify-center bg-success text-white text-sm font-bold rounded-lg min-w-[3rem] h-8 px-2">95</span>
+        <span class="inline-flex items-center justify-center bg-primary text-white text-sm font-bold rounded-lg min-w-[3rem] h-8 px-2">78</span>
+        <span class="inline-flex items-center justify-center bg-gray-400 text-white text-sm font-bold rounded-lg min-w-[3rem] h-8 px-2">55</span>
+        <span class="text-xs text-text-secondary">0-100 分制，四舍五入取整，最小宽度 3rem</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Chips -->
+  <div class="mb-10">
+    <div class="preview-label">03 · Filter Chips</div>
+    <div class="bg-card border border-border rounded-xl p-6">
+      <div class="flex items-center gap-2 overflow-x-auto pb-2">
+        <span class="text-xs font-medium text-text-secondary uppercase shrink-0">Category:</span>
+        <button class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-primary text-white">All</button>
+        <button class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-gray-100 text-text-secondary hover:bg-gray-200">Apparel</button>
+        <button class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-gray-100 text-text-secondary hover:bg-gray-200">Electronics</button>
+        <button class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-gray-100 text-text-secondary hover:bg-gray-200">Jewelry</button>
+        <button class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-gray-100 text-text-secondary hover:bg-gray-200">Beauty</button>
+        <button class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-gray-100 text-text-secondary hover:bg-gray-200">Home & Garden</button>
+      </div>
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 mt-3">
+        <span class="text-xs font-medium text-text-secondary uppercase shrink-0">Platform:</span>
+        <button class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-gray-100 text-text-secondary hover:bg-gray-200">All</button>
+        <button class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-primary text-white">Shopify</button>
+        <button class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-gray-100 text-text-secondary hover:bg-gray-200">Amazon</button>
+        <button class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-gray-100 text-text-secondary hover:bg-gray-200">TikTok Shop</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3PL Card -->
+  <div class="mb-10">
+    <div class="preview-label">04 · 3PL Card (核心组件)</div>
+    <div class="bg-card border border-border rounded-xl p-6">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Card 1: High Score -->
+        <div class="border border-border rounded-xl p-4 bg-white shadow-sm">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-bold">ShipMonkey Fulfillment</h3>
+              <p class="text-sm text-text-secondary">Los Angeles, California</p>
+            </div>
+            <span class="inline-flex items-center justify-center bg-success text-white text-sm font-bold rounded-lg min-w-[3rem] h-8 px-2 shrink-0">94</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5 mt-3">
+            <span class="text-xs bg-gray-100 text-text px-2 py-0.5 rounded font-medium">Shopify</span>
+            <span class="text-xs bg-gray-100 text-text px-2 py-0.5 rounded font-medium">Amazon</span>
+            <span class="text-xs bg-gray-100 text-text px-2 py-0.5 rounded font-medium">Walmart</span>
+          </div>
+          <div class="flex items-center gap-4 mt-2 text-sm text-text-secondary">
+            <span><i class="fa fa-truck mr-1"></i> Speed: 2-3 Days</span>
+            <span><i class="fa fa-usd mr-1"></i> Cost: $$</span>
+          </div>
+          <div class="flex gap-2 mt-3">
+            <a href="#" class="flex-1 text-center text-sm border border-border rounded-lg py-2 hover:bg-gray-50 transition-colors font-medium">Details</a>
+            <a href="#" class="flex-1 text-center text-sm bg-primary text-white rounded-lg py-2 hover:bg-primary-dark transition-colors font-medium">Get Quote</a>
+          </div>
+        </div>
+
+        <!-- Card 2: Mid Score -->
+        <div class="border border-border rounded-xl p-4 bg-white shadow-sm">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-bold">Red Stag Fulfillment</h3>
+              <p class="text-sm text-text-secondary">Austin, Texas</p>
+            </div>
+            <span class="inline-flex items-center justify-center bg-primary text-white text-sm font-bold rounded-lg min-w-[3rem] h-8 px-2 shrink-0">82</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5 mt-3">
+            <span class="text-xs bg-gray-100 text-text px-2 py-0.5 rounded font-medium">eBay</span>
+            <span class="text-xs bg-gray-100 text-text px-2 py-0.5 rounded font-medium">BigCommerce</span>
+          </div>
+          <div class="flex items-center gap-4 mt-2 text-sm text-text-secondary">
+            <span><i class="fa fa-truck mr-1"></i> Speed: 3-5 Days</span>
+            <span><i class="fa fa-usd mr-1"></i> Cost: $$$</span>
+          </div>
+          <div class="flex gap-2 mt-3">
+            <a href="#" class="flex-1 text-center text-sm border border-border rounded-lg py-2 hover:bg-gray-50 transition-colors font-medium">Details</a>
+            <a href="#" class="flex-1 text-center text-sm bg-primary text-white rounded-lg py-2 hover:bg-primary-dark transition-colors font-medium">Get Quote</a>
+          </div>
+        </div>
+
+        <!-- Card 3: Lower Score -->
+        <div class="border border-border rounded-xl p-4 bg-white shadow-sm">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-bold">QuickShip Logistics</h3>
+              <p class="text-sm text-text-secondary">Miami, Florida</p>
+            </div>
+            <span class="inline-flex items-center justify-center bg-gray-400 text-white text-sm font-bold rounded-lg min-w-[3rem] h-8 px-2 shrink-0">61</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5 mt-3">
+            <span class="text-xs bg-gray-100 text-text px-2 py-0.5 rounded font-medium">TikTok Shop</span>
+          </div>
+          <div class="flex items-center gap-4 mt-2 text-sm text-text-secondary">
+            <span><i class="fa fa-truck mr-1"></i> Speed: 5-7 Days</span>
+            <span><i class="fa fa-usd mr-1"></i> Cost: $</span>
+          </div>
+          <div class="flex gap-2 mt-3">
+            <a href="#" class="flex-1 text-center text-sm border border-border rounded-lg py-2 hover:bg-gray-50 transition-colors font-medium">Details</a>
+            <a href="#" class="flex-1 text-center text-sm bg-primary text-white rounded-lg py-2 hover:bg-primary-dark transition-colors font-medium">Get Quote</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Accordion -->
+  <div class="mb-10">
+    <div class="preview-label">05 · FAQ Accordion</div>
+    <div class="bg-card border border-border rounded-xl p-6">
+      <h3 class="text-lg font-bold mb-3">Frequently Asked Questions</h3>
+      <div class="space-y-2">
+        <details class="border border-border rounded-lg bg-white" open>
+          <summary class="px-4 py-3 text-sm font-medium cursor-pointer hover:text-primary transition-colors select-none">How does Flowrid score 3PL providers?</summary>
+          <p class="px-4 pb-3 text-sm text-text-secondary leading-relaxed">Our AI analyzes real fulfillment data across hundreds of 3PL providers to give you the most accurate answer based on your specific product type, platform, and location requirements.</p>
+        </details>
+        <details class="border border-border rounded-lg bg-white">
+          <summary class="px-4 py-3 text-sm font-medium cursor-pointer hover:text-primary transition-colors select-none">What is the RFQ process?</summary>
+          <p class="px-4 pb-3 text-sm text-text-secondary leading-relaxed">Submit your requirements and receive competitive quotes from matched 3PL providers within 24-48 hours. No obligation, completely free.</p>
+        </details>
+        <details class="border border-border rounded-lg bg-white">
+          <summary class="px-4 py-3 text-sm font-medium cursor-pointer hover:text-primary transition-colors select-none">Can I compare multiple 3PLs side by side?</summary>
+          <p class="px-4 pb-3 text-sm text-text-secondary leading-relaxed">Yes! Use our comparison tool to evaluate up to 5 providers across key dimensions like speed, cost, platform compatibility, and customer ratings.</p>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="mb-10">
+    <div class="preview-label">06 · Comparison Table</div>
+    <div class="bg-card border border-border rounded-xl p-6 overflow-x-auto">
+      <h3 class="text-lg font-bold mb-3">Quick Comparison</h3>
+      <table class="w-full text-sm border border-border rounded-lg overflow-hidden">
+        <thead>
+          <tr class="bg-gray-50 text-left">
+            <th class="px-4 py-3 font-semibold">3PL</th>
+            <th class="px-4 py-3 font-semibold">Speed</th>
+            <th class="px-4 py-3 font-semibold">Cost</th>
+            <th class="px-4 py-3 font-semibold">Score</th>
+            <th class="px-4 py-3 font-semibold">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-t border-border"><td class="px-4 py-3 font-medium">ShipMonkey</td><td class="px-4 py-3">2-3 Days</td><td class="px-4 py-3">$$</td><td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded text-white text-xs font-bold bg-success">94</span></td><td class="px-4 py-3"><a href="#" class="text-primary hover:underline font-medium text-xs">Get Quote</a></td></tr>
+          <tr class="border-t border-border"><td class="px-4 py-3 font-medium">Red Stag</td><td class="px-4 py-3">3-5 Days</td><td class="px-4 py-3">$$$</td><td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded text-white text-xs font-bold bg-primary">82</span></td><td class="px-4 py-3"><a href="#" class="text-primary hover:underline font-medium text-xs">Get Quote</a></td></tr>
+          <tr class="border-t border-border"><td class="px-4 py-3 font-medium">QuickShip</td><td class="px-4 py-3">5-7 Days</td><td class="px-4 py-3">$</td><td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded text-white text-xs font-bold bg-gray-400">61</span></td><td class="px-4 py-3"><a href="#" class="text-primary hover:underline font-medium text-xs">Get Quote</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Hero Search -->
+  <div class="mb-10">
+    <div class="preview-label">07 · Hero Search (首页搜索入口)</div>
+    <div class="bg-card border border-border rounded-xl p-6">
+      <div class="text-center py-8 max-w-2xl mx-auto">
+        <h2 class="text-2xl md:text-4xl font-bold leading-tight">Find the Best 3PL for <span class="text-primary">Your E-commerce Brand</span></h2>
+        <p class="mt-3 text-text-secondary text-sm">Compare top fulfillment centers by state, product category, and platform. Get matched in seconds.</p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <input type="text" placeholder="Product type (e.g. apparel)" class="flex-1 border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+          <input type="text" placeholder="State (e.g. Texas)" class="flex-1 border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+          <input type="text" placeholder="Platform (Shopify)" class="flex-1 border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+          <button class="bg-primary text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-primary-dark transition-colors shrink-0">Search</button>
+        </div>
+        <div class="mt-4 flex flex-wrap justify-center gap-2 text-xs text-text-secondary">
+          <span>Popular:</span>
+          <a href="#" class="text-primary hover:underline">California Apparel</a>
+          <span>&middot;</span>
+          <a href="#" class="text-primary hover:underline">Texas Jewelry</a>
+          <span>&middot;</span>
+          <a href="#" class="text-primary hover:underline">Florida Beauty</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== -->
+<!-- PAGES - Desktop -->
+<!-- ========================================== -->
+<section id="pages" class="mb-20">
+  <h2 class="section-title">桌面端页面布局</h2>
+  <p class="section-desc">12 栏栅格 · max-width 1200px · 间距 4/8/12/16/24/32/48</p>
+
+  <!-- Home Page -->
+  <div class="mb-12">
+    <div class="preview-label">P01 · 首页 (Home)</div>
+    <div class="bg-card border border-border rounded-xl overflow-hidden">
+      <!-- Nav -->
+      <div class="border-b border-border px-6 h-14 flex items-center justify-between">
+        <span class="text-xl font-bold text-primary">Flowrid</span>
+        <div class="flex items-center gap-4 text-sm text-text-secondary">
+          <a href="#">3PL Directory</a>
+          <a href="#">Compare</a>
+          <a href="#">RFQ</a>
+          <a href="#">Blog</a>
+        </div>
+      </div>
+      <!-- Hero -->
+      <div class="text-center py-16 px-4">
+        <h1 class="text-3xl md:text-5xl font-bold leading-tight">Find the Best 3PL for <span class="text-primary">Your E-commerce Brand</span></h1>
+        <p class="mt-4 text-text-secondary max-w-xl mx-auto">Compare top fulfillment centers by state, product category, and platform. Get matched in seconds.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
+          <input type="text" placeholder="Product type" class="flex-1 border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+          <input type="text" placeholder="State" class="flex-1 border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+          <input type="text" placeholder="Platform" class="flex-1 border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+          <button class="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors">Search</button>
+        </div>
+      </div>
+      <!-- Categories Grid -->
+      <div class="px-6 py-8 border-t border-border">
+        <h3 class="text-lg font-bold text-center mb-6">Find 3PLs by Category</h3>
+        <div class="grid grid-cols-4 gap-4 max-w-3xl mx-auto">
+          <a href="#" class="border border-border rounded-xl p-4 bg-white hover:shadow-md hover:border-primary transition-all text-center text-sm font-medium">Apparel</a>
+          <a href="#" class="border border-border rounded-xl p-4 bg-white hover:shadow-md hover:border-primary transition-all text-center text-sm font-medium">Electronics</a>
+          <a href="#" class="border border-border rounded-xl p-4 bg-white hover:shadow-md hover:border-primary transition-all text-center text-sm font-medium">Jewelry</a>
+          <a href="#" class="border border-border rounded-xl p-4 bg-white hover:shadow-md hover:border-primary transition-all text-center text-sm font-medium">Beauty & Cosmetics</a>
+          <a href="#" class="border border-border rounded-xl p-4 bg-white hover:shadow-md hover:border-primary transition-all text-center text-sm font-medium">Home & Garden</a>
+          <a href="#" class="border border-border rounded-xl p-4 bg-white hover:shadow-md hover:border-primary transition-all text-center text-sm font-medium">Toys & Hobbies</a>
+          <a href="#" class="border border-border rounded-xl p-4 bg-white hover:shadow-md hover:border-primary transition-all text-center text-sm font-medium">Sports & Outdoors</a>
+          <a href="#" class="border border-border rounded-xl p-4 bg-white hover:shadow-md hover:border-primary transition-all text-center text-sm font-medium">Food & Beverage</a>
+        </div>
+      </div>
+      <!-- States Grid -->
+      <div class="px-6 py-8 border-t border-border">
+        <h3 class="text-lg font-bold text-center mb-6">Find 3PLs by State</h3>
+        <div class="grid grid-cols-5 gap-3 max-w-4xl mx-auto">
+          <a href="#" class="border border-border rounded-lg p-3 bg-white hover:shadow-sm hover:border-primary transition-all text-center text-sm">California</a>
+          <a href="#" class="border border-border rounded-lg p-3 bg-white hover:shadow-sm hover:border-primary transition-all text-center text-sm">Texas</a>
+          <a href="#" class="border border-border rounded-lg p-3 bg-white hover:shadow-sm hover:border-primary transition-all text-center text-sm">Florida</a>
+          <a href="#" class="border border-border rounded-lg p-3 bg-white hover:shadow-sm hover:border-primary transition-all text-center text-sm">New York</a>
+          <a href="#" class="border border-border rounded-lg p-3 bg-white hover:shadow-sm hover:border-primary transition-all text-center text-sm">New Jersey</a>
+          <a href="#" class="border border-border rounded-lg p-3 bg-white hover:shadow-sm hover:border-primary transition-all text-center text-sm">Georgia</a>
+          <a href="#" class="border border-border rounded-lg p-3 bg-white hover:shadow-sm hover:border-primary transition-all text-center text-sm">Illinois</a>
+          <a href="#" class="border border-border rounded-lg p-3 bg-white hover:shadow-sm hover:border-primary transition-all text-center text-sm">Nevada</a>
+          <a href="#" class="border border-border rounded-lg p-3 bg-white hover:shadow-sm hover:border-primary transition-all text-center text-sm">Washington</a>
+          <a href="#" class="border border-border rounded-lg p-3 bg-white hover:shadow-sm hover:border-primary transition-all text-center text-sm">Oregon</a>
+        </div>
+      </div>
+      <!-- CTA -->
+      <div class="text-center py-12 border-t border-border">
+        <h3 class="text-2xl font-bold">Ready to Find Your Perfect 3PL?</h3>
+        <p class="mt-2 text-text-secondary text-sm">Get matched with top fulfillment centers in under 60 seconds.</p>
+        <button class="mt-6 bg-primary text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-dark transition-colors text-lg">Get Matched Free</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Results / SEO Page -->
+  <div class="mb-12">
+    <div class="preview-label">P02 · 搜索结果 / SEO 落地页</div>
+    <div class="bg-card border border-border rounded-xl overflow-hidden">
+      <div class="border-b border-border px-6 h-14 flex items-center">
+        <span class="text-xl font-bold text-primary">Flowrid</span>
+      </div>
+      <!-- Breadcrumb + H1 -->
+      <div class="px-6 py-6">
+        <p class="text-xs text-text-secondary mb-1"><a href="#" class="hover:text-primary">Home</a> &rsaquo; <a href="#" class="hover:text-primary">California</a> &rsaquo; Apparel</p>
+        <h1 class="text-2xl font-bold mt-2">Best 3PL for Apparel in California</h1>
+        <p class="text-sm text-text-secondary mt-1">Top-rated fulfillment centers specializing in apparel for Shopify, Amazon, and more.</p>
+      </div>
+      <!-- AI Summary -->
+      <div class="mx-6 mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <div class="flex items-start gap-2">
+          <span class="text-primary text-sm mt-0.5"><i class="fa fa-magic"></i></span>
+          <div>
+            <h4 class="text-sm font-semibold text-primary mb-1">AI Decision Guide</h4>
+            <p class="text-sm text-text-secondary leading-relaxed">California is a top logistics hub for apparel brands, especially those selling on Shopify. Average fulfillment costs range from $2-5 per order with 2-3 day shipping to West Coast customers. Top providers in this category typically offer specialized apparel services including hang-tagging, steaming, and returns processing.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Filter Bar -->
+      <div class="px-6 pb-4 space-y-2">
+        <div class="flex items-center gap-2 overflow-x-auto">
+          <span class="text-xs font-medium text-text-secondary uppercase">Category:</span>
+          <button class="px-3 py-1 rounded-full text-xs font-medium bg-primary text-white">All</button>
+          <button class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-text-secondary">Apparel</button>
+          <button class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-text-secondary">Electronics</button>
+        </div>
+      </div>
+      <!-- Results Grid -->
+      <div class="px-6 pb-8 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- repeat 3PL cards -->
+        <div class="border border-border rounded-xl p-4 bg-white shadow-sm">
+          <div class="flex items-start justify-between gap-3"><div><h3 class="text-lg font-bold">ShipMonkey</h3><p class="text-sm text-text-secondary">Los Angeles, California</p></div><span class="inline-flex items-center justify-center bg-success text-white text-sm font-bold rounded-lg min-w-[3rem] h-8 px-2">94</span></div>
+          <div class="flex flex-wrap gap-1.5 mt-3"><span class="text-xs bg-gray-100 text-text px-2 py-0.5 rounded">Shopify</span><span class="text-xs bg-gray-100 text-text px-2 py-0.5 rounded">Amazon</span></div>
+          <div class="flex gap-2 mt-3"><a href="#" class="flex-1 text-center text-sm border border-border rounded-lg py-2 hover:bg-gray-50 font-medium">Details</a><a href="#" class="flex-1 text-center text-sm bg-primary text-white rounded-lg py-2 hover:bg-primary-dark font-medium">Get Quote</a></div>
+        </div>
+        <div class="border border-border rounded-xl p-4 bg-white shadow-sm">
+          <div class="flex items-start justify-between gap-3"><div><h3 class="text-lg font-bold">Red Stag</h3><p class="text-sm text-text-secondary">Austin, Texas</p></div><span class="inline-flex items-center justify-center bg-primary text-white text-sm font-bold rounded-lg min-w-[3rem] h-8 px-2">82</span></div>
+          <div class="flex flex-wrap gap-1.5 mt-3"><span class="text-xs bg-gray-100 text-text px-2 py-0.5 rounded">eBay</span><span class="text-xs bg-gray-100 text-text px-2 py-0.5 rounded">BigCommerce</span></div>
+          <div class="flex gap-2 mt-3"><a href="#" class="flex-1 text-center text-sm border border-border rounded-lg py-2 hover:bg-gray-50 font-medium">Details</a><a href="#" class="flex-1 text-center text-sm bg-primary text-white rounded-lg py-2 hover:bg-primary-dark font-medium">Get Quote</a></div>
+        </div>
+        <div class="border border-border rounded-xl p-4 bg-white shadow-sm">
+          <div class="flex items-start justify-between gap-3"><div><h3 class="text-lg font-bold">QuickShip</h3><p class="text-sm text-text-secondary">Miami, Florida</p></div><span class="inline-flex items-center justify-center bg-gray-400 text-white text-sm font-bold rounded-lg min-w-[3rem] h-8 px-2">61</span></div>
+          <div class="flex flex-wrap gap-1.5 mt-3"><span class="text-xs bg-gray-100 text-text px-2 py-0.5 rounded">TikTok Shop</span></div>
+          <div class="flex gap-2 mt-3"><a href="#" class="flex-1 text-center text-sm border border-border rounded-lg py-2 hover:bg-gray-50 font-medium">Details</a><a href="#" class="flex-1 text-center text-sm bg-primary text-white rounded-lg py-2 hover:bg-primary-dark font-medium">Get Quote</a></div>
+        </div>
+      </div>
+      <!-- FAQ -->
+      <div class="px-6 pb-8">
+        <h3 class="text-lg font-bold mb-3">Frequently Asked Questions</h3>
+        <div class="space-y-2">
+          <details class="border border-border rounded-lg bg-white"><summary class="px-4 py-3 text-sm font-medium cursor-pointer hover:text-primary">What is the average cost of apparel fulfillment in California?</summary><p class="px-4 pb-3 text-sm text-text-secondary">Average costs range from $2-5 per order for pick-and-pack services in California.</p></details>
+          <details class="border border-border rounded-lg bg-white"><summary class="px-4 py-3 text-sm font-medium cursor-pointer hover:text-primary">How fast is shipping from California 3PLs?</summary><p class="px-4 pb-3 text-sm text-text-secondary">West Coast delivery typically 1-2 days, Midwest 2-3 days, East Coast 4-5 days.</p></details>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compare Page -->
+  <div class="mb-12">
+    <div class="preview-label">P03 · 对比页 (Compare)</div>
+    <div class="bg-card border border-border rounded-xl overflow-hidden">
+      <div class="px-6 py-6 border-b border-border">
+        <h1 class="text-xl font-bold">Compare 3PL Providers</h1>
+        <p class="text-sm text-text-secondary mt-1">Side-by-side comparison of top fulfillment centers</p>
+      </div>
+      <div class="p-6 overflow-x-auto">
+        <table class="w-full text-sm border border-border rounded-lg">
+          <thead>
+            <tr class="bg-gray-50 text-left"><th class="px-4 py-3 font-semibold w-40">Feature</th><th class="px-4 py-3 font-semibold">ShipMonkey</th><th class="px-4 py-3 font-semibold">Red Stag</th><th class="px-4 py-3 font-semibold">QuickShip</th></tr>
+          </thead>
+          <tbody>
+            <tr class="border-t border-border"><td class="px-4 py-3 font-medium">Score</td><td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded text-white text-xs font-bold bg-success">94</span></td><td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded text-white text-xs font-bold bg-primary">82</span></td><td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded text-white text-xs font-bold bg-gray-400">61</span></td></tr>
+            <tr class="border-t border-border"><td class="px-4 py-3 font-medium">Speed</td><td class="px-4 py-3">2-3 Days</td><td class="px-4 py-3">3-5 Days</td><td class="px-4 py-3">5-7 Days</td></tr>
+            <tr class="border-t border-border"><td class="px-4 py-3 font-medium">Cost Level</td><td class="px-4 py-3">$$</td><td class="px-4 py-3">$$$</td><td class="px-4 py-3">$</td></tr>
+            <tr class="border-t border-border"><td class="px-4 py-3 font-medium">Platforms</td><td class="px-4 py-3">Shopify, Amazon, Walmart</td><td class="px-4 py-3">eBay, BigCommerce</td><td class="px-4 py-3">TikTok Shop</td></tr>
+            <tr class="border-t border-border"><td class="px-4 py-3 font-medium">Location</td><td class="px-4 py-3">Los Angeles, CA</td><td class="px-4 py-3">Austin, TX</td><td class="px-4 py-3">Miami, FL</td></tr>
+            <tr class="border-t border-border"><td class="px-4 py-3 font-medium">Action</td><td class="px-4 py-3"><a href="#" class="text-primary hover:underline font-medium">Get Quote</a></td><td class="px-4 py-3"><a href="#" class="text-primary hover:underline font-medium">Get Quote</a></td><td class="px-4 py-3"><a href="#" class="text-primary hover:underline font-medium">Get Quote</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- RFQ Page -->
+  <div class="mb-12">
+    <div class="preview-label">P04 · RFQ 询盘页</div>
+    <div class="bg-card border border-border rounded-xl overflow-hidden">
+      <div class="px-6 py-10 max-w-lg mx-auto">
+        <div class="text-center mb-8">
+          <h1 class="text-2xl font-bold">Get Matched with Top 3PLs</h1>
+          <p class="text-sm text-text-secondary mt-2">Fill in your requirements. We'll match you with the best fulfillment partners.</p>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Product Category</label>
+            <select class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+              <option>Select category...</option>
+              <option>Apparel</option>
+              <option>Electronics</option>
+              <option>Jewelry</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Monthly Order Volume</label>
+            <select class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+              <option>Select volume...</option>
+              <option>100-500</option>
+              <option>500-2,000</option>
+              <option>2,000-10,000</option>
+              <option>10,000+</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Preferred State</label>
+            <select class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+              <option>Select state...</option>
+              <option>California</option>
+              <option>Texas</option>
+              <option>Florida</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">E-commerce Platform</label>
+            <select class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+              <option>Select platform...</option>
+              <option>Shopify</option>
+              <option>Amazon</option>
+              <option>TikTok Shop</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Additional Notes</label>
+            <textarea rows="3" placeholder="Any specific requirements..." class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+          </div>
+          <button class="w-full bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors mt-2">Submit RFQ — Get Quotes Free</button>
+          <p class="text-xs text-text-secondary text-center">No obligation. You'll receive quotes within 24-48 hours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== -->
+<!-- MOBILE -->
+<!-- ========================================== -->
+<section id="mobile" class="mb-20">
+  <h2 class="section-title">移动端设计</h2>
+  <p class="section-desc">
+    移动端不是桌面缩小版，是「决策加速器」— 4 栏栅格 · Top Match 优先 · Sticky CTA
+  </p>
+
+  <div class="flex flex-wrap justify-center gap-8">
+
+    <!-- Mobile: Home -->
+    <div>
+      <div class="preview-label text-center">M01 · 移动端首页</div>
+      <div class="mobile-frame">
+        <div class="mobile-notch"></div>
+        <!-- Nav -->
+        <div class="border-b border-border bg-card px-4 h-12 flex items-center justify-between sticky top-6">
+          <span class="text-lg font-bold text-primary">Flowrid</span>
+          <i class="fa fa-bars text-text-secondary"></i>
+        </div>
+        <!-- Hero -->
+        <div class="text-center px-4 py-8">
+          <h1 class="text-xl font-bold leading-tight">Find the Best 3PL for <span class="text-primary">Your Brand</span></h1>
+          <p class="mt-2 text-xs text-text-secondary">Compare fulfillment centers by state, category, and platform.</p>
+          <!-- Quick Select -->
+          <div class="mt-5 space-y-2 text-left">
+            <select class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white">
+              <option>Product type</option><option>Apparel</option><option>Electronics</option>
+            </select>
+            <select class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white">
+              <option>State</option><option>California</option><option>Texas</option>
+            </select>
+            <select class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white">
+              <option>Platform</option><option>Shopify</option><option>Amazon</option>
+            </select>
+            <button class="w-full bg-primary text-white py-3 rounded-lg font-semibold text-sm">Search 3PLs</button>
+          </div>
+          <div class="mt-4 flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs text-text-secondary">
+            <a href="#" class="text-primary">CA Apparel</a>
+            <span>&middot;</span>
+            <a href="#" class="text-primary">TX Jewelry</a>
+            <span>&middot;</span>
+            <a href="#" class="text-primary">FL Beauty</a>
+          </div>
+        </div>
+        <!-- Category Grid (2-col) -->
+        <div class="px-4 py-6 border-t border-border">
+          <h3 class="text-sm font-bold mb-3">Find by Category</h3>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="#" class="border border-border rounded-lg p-3 bg-white text-center text-xs font-medium">Apparel</a>
+            <a href="#" class="border border-border rounded-lg p-3 bg-white text-center text-xs font-medium">Electronics</a>
+            <a href="#" class="border border-border rounded-lg p-3 bg-white text-center text-xs font-medium">Jewelry</a>
+            <a href="#" class="border border-border rounded-lg p-3 bg-white text-center text-xs font-medium">Beauty</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile: Search Results -->
+    <div>
+      <div class="preview-label text-center">M02 · 移动端搜索结果</div>
+      <div class="mobile-frame">
+        <div class="mobile-notch"></div>
+        <div class="border-b border-border bg-card px-4 h-12 flex items-center sticky top-6">
+          <i class="fa fa-arrow-left mr-3 text-text-secondary"></i>
+          <span class="text-sm font-bold truncate">Apparel in California</span>
+        </div>
+        <!-- Filter chips scroll -->
+        <div class="px-4 py-3 flex gap-2 overflow-x-auto border-b border-border">
+          <button class="px-3 py-1 rounded-full text-xs font-medium bg-primary text-white shrink-0">All</button>
+          <button class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-text-secondary shrink-0">Shopify</button>
+          <button class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-text-secondary shrink-0">Amazon</button>
+          <button class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-text-secondary shrink-0">TikTok</button>
+          <button class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-text-secondary shrink-0">2-3 Day</button>
+        </div>
+        <!-- Top Match -->
+        <div class="px-4 py-3">
+          <div class="flex items-center gap-1.5 mb-3">
+            <span class="text-xs bg-warning text-white px-1.5 py-0.5 rounded font-bold">BEST MATCH</span>
+          </div>
+          <div class="border-2 border-warning rounded-xl p-4 bg-white shadow-sm">
+            <div class="flex items-start justify-between"><div><h3 class="font-bold">ShipMonkey</h3><p class="text-xs text-text-secondary">Los Angeles, CA</p></div><span class="bg-success text-white text-sm font-bold rounded-lg px-2 py-1">94</span></div>
+            <div class="flex gap-1 mt-2"><span class="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded">Shopify</span><span class="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded">Amazon</span></div>
+            <div class="flex gap-3 mt-2 text-xs text-text-secondary"><span>2-3 Days</span><span>$$</span></div>
+            <button class="w-full bg-primary text-white py-2.5 rounded-lg text-sm font-semibold mt-3">Get Quote</button>
+          </div>
+        </div>
+        <!-- More Results -->
+        <div class="px-4 space-y-3 pb-20">
+          <p class="text-xs text-text-secondary font-medium">MORE RESULTS</p>
+          <div class="border border-border rounded-xl p-3 bg-white">
+            <div class="flex items-start justify-between"><div><h3 class="font-bold text-sm">Red Stag</h3><p class="text-xs text-text-secondary">Austin, TX</p></div><span class="bg-primary text-white text-xs font-bold rounded-lg px-2 py-1">82</span></div>
+            <div class="flex gap-1 mt-1.5"><span class="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded">eBay</span></div>
+            <div class="flex gap-2 mt-2"><a href="#" class="flex-1 text-center text-xs border border-border rounded-lg py-1.5">Details</a><a href="#" class="flex-1 text-center text-xs bg-primary text-white rounded-lg py-1.5">Quote</a></div>
+          </div>
+          <div class="border border-border rounded-xl p-3 bg-white">
+            <div class="flex items-start justify-between"><div><h3 class="font-bold text-sm">QuickShip</h3><p class="text-xs text-text-secondary">Miami, FL</p></div><span class="bg-gray-400 text-white text-xs font-bold rounded-lg px-2 py-1">61</span></div>
+            <div class="flex gap-1 mt-1.5"><span class="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded">TikTok</span></div>
+            <div class="flex gap-2 mt-2"><a href="#" class="flex-1 text-center text-xs border border-border rounded-lg py-1.5">Details</a><a href="#" class="flex-1 text-center text-xs bg-primary text-white rounded-lg py-1.5">Quote</a></div>
+          </div>
+        </div>
+        <!-- Sticky CTA -->
+        <div class="sticky bottom-0 bg-white border-t border-border px-4 py-3 flex gap-2">
+          <button class="flex-1 border border-border rounded-lg py-2.5 text-sm font-medium">Compare (2)</button>
+          <button class="flex-1 bg-primary text-white rounded-lg py-2.5 text-sm font-semibold">Get Quotes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile: RFQ -->
+    <div>
+      <div class="preview-label text-center">M03 · 移动端 RFQ</div>
+      <div class="mobile-frame">
+        <div class="mobile-notch"></div>
+        <div class="border-b border-border bg-card px-4 h-12 flex items-center sticky top-6">
+          <i class="fa fa-arrow-left mr-3 text-text-secondary"></i>
+          <span class="text-sm font-bold">Get Matched</span>
+        </div>
+        <div class="px-4 py-6 space-y-4">
+          <div class="text-center mb-4">
+            <h1 class="text-lg font-bold">Find Your Perfect 3PL</h1>
+            <p class="text-xs text-text-secondary mt-1">We'll match you in under 60 seconds</p>
+          </div>
+          <select class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white"><option>Product Category</option></select>
+          <select class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white"><option>Monthly Order Volume</option></select>
+          <select class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white"><option>Preferred State</option></select>
+          <select class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white"><option>Platform</option></select>
+          <textarea rows="3" placeholder="Additional notes..." class="w-full border border-border rounded-lg px-4 py-2.5 text-sm bg-white resize-none"></textarea>
+          <button class="w-full bg-primary text-white py-3 rounded-lg font-semibold text-sm">Submit RFQ — Free</button>
+          <p class="text-xs text-text-secondary text-center">Quotes within 24-48 hours. No obligation.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========================================== -->
+<!-- DESIGN PRINCIPLES -->
+<!-- ========================================== -->
+<section class="mb-20">
+  <h2 class="section-title">设计原则</h2>
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="bg-card border border-border rounded-xl p-6">
+      <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+        <i class="fa fa-bolt text-primary"></i>
+      </div>
+      <h3 class="font-bold mb-2">降低认知成本</h3>
+      <p class="text-sm text-text-secondary leading-relaxed">每个组件服务于"快速决策"——用户不需要理解系统，只需要看到结果。评分颜色、信息层级、CTA 位置都为此优化。</p>
+    </div>
+    <div class="bg-card border border-border rounded-xl p-6">
+      <div class="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center mb-4">
+        <i class="fa fa-mobile text-success"></i>
+      </div>
+      <h3 class="font-bold mb-2">Mobile First 决策加速</h3>
+      <p class="text-sm text-text-secondary leading-relaxed">移动端用户在做决策，不是浏览内容。Top Match 优先展示，Sticky CTA 始终可见，信息密度压缩到决策关键维度。</p>
+    </div>
+    <div class="bg-card border border-border rounded-xl p-6">
+      <div class="w-10 h-10 bg-warning/10 rounded-lg flex items-center justify-center mb-4">
+        <i class="fa fa-search text-warning"></i>
+      </div>
+      <h3 class="font-bold mb-2">SEO = 决策工具</h3>
+      <p class="text-sm text-text-secondary leading-relaxed">每个 SEO 页面都是完整的决策工具：AI 摘要 → 评分排序 → 对比 → FAQ。不是内容堆砌，是结构化的决策指南。</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- Footer -->
+<footer class="border-t border-border bg-card py-8 text-center text-xs text-text-secondary">
+  <p>Flowrid Design System — 电商物流搜索与决策基础设施</p>
+  <p class="mt-1">Desktop 12栏 · Mobile 4栏 · max-width 1200px · 间距 4/8/12/16/24/32/48</p>
+</footer>
+
+</body>
+</html>
