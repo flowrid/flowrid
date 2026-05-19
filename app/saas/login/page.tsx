@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -66,7 +67,15 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p className="text-center text-[11px] text-[#86868B] mt-6">Flowrid 3PL OS v0.1</p>
+        <p className="text-center text-[11px] text-[#86868B] mt-6">
+          Flowrid 3PL OS v0.1
+        </p>
+        <p className="text-center text-xs text-[#86868B] mt-3">
+          Don&apos;t have an account?{" "}
+          <Link href="/saas/register" className="text-[#0071E3] hover:underline font-medium">
+            Create one
+          </Link>
+        </p>
       </div>
     </div>
   );
