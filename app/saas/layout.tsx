@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/saas/dashboard", icon: "􀍟" },
@@ -14,7 +14,13 @@ const NAV_ITEMS = [
 
 export default function SaasLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   if (pathname === "/saas/login" || pathname === "/saas/register") return <>{children}</>;
+
+  async function handleLogout() {
+    await fetch("/api/saas/logout", { method: "POST" });
+    router.push("/saas/login");
+  }
 
   return (
     <div className="min-h-screen flex bg-[#F5F5F7]">
@@ -47,13 +53,19 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
           })}
         </nav>
 
-        <div className="p-3 border-t border-black/5">
+        <div className="p-3 border-t border-black/5 space-y-1">
           <Link
             href="/"
             className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#86868B] hover:text-[#1D1D1F] hover:bg-black/5 transition-all"
           >
             <span>&larr;</span> Back to Site
           </Link>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#86868B] hover:text-[#FF3B30] hover:bg-[#FF3B30]/5 transition-all w-full text-left"
+          >
+            <span>&#x21AA;</span> Sign Out
+          </button>
         </div>
       </aside>
 
