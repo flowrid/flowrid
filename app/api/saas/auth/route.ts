@@ -56,7 +56,6 @@ async function handleRegister(
   const hashedPassword = await hash(password, 12);
   const displayName = name || cleanEmail.split("@")[0];
 
-  // 需要先确保 users 表存在 — 如果不存在回退到 demo 模式
   const { data: user, error } = await supabase
     .from("users")
     .insert({
@@ -64,12 +63,12 @@ async function handleRegister(
       name: displayName,
       role: "operator",
       is_active: true,
-    })
+      password_hash: hashedPassword,
+    } as any)
     .select("id, email, name, role")
     .single();
 
   if (error) {
-    // users 表不存在时回退
     if (error.message?.includes("does not exist") || error.code === "42P01") {
       return NextResponse.json({
         success: true,
@@ -80,12 +79,6 @@ async function handleRegister(
     console.error("Register DB error:", error);
     return NextResponse.json({ error: "Failed to create account. Is the users table set up?" }, { status: 500 });
   }
-
-  // 存密码哈希
-  await supabase
-    .from("users")
-    .update({ password_hash: hashedPassword } as unknown as Record<string, unknown>)
-    .eq("id", (user as { id: string }).id);
 
   const token = await createToken((user as { id: string }).id, (user as { email: string }).email);
   const response = NextResponse.json({
