@@ -6,13 +6,12 @@ interface KPI {
   orders_today: number;
   orders_30d: number;
   pending_orders: number;
-  total_inventory_units: number;
-  avg_pick_time_minutes: number;
-  revenue_mtd: number;
+  total_products: number;
+  total_clients: number;
+  active_integrations: number;
   recent_orders: {
     id: string;
     customer: string;
-    items: number;
     status: string;
     time: string;
     source: string;
@@ -73,8 +72,8 @@ export default function DashboardPage() {
         <KPITile label="Orders Today" value={kpi.orders_today} subtitle="since midnight" />
         <KPITile label="30-Day Total" value={kpi.orders_30d.toLocaleString()} subtitle="orders processed" />
         <KPITile label="Pending" value={kpi.pending_orders} subtitle="needs action" accent="amber" />
-        <KPITile label="Inventory" value={kpi.total_inventory_units.toLocaleString()} subtitle="units on hand" accent="green" />
-        <KPITile label="Revenue MTD" value={`$${(kpi.revenue_mtd / 1000).toFixed(1)}k`} subtitle="month to date" accent="blue" />
+        <KPITile label="Products" value={kpi.total_products} subtitle="active SKUs" accent="green" />
+        <KPITile label="Integrations" value={kpi.active_integrations} subtitle="connected" accent="blue" />
       </div>
 
       {/* Recent Orders */}
