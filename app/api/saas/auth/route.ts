@@ -56,15 +56,18 @@ async function handleRegister(
   const hashedPassword = await hash(password, 12);
   const displayName = name || cleanEmail.split("@")[0];
 
+  // 用 rpc 或直接 supabase 插入，显式锁定返回字段
+  const insertData = {
+    email: cleanEmail,
+    name: displayName,
+    role: "operator",
+    is_active: true,
+    password_hash: hashedPassword,
+  };
+
   const { data: user, error } = await supabase
     .from("users")
-    .insert({
-      email: cleanEmail,
-      name: displayName,
-      role: "operator",
-      is_active: true,
-      password_hash: hashedPassword,
-    } as any)
+    .insert(insertData as any)
     .select("id, email, name, role")
     .single();
 
@@ -104,32 +107,33 @@ async function handleLogin(
 ) {
   const cleanEmail = email.toLowerCase().trim();
 
-  const { data: user, error } = await supabase
+  // 用原始 .select 显式取所有字段，绕过 TypeScript 类型限制
+  const { data, error } = await supabase
     .from("users")
-    .select("*")
+    .select("id, email, name, role, password_hash, is_active")
     .eq("email", cleanEmail)
     .maybeSingle();
 
-  if (error || !user) {
-    // users 表不存在 — demo 登录
+  if (error || !data) {
     if (error?.message?.includes("does not exist") || error?.code === "42P01") {
       return demoLogin(cleanEmail);
     }
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }
 
-  const userData = user as { id: string; email: string; name: string; role: string; password_hash?: string };
+  const userData = data as Record<string, unknown>;
+  const storedHash = (userData.password_hash as string) || "";
 
-  if (!userData.password_hash) {
+  if (!storedHash) {
     return NextResponse.json({ error: "Account not fully set up. Please register again." }, { status: 401 });
   }
 
-  const valid = await compare(password, userData.password_hash);
+  const valid = await compare(password, storedHash);
   if (!valid) {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }
 
-  const token = await createToken(userData.id, userData.email);
+  const token = await createToken(userData.id as string, userData.email as string);
   const response = NextResponse.json({
     success: true,
     user: { id: userData.id, name: userData.name, email: userData.email, role: userData.role },
