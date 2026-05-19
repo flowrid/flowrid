@@ -14,8 +14,8 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/saas/auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
-      if (!res.ok) { setError("Invalid credentials"); return; }
+      const res = await fetch("/api/saas/auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "login", email, password }) });
+      if (!res.ok) { const data = await res.json(); setError(data.error || "Invalid credentials"); return; }
       window.location.href = "/saas/dashboard";
     } catch {
       setError("Network error");
