@@ -58,13 +58,9 @@ export default function RootLayout({
           }}
         />
         <header className="border-b border-border bg-card">
-          <nav className="max-w-[1200px] mx-auto px-4 h-14 flex items-center justify-between">
-            <a
-              href="/"
-              className="text-lg font-bold text-primary tracking-tight flex items-center gap-2"
-            >
-              <img src="/flowrid-logo.png" alt="Flowrid" className="h-7 w-auto" />
-              Flowrid
+          <nav className="max-w-[1200px] mx-auto px-4 h-20 flex items-center justify-between">
+            <a href="/">
+              <img src="/flowrid-logo.png" alt="Flowrid" className="h-9 w-auto" />
             </a>
             <div className="flex items-center gap-4 text-sm text-text-secondary">
               <a href="/3pl" className="hover:text-text transition-colors">
