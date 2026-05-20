@@ -140,11 +140,61 @@ export async function completePickTask(taskId: string) {
     .update({ status: "complete", completed_at: new Date().toISOString() })
     .eq("id", taskId);
 
-  // 更新拣货项状态
   await supabase
     .from("pick_items")
     .update({ status: "picked", quantity_picked: 0, picked_at: new Date().toISOString() })
     .eq("pick_task_id", taskId);
+}
+
+export async function confirmPickItem(pickItemId: string, quantityPicked: number) {
+  const supabase = createServerClient();
+  if (!supabase) return null;
+
+  const { data: item, error } = await supabase
+    .from("pick_items")
+    .update({
+      status: "picked",
+      quantity_picked: quantityPicked,
+      picked_at: new Date().toISOString(),
+    })
+    .eq("id", pickItemId)
+    .select("pick_task_id, order_item_id, product_id")
+    .single();
+
+  if (error || !item) return null;
+
+  // Update the order_item quantity_picked
+  const { data: oi } = await supabase
+    .from("order_items")
+    .select("quantity_picked")
+    .eq("id", item.order_item_id)
+    .single();
+
+  if (oi) {
+    await supabase
+      .from("order_items")
+      .update({ quantity_picked: (oi.quantity_picked || 0) + quantityPicked })
+      .eq("id", item.order_item_id);
+  }
+
+  // Check if all items in the task are done
+  const { data: remaining } = await supabase
+    .from("pick_items")
+    .select("id")
+    .eq("pick_task_id", item.pick_task_id)
+    .neq("status", "picked");
+
+  const remainingItems = remaining?.length || 0;
+
+  // Auto-complete task if nothing left
+  if (remainingItems === 0) {
+    await supabase
+      .from("pick_tasks")
+      .update({ status: "complete", completed_at: new Date().toISOString() })
+      .eq("id", item.pick_task_id);
+  }
+
+  return { taskComplete: remainingItems === 0, remainingItems };
 }
 
 // ==========================================

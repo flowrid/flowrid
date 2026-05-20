@@ -368,3 +368,56 @@ export interface AnalyticsSnapshot {
   metric_value: number;
   metadata?: Record<string, unknown>;
 }
+
+// ---- Scanner ----
+
+export type ScanMode = "receive" | "pick" | "lookup";
+
+export interface ScanResult {
+  type: "product" | "location" | "order" | "unknown";
+  data?: Product | Location | Order | null;
+}
+
+export interface OfflineQueueItem {
+  id: string;
+  action: string;
+  payload: unknown;
+  timestamp: number;
+}
+
+// ---- Shipping Rates ----
+
+export interface ShipmentRequest {
+  originZip: string;
+  destinationZip: string;
+  weightLbs: number;
+  lengthIn: number;
+  widthIn: number;
+  heightIn: number;
+  isResidential: boolean;
+  isHazmat: boolean;
+  declaredValue?: number;
+}
+
+export interface RateQuote {
+  carrier: string;
+  carrierName: string;
+  serviceLevel: string;
+  serviceName: string;
+  totalCost: number;
+  baseRate: number;
+  fuelSurcharge: number;
+  residentialSurcharge: number;
+  dimensionalWeight: number;
+  billableWeight: number;
+  estimatedDays: number;
+  deliveryDate: string;
+  isSimulated: boolean;
+}
+
+export interface RateTableEntry {
+  basePerLb: number;
+  minCharge: number;
+  maxWeight: number;
+  deliveryDays: Record<string, number>;
+}

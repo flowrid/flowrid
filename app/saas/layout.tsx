@@ -8,7 +8,9 @@ const NAV_ITEMS = [
   { label: "Orders", href: "/saas/orders", icon: "􀐚" },
   { label: "Inventory", href: "/saas/inventory", icon: "􀍞" },
   { label: "Receiving", href: "/saas/receiving", icon: "􀐛" },
+  { label: "Scan", href: "/saas/scan", icon: "􀎲" },
   { label: "Analytics", href: "/saas/analytics", icon: "􀍡" },
+  { label: "Shipping", href: "/saas/shipping", icon: "􀎻" },
   { label: "Billing", href: "/saas/billing", icon: "􀌯" },
   { label: "Settings", href: "/saas/settings", icon: "􀍟" },
 ];
@@ -16,7 +18,7 @@ const NAV_ITEMS = [
 export default function SaasLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  if (pathname === "/saas/login" || pathname === "/saas/register") return <>{children}</>;
+  if (pathname === "/saas/login" || pathname === "/saas/register" || pathname?.startsWith("/saas/scan")) return <>{children}</>;
 
   async function handleLogout() {
     await fetch("/api/saas/logout", { method: "POST" });
