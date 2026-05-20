@@ -39,7 +39,7 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20 transition-all"
+              className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20 transition-all"
               placeholder="operator@3pl.com"
               required
             />
@@ -50,7 +50,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20 transition-all"
+              className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20 transition-all"
               placeholder="••••••••"
               required
             />
@@ -61,7 +61,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#0071E3] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#0077ED] transition-colors disabled:opacity-50 shadow-sm"
+            className="w-full bg-[#ed6d00] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#FF8A1F] transition-colors disabled:opacity-50 shadow-sm"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
@@ -72,7 +72,7 @@ export default function LoginPage() {
         </p>
         <p className="text-center text-xs text-[#86868B] mt-3">
           Don&apos;t have an account?{" "}
-          <Link href="/saas/register" className="text-[#0071E3] hover:underline font-medium">
+          <Link href="/saas/register" className="text-[#ed6d00] hover:underline font-medium">
             Create one
           </Link>
         </p>

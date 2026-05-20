@@ -132,7 +132,7 @@ export default function RFQPage() {
                   onClick={() => update("platform", p)}
                   className={`border rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
                     form.platform === p
-                      ? "border-primary bg-blue-50 text-primary"
+                      ? "border-primary bg-orange-50 text-primary"
                       : "border-border bg-card hover:border-gray-400"
                   }`}
                 >
@@ -161,7 +161,7 @@ export default function RFQPage() {
                   onClick={() => update("volume", v)}
                   className={`border rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
                     form.volume === v
-                      ? "border-primary bg-blue-50 text-primary"
+                      ? "border-primary bg-orange-50 text-primary"
                       : "border-border bg-card hover:border-gray-400"
                   }`}
                 >

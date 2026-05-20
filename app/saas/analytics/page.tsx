@@ -30,7 +30,7 @@ export default function AnalyticsPage() {
           <div className="flex items-end gap-[2px] h-32">
             {data.daily_volume.map((d:any) => (
               <div key={d.date} className="flex-1 relative group">
-                <div className="bg-[#0071E3] hover:bg-[#0077ED] rounded-t transition-all" style={{height: `${(d.count/chartMax)*100}%`}} />
+                <div className="bg-[#ed6d00] hover:bg-[#FF8A1F] rounded-t transition-all" style={{height: `${(d.count/chartMax)*100}%`}} />
                 <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#1D1D1F] text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">{d.date}: {d.count}</div>
               </div>
             ))}
@@ -45,7 +45,7 @@ export default function AnalyticsPage() {
               <div key={s.source} className="flex items-center gap-3">
                 <span className="text-sm text-[#1D1D1F] w-20">{s.source}</span>
                 <div className="flex-1 h-6 bg-[#F5F5F7] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#0071E3] rounded-full transition-all" style={{width: `${(s.count/Math.max(...data.source_breakdown.map((x:any)=>x.count)))*100}%`}} />
+                  <div className="h-full bg-[#ed6d00] rounded-full transition-all" style={{width: `${(s.count/Math.max(...data.source_breakdown.map((x:any)=>x.count)))*100}%`}} />
                 </div>
                 <span className="text-sm font-medium text-[#1D1D1F] w-8 text-right">{s.count}</span>
               </div>
@@ -58,7 +58,7 @@ export default function AnalyticsPage() {
           <h2 className="text-[17px] font-semibold text-[#1D1D1F] mb-4">Order Status ({totalOrders} total)</h2>
           <div className="grid grid-cols-2 gap-3">
             {Object.entries(data.status_distribution).map(([status, count]) => {
-              const colors: Record<string,string> = {shipped:"#34C759",pending:"#8E8E93",picking:"#0071E3",allocated:"#AF52DE",packed:"#FF9500",delivered:"#34C759",cancelled:"#FF3B30"};
+              const colors: Record<string,string> = {shipped:"#34C759",pending:"#8E8E93",picking:"#ed6d00",allocated:"#AF52DE",packed:"#FF9500",delivered:"#34C759",cancelled:"#FF3B30"};
               const pct = totalOrders ? Math.round((count/totalOrders)*100) : 0;
               return (
                 <div key={status} className="p-4 bg-[#F5F5F7] rounded-xl">

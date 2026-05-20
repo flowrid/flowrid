@@ -16,7 +16,7 @@ interface KPI {
 
 const STATUS_STYLES: Record<string, string> = {
   shipped:"bg-[#34C759]/10 text-[#34C759]",delivered:"bg-[#34C759]/10 text-[#34C759]",
-  picking:"bg-[#0071E3]/10 text-[#0071E3]",allocated:"bg-[#AF52DE]/10 text-[#AF52DE]",
+  picking:"bg-[#ed6d00]/10 text-[#ed6d00]",allocated:"bg-[#AF52DE]/10 text-[#AF52DE]",
   packed:"bg-[#FF9500]/10 text-[#FF9500]",pending:"bg-[#8E8E93]/10 text-[#8E8E93]",
   returned:"bg-[#FF3B30]/10 text-[#FF3B30]",
 };
@@ -57,7 +57,7 @@ export default function DashboardPage() {
         <select
           value={selectedWh}
           onChange={(e) => handleWhChange(e.target.value)}
-          className="bg-white border border-black/5 rounded-xl px-4 py-2.5 text-sm text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20 shadow-sm"
+          className="bg-white border border-black/5 rounded-xl px-4 py-2.5 text-sm text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20 shadow-sm"
         >
           <option value="all">All Warehouses ({kpi.warehouses.length})</option>
           {kpi.warehouses.map((w) => (
@@ -87,7 +87,7 @@ export default function DashboardPage() {
                     <p className="text-sm font-semibold text-[#1D1D1F]">{w.name}</p>
                     <p className="text-[11px] text-[#86868B]">{w.city}, {cap(w.state)} · {w.code}</p>
                   </div>
-                  <span className="text-[11px] text-[#0071E3] font-medium">View &rarr;</span>
+                  <span className="text-[11px] text-[#ed6d00] font-medium">View &rarr;</span>
                 </div>
                 <div className="flex gap-4">
                   <div><p className="text-[22px] font-bold text-[#FF9500]">{w.pending}</p><p className="text-[10px] text-[#86868B] uppercase">Pending</p></div>
@@ -103,7 +103,7 @@ export default function DashboardPage() {
       <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">
         <div className="px-5 py-4 border-b border-black/5 flex items-center justify-between">
           <h2 className="text-[17px] font-semibold text-[#1D1D1F]">Recent Orders</h2>
-          <a href="/saas/orders" className="text-[13px] text-[#0071E3] hover:underline font-medium">View All</a>
+          <a href="/saas/orders" className="text-[13px] text-[#ed6d00] hover:underline font-medium">View All</a>
         </div>
         <table className="w-full">
           <thead><tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
@@ -132,7 +132,7 @@ export default function DashboardPage() {
 }
 
 function Tile({ label, value, subtitle, accent }: { label: string; value: any; subtitle: string; accent?: string }) {
-  const c: Record<string,string> = { blue:"text-[#0071E3]",green:"text-[#34C759]",amber:"text-[#FF9500]" };
+  const c: Record<string,string> = { blue:"text-[#ed6d00]",green:"text-[#34C759]",amber:"text-[#FF9500]" };
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm border border-black/5 hover:shadow-md transition-shadow">
       <p className="text-[11px] font-medium text-[#86868B] uppercase tracking-wide">{label}</p>

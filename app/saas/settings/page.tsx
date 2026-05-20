@@ -79,7 +79,7 @@ export default function SettingsPage() {
         <div className={`mb-6 rounded-2xl p-4 text-sm font-medium ${
           message.type === "success" ? "bg-[#34C759]/10 text-[#34C759]" :
           message.type === "error" ? "bg-[#FF3B30]/10 text-[#FF3B30]" :
-          "bg-[#0071E3]/10 text-[#0071E3]"
+          "bg-[#ed6d00]/10 text-[#ed6d00]"
         }`}>{message.text}</div>
       )}
 
@@ -112,12 +112,12 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2">
               <input type="text" placeholder="your-store-name" value={shop}
                 onChange={(e) => setShop(e.target.value)}
-                className="flex-1 bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20" />
+                className="flex-1 bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
               <span className="text-xs text-[#86868B] shrink-0">.myshopify.com</span>
             </div>
             <input type="password" placeholder="shpat_xxxxxxxxxxxxxxxxxxxx" value={token}
               onChange={(e) => setToken(e.target.value)}
-              className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20" />
+              className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
           </div>
 
           <div className="flex gap-3 mt-4">
@@ -126,7 +126,7 @@ export default function SettingsPage() {
               {status === "testing" ? "Testing..." : "Test Connection"}
             </button>
             <button onClick={handleConnect} disabled={status !== "idle"}
-              className="px-5 py-2.5 rounded-full text-sm font-semibold bg-[#0071E3] text-white hover:bg-[#0077ED] disabled:opacity-40 transition-colors">
+              className="px-5 py-2.5 rounded-full text-sm font-semibold bg-[#ed6d00] text-white hover:bg-[#FF8A1F] disabled:opacity-40 transition-colors">
               {status === "connecting" ? "Connecting..." : "Save & Connect"}
             </button>
             {connected && (

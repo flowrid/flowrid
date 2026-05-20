@@ -54,7 +54,7 @@ export default function RegisterPage() {
           </p>
           <Link
             href="/saas/dashboard"
-            className="inline-flex bg-[#0071E3] text-white px-8 py-3 rounded-full text-sm font-semibold hover:bg-[#0077ED] transition-colors shadow-sm"
+            className="inline-flex bg-[#ed6d00] text-white px-8 py-3 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm"
           >
             Go to Dashboard
           </Link>
@@ -80,7 +80,7 @@ export default function RegisterPage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20 transition-all"
+              className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20 transition-all"
               placeholder="FlowX Fulfillment"
             />
           </div>
@@ -92,7 +92,7 @@ export default function RegisterPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20 transition-all"
+              className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20 transition-all"
               placeholder="operator@warehouse.com"
               required
             />
@@ -105,7 +105,7 @@ export default function RegisterPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20 transition-all"
+              className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20 transition-all"
               placeholder="Min 6 characters"
               required
             />
@@ -118,7 +118,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#0071E3] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#0077ED] transition-colors disabled:opacity-50 shadow-sm"
+            className="w-full bg-[#ed6d00] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#FF8A1F] transition-colors disabled:opacity-50 shadow-sm"
           >
             {loading ? "Creating account..." : "Create Account"}
           </button>
@@ -126,7 +126,7 @@ export default function RegisterPage() {
 
         <p className="text-center text-xs text-[#86868B] mt-4">
           Already have an account?{" "}
-          <Link href="/saas/login" className="text-[#0071E3] hover:underline font-medium">
+          <Link href="/saas/login" className="text-[#ed6d00] hover:underline font-medium">
             Sign in
           </Link>
         </p>

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const DT = { invoices: [], rates: [], stats: { totalRevenue: 0, invoiced: 0, outstanding: 0, invoiceCount: 0 } };
 
 const STATUS_STYLES: Record<string, string> = {
-  paid: "bg-[#34C759]/10 text-[#34C759]", sent: "bg-[#0071E3]/10 text-[#0071E3]",
+  paid: "bg-[#34C759]/10 text-[#34C759]", sent: "bg-[#ed6d00]/10 text-[#ed6d00]",
   overdue: "bg-[#FF3B30]/10 text-[#FF3B30]", draft: "bg-[#8E8E93]/10 text-[#8E8E93]",
 };
 
@@ -35,7 +35,7 @@ export default function BillingPage() {
           <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Billing</h1>
           <p className="text-[#86868B] text-sm mt-0.5">{stats.invoiceCount} invoices</p>
         </div>
-        <button className="inline-flex items-center gap-2 bg-[#0071E3] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#0077ED] transition-colors shadow-sm">+ Generate Invoice</button>
+        <button className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">+ Generate Invoice</button>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -88,7 +88,7 @@ export default function BillingPage() {
 }
 
 function Tile({ label, value, accent }: { label: string; value: any; accent?: string }) {
-  const c: Record<string, string> = { green: "text-[#34C759]", red: "text-[#FF3B30]", blue: "text-[#0071E3]" };
+  const c: Record<string, string> = { green: "text-[#34C759]", red: "text-[#FF3B30]", blue: "text-[#ed6d00]" };
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm border border-black/5">
       <p className="text-[11px] font-medium text-[#86868B] uppercase tracking-wide">{label}</p>

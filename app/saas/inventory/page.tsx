@@ -28,7 +28,7 @@ export default function InventoryPage() {
           <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Inventory</h1>
           <p className="text-[#86868B] text-sm mt-0.5">{stats.totalSKUs} SKUs</p>
         </div>
-        <button className="inline-flex items-center gap-2 bg-[#0071E3] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#0077ED] transition-colors shadow-sm">+ Add Product</button>
+        <button className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">+ Add Product</button>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">

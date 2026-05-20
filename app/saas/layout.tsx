@@ -28,7 +28,8 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
       {/* Sidebar — frosted glass */}
       <aside className="w-60 shrink-0 hidden md:flex flex-col bg-white/70 backdrop-blur-xl border-r border-black/5">
         <div className="px-5 py-6">
-          <Link href="/saas/dashboard" className="text-xl font-bold tracking-tight text-[#1D1D1F]">
+          <Link href="/saas/dashboard" className="flex items-center gap-2 text-xl font-bold tracking-tight text-[#1D1D1F]">
+            <img src="/flowrid-logo.png" alt="Flowrid" className="h-7 w-auto" />
             Flowrid
           </Link>
           <p className="text-xs text-[#86868B] mt-0.5 tracking-wide">3PL OS</p>
@@ -43,7 +44,7 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                   active
-                    ? "bg-[#0071E3] text-white shadow-sm"
+                    ? "bg-[#ed6d00] text-white shadow-sm"
                     : "text-[#1D1D1F] hover:bg-black/5"
                 }`}
               >
@@ -79,7 +80,7 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
               key={item.href}
               href={item.href}
               className={`flex-1 flex flex-col items-center py-2.5 text-[10px] font-medium transition-colors ${
-                active ? "text-[#0071E3]" : "text-[#86868B]"
+                active ? "text-[#ed6d00]" : "text-[#86868B]"
               }`}
             >
               <span className="text-base mb-0.5">{item.icon}</span>

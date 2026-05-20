@@ -11,7 +11,7 @@ const DEMO_RECEIVING = [
 ];
 
 const STATUS_STYLES: Record<string, string> = {
-  "In Transit": "bg-[#0071E3]/10 text-[#0071E3]",
+  "In Transit": "bg-[#ed6d00]/10 text-[#ed6d00]",
   Arrived: "bg-[#FF9500]/10 text-[#FF9500]",
   Received: "bg-[#AF52DE]/10 text-[#AF52DE]",
   Complete: "bg-[#34C759]/10 text-[#34C759]",
@@ -27,7 +27,7 @@ export default function ReceivingPage() {
           <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Receiving</h1>
           <p className="text-[#86868B] text-sm mt-0.5">Inbound shipments</p>
         </div>
-        <button className="inline-flex items-center gap-2 bg-[#0071E3] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#0077ED] transition-colors shadow-sm">
+        <button className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">
           <span>+</span> New ASN
         </button>
       </div>

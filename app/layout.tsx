@@ -61,8 +61,9 @@ export default function RootLayout({
           <nav className="max-w-[1200px] mx-auto px-4 h-14 flex items-center justify-between">
             <a
               href="/"
-              className="text-lg font-bold text-primary tracking-tight"
+              className="text-lg font-bold text-primary tracking-tight flex items-center gap-2"
             >
+              <img src="/flowrid-logo.png" alt="Flowrid" className="h-7 w-auto" />
               Flowrid
             </a>
             <div className="flex items-center gap-4 text-sm text-text-secondary">
