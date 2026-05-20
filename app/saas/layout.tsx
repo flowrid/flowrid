@@ -30,9 +30,8 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
       {/* Sidebar — frosted glass */}
       <aside className="w-60 shrink-0 hidden md:flex flex-col bg-white/70 backdrop-blur-xl border-r border-black/5">
         <div className="px-5 py-6">
-          <Link href="/saas/dashboard" className="flex items-center gap-2 text-xl font-bold tracking-tight text-[#1D1D1F]">
+          <Link href="/saas/dashboard" className="text-xl font-bold tracking-tight text-[#1D1D1F]">
             <img src="/flowrid-logo.png" alt="Flowrid" className="h-7 w-auto" />
-            Flowrid
           </Link>
           <p className="text-xs text-[#86868B] mt-0.5 tracking-wide">3PL OS</p>
         </div>
