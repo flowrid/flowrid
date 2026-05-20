@@ -80,7 +80,7 @@ export default async function StateCategoryPage({ params }: Props) {
         <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">
           Top Matches
         </h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
           {scored.slice(0, 3).map((item) => (
             <ThreePLCard key={item.id} data={item} />
           ))}
@@ -93,7 +93,7 @@ export default async function StateCategoryPage({ params }: Props) {
           <h2 className="text-lg font-bold text-text mb-4">
             All {formatName(category)} 3PLs in {formatName(state)}
           </h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
             {scored.slice(3).map((item) => (
               <ThreePLCard key={item.id} data={item} />
             ))}

@@ -44,7 +44,7 @@ export default function DirectoryResults({
 
   return (
     <>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
         {threePLs.map((item) => {
           const score = Math.round((item.rating || 0) * 20);
           const isSelected = selected.has(item.slug);
@@ -72,7 +72,7 @@ export default function DirectoryResults({
 
       {/* Floating Compare Bar */}
       {selectedList.length >= 2 && (
-        <div className="fixed bottom-0 left-0 right-0 p-3 bg-card border-t border-border shadow-lg z-50 flex items-center justify-between">
+        <div className="fixed bottom-0 left-0 right-0 p-3 bg-card border-t border-border shadow-lg z-[60] flex items-center justify-between">
           <p className="text-sm text-text">
             <span className="font-bold">{selectedList.length}</span> 3PLs selected
           </p>
