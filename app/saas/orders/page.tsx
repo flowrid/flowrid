@@ -29,6 +29,10 @@ const STATUS_STYLES: Record<string, string> = {
 
 const DT = { orders: [], stats: { total: 0, pending: 0, shipped: 0 } };
 
+function generateOrderNumber() {
+  return `ORD-${Date.now().toString(36).toUpperCase()}`;
+}
+
 export default function OrdersPage() {
   const [data, setData] = useState(DT);
   const [loading, setLoading] = useState(true);
@@ -36,67 +40,114 @@ export default function OrdersPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [creating, setCreating] = useState(false);
   const [createMsg, setCreateMsg] = useState<string | null>(null);
+  const [orderNumber, setOrderNumber] = useState(generateOrderNumber());
   const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   const [source, setSource] = useState("manual");
+  const [warehouseId, setWarehouseId] = useState("");
+  const [warehouses, setWarehouses] = useState<any[]>([]);
   const [shippingZip, setShippingZip] = useState("");
   const router = useRouter();
 
   async function fetchOrders() {
     try {
       const r = await fetch("/api/saas/orders");
-      if (!r.ok) throw new Error(`请求失败 (${r.status})`);
+      if (!r.ok) throw new Error(`Request failed (${r.status})`);
       const d = await r.json();
       setData(d);
     } catch (e: any) {
-      setError(e.message || "加载失败");
+      setError(e.message || "Failed to load");
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    let cancelled = false;
     fetchOrders();
-    return () => { cancelled = true; };
   }, []);
+
+  async function openCreateForm() {
+    setOrderNumber(generateOrderNumber());
+    setCustomerName("");
+    setCustomerEmail("");
+    setSource("manual");
+    setShippingZip("");
+    setCreateMsg(null);
+
+    // Fetch warehouses for dropdown
+    try {
+      const res = await fetch("/api/saas/warehouses");
+      if (res.ok) {
+        const d = await res.json();
+        const whs = d.data || d.warehouses || [];
+        setWarehouses(whs);
+        if (whs.length > 0) setWarehouseId(whs[0].id);
+      }
+    } catch {}
+
+    setShowCreate(true);
+  }
 
   async function handleCreateOrder(e: React.FormEvent) {
     e.preventDefault();
+    if (!orderNumber.trim()) {
+      setCreateMsg("Order number is required");
+      return;
+    }
     setCreating(true);
     setCreateMsg(null);
     try {
+      const body: Record<string, unknown> = {
+        order_number: orderNumber.trim(),
+        customer_name: customerName || "Walk-in Customer",
+        source,
+      };
+      if (customerEmail) body.customer_email = customerEmail;
+      if (warehouseId) body.warehouse_id = warehouseId;
+      if (shippingZip) body.shipping_zip = shippingZip;
+
       const res = await fetch("/api/saas/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          order_number: `ORD-${Date.now().toString(36).toUpperCase()}`,
-          customer_name: customerName || "Walk-in Customer",
-          source,
-          shipping_zip: shippingZip || undefined,
-        }),
+        body: JSON.stringify(body),
       });
       if (res.ok) {
-        const order = await res.json();
         setShowCreate(false);
-        setCustomerName("");
-        setShippingZip("");
         setLoading(true);
         fetchOrders();
       } else {
         const err = await res.json();
-        setCreateMsg(err.error || "创建失败");
+        setCreateMsg(err.error || "Failed to create");
       }
     } catch {
-      setCreateMsg("网络错误");
+      setCreateMsg("Network error");
     } finally {
       setCreating(false);
     }
   }
 
+  const fmtTime = (ts: string) => {
+    if (!ts) return "—";
+    const d = new Date(ts);
+    const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    if (diffMin < 1) return "Just now";
+    if (diffMin < 60) return `${diffMin}m ago`;
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr < 24) return `${diffHr}h ago`;
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  };
+
   const { orders, stats } = data;
 
   if (loading) return <Skeleton />;
-  if (error) return <div className="p-8 text-center"><p className="text-[#FF3B30] text-sm mb-3">{error}</p><button onClick={() => { setError(null); setLoading(true); fetchOrders(); }} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">重试</button></div>;
+  if (error) return (
+    <div className="p-8 text-center">
+      <p className="text-[#FF3B30] text-sm mb-3">{error}</p>
+      <button onClick={() => { setError(null); setLoading(true); fetchOrders(); }} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">Retry</button>
+    </div>
+  );
 
   return (
     <div className="p-6 md:p-8 max-w-[1280px]">
@@ -105,7 +156,7 @@ export default function OrdersPage() {
           <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Orders</h1>
           <p className="text-[#86868B] text-sm mt-0.5">{stats.total} total · {stats.pending} pending · {stats.shipped} shipped</p>
         </div>
-        <button onClick={() => setShowCreate(true)} className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">+ New Order</button>
+        <button onClick={openCreateForm} className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">+ New Order</button>
       </div>
 
       {showCreate && (
@@ -114,8 +165,16 @@ export default function OrdersPage() {
           <form onSubmit={handleCreateOrder} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
+                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Order Number *</label>
+                <input type="text" value={orderNumber} onChange={(e) => setOrderNumber(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              </div>
+              <div>
                 <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Customer Name</label>
                 <input type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Walk-in Customer" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Customer Email</label>
+                <input type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} placeholder="email@example.com" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
               </div>
               <div>
                 <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Source</label>
@@ -123,6 +182,16 @@ export default function OrdersPage() {
                   <option value="manual">Manual</option>
                   <option value="shopify">Shopify</option>
                   <option value="amazon">Amazon</option>
+                  <option value="ebay">eBay</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Warehouse</label>
+                <select value={warehouseId} onChange={(e) => setWarehouseId(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
+                  <option value="">Auto-select</option>
+                  {warehouses.map((wh: any) => (
+                    <option key={wh.id} value={wh.id}>{wh.name} ({wh.code})</option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -165,7 +234,7 @@ export default function OrdersPage() {
                     <td className="px-5 py-3.5">
                       <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${STATUS_STYLES[displayStatus] || ""}`}>{cap(displayStatus)}</span>
                     </td>
-                    <td className="px-5 py-3.5 text-xs text-[#86868B] text-right">{o.time || "—"}</td>
+                    <td className="px-5 py-3.5 text-xs text-[#86868B] text-right">{fmtTime(o.created_at || o.time)}</td>
                   </tr>
                 );
               })}

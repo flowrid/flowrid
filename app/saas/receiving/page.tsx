@@ -25,6 +25,7 @@ export default function ReceivingPage() {
   const [supplier, setSupplier] = useState("");
   const [expectedDate, setExpectedDate] = useState("");
   const [itemCount, setItemCount] = useState("");
+  const [asnNumber, setAsnNumber] = useState("");
 
   async function load() {
     try {
@@ -62,9 +63,8 @@ export default function ReceivingPage() {
 
   function handleCreateASN(e: React.FormEvent) {
     e.preventDefault();
-    const asnNumber = `ASN-${Date.now().toString(36).toUpperCase()}`;
     const newAsn = {
-      id: asnNumber,
+      id: asnNumber.trim() || `ASN-${Date.now().toString(36).toUpperCase()}`,
       supplier: supplier || "New Supplier",
       expected: expectedDate || new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }),
       items: parseInt(itemCount) || 0,
@@ -75,6 +75,7 @@ export default function ReceivingPage() {
     setSupplier("");
     setExpectedDate("");
     setItemCount("");
+    setAsnNumber("");
   }
 
   if (loading) return (
@@ -98,7 +99,7 @@ export default function ReceivingPage() {
           <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Receiving</h1>
           <p className="text-[#86868B] text-sm mt-0.5">Inbound shipments</p>
         </div>
-        <button onClick={() => setShowCreate(true)} className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">
+        <button onClick={() => { setAsnNumber(`ASN-${Date.now().toString(36).toUpperCase()}`); setShowCreate(true); }} className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">
           <span>+</span> New ASN
         </button>
       </div>
@@ -108,6 +109,10 @@ export default function ReceivingPage() {
           <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">New ASN (Advance Shipment Notice)</h2>
           <form onSubmit={handleCreateASN} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">ASN Number</label>
+                <input type="text" value={asnNumber} onChange={(e) => setAsnNumber(e.target.value)} placeholder="ASN-XXXX" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              </div>
               <div>
                 <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Supplier</label>
                 <input type="text" value={supplier} onChange={(e) => setSupplier(e.target.value)} placeholder="Supplier name" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
