@@ -139,7 +139,8 @@ export default function OrdersPage() {
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
-  const { orders, stats } = data;
+  const orders = data.orders || data.data || [];
+  const stats = data.stats || { total: 0, pending: 0, shipped: 0 };
 
   if (loading) return <Skeleton />;
   if (error) return (
