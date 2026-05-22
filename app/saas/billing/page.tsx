@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const DT = { invoices: [], rates: [], stats: { totalRevenue: 0, invoiced: 0, outstanding: 0, invoiceCount: 0 } };
 
@@ -12,11 +13,51 @@ const STATUS_STYLES: Record<string, string> = {
 export default function BillingPage() {
   const [data, setData] = useState(DT);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<"invoices" | "rates">("invoices");
+  const [generating, setGenerating] = useState(false);
+  const [genMsg, setGenMsg] = useState<string | null>(null);
+  const router = useRouter();
+
+  async function fetchData() {
+    try {
+      const r = await fetch("/api/saas/billing");
+      if (!r.ok) throw new Error(`请求失败 (${r.status})`);
+      const d = await r.json();
+      setData(d);
+    } catch (e: any) {
+      setError(e.message || "加载失败");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    fetch("/api/saas/billing").then(r => r.json()).then(setData).finally(() => setLoading(false));
+    let cancelled = false;
+    fetchData();
+    return () => { cancelled = true; };
   }, []);
+
+  async function handleGenerateInvoice() {
+    setGenerating(true);
+    setGenMsg(null);
+    try {
+      const res = await fetch("/api/saas/billing", { method: "POST" });
+      if (res.ok) {
+        setGenMsg("Invoice generated");
+        setLoading(true);
+        fetchData();
+        setTimeout(() => setGenMsg(null), 3000);
+      } else {
+        const err = await res.json();
+        setGenMsg(err.error || "Failed to generate");
+      }
+    } catch {
+      setGenMsg("Network error");
+    } finally {
+      setGenerating(false);
+    }
+  }
 
   const { invoices, rates, stats } = data;
   const fmt = (n: number) => `$${n.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
@@ -28,6 +69,8 @@ export default function BillingPage() {
     </div>
   );
 
+  if (error) return <div className="p-8 text-center"><p className="text-[#FF3B30] text-sm mb-3">{error}</p><button onClick={() => { setError(null); setLoading(true); fetchData(); }} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">重试</button></div>;
+
   return (
     <div className="p-6 md:p-8 max-w-[1280px]">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -35,7 +78,10 @@ export default function BillingPage() {
           <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Billing</h1>
           <p className="text-[#86868B] text-sm mt-0.5">{stats.invoiceCount} invoices</p>
         </div>
-        <button className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">+ Generate Invoice</button>
+        <button onClick={handleGenerateInvoice} disabled={generating} className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors shadow-sm">
+          {generating ? "Generating..." : "+ Generate Invoice"}
+        </button>
+        {genMsg && <span className={`text-xs ml-2 ${genMsg === "Invoice generated" ? "text-[#34C759]" : "text-[#FF3B30]"}`}>{genMsg}</span>}
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -73,7 +119,17 @@ export default function BillingPage() {
           </table>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs text-[#86868B]">{rates.length} active rates</p>
+            <button
+              onClick={() => router.push("/saas/billing/import")}
+              className="inline-flex items-center gap-1.5 bg-[#ed6d00] text-white px-3.5 py-2 rounded-full text-xs font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm"
+            >
+              <span>+</span> Import Rates
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {rates.map((r: any) => (
             <div key={r.id} className="bg-white rounded-2xl p-5 shadow-sm border border-black/5">
               <p className="text-sm font-medium text-[#1D1D1F]">{r.charge_type}</p>
@@ -81,6 +137,7 @@ export default function BillingPage() {
             </div>
           ))}
           {rates.length === 0 && <p className="text-[#86868B] text-sm col-span-4 text-center py-8">No rates configured</p>}
+        </div>
         </div>
       )}
     </div>

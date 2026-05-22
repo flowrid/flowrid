@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const DEMO_RECEIVING = [
   { id: "ASN-1042", supplier: "Overseas Textile Co.", expected: "May 22", items: 2400, status: "In Transit" },
@@ -18,7 +18,78 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 export default function ReceivingPage() {
-  const [items] = useState(DEMO_RECEIVING);
+  const [items, setItems] = useState<typeof DEMO_RECEIVING>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
+  const [supplier, setSupplier] = useState("");
+  const [expectedDate, setExpectedDate] = useState("");
+  const [itemCount, setItemCount] = useState("");
+
+  async function load() {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch("/api/saas/receiving");
+      if (res.ok) {
+        const d = await res.json();
+        if (d.data?.length) {
+          setItems(d.data.map((r: any) => ({
+            id: r.order_number || r.id,
+            supplier: r.customer_name || r.supplier || "—",
+            expected: r.expected_date ? new Date(r.expected_date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—",
+            items: r.item_count || 0,
+            status: r.status || "pending",
+          })));
+          return;
+        }
+      }
+      // Fallback to demo data
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setItems(DEMO_RECEIVING);
+    } catch {
+      setItems(DEMO_RECEIVING);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!cancelled) load();
+    return () => { cancelled = true; };
+  }, []);
+
+  function handleCreateASN(e: React.FormEvent) {
+    e.preventDefault();
+    const asnNumber = `ASN-${Date.now().toString(36).toUpperCase()}`;
+    const newAsn = {
+      id: asnNumber,
+      supplier: supplier || "New Supplier",
+      expected: expectedDate || new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+      items: parseInt(itemCount) || 0,
+      status: "In Transit" as const,
+    };
+    setItems([newAsn, ...items]);
+    setShowCreate(false);
+    setSupplier("");
+    setExpectedDate("");
+    setItemCount("");
+  }
+
+  if (loading) return (
+    <div className="p-8 space-y-4 animate-pulse">
+      <div className="h-8 w-36 bg-black/5 rounded-xl" />
+      {[...Array(5)].map((_, i) => <div key={i} className="h-14 bg-white/50 rounded-xl" />)}
+    </div>
+  );
+
+  if (error) return (
+    <div className="p-8 text-center">
+      <p className="text-[#FF3B30] text-sm mb-3">{error}</p>
+      <button onClick={() => window.location.reload()} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">重试</button>
+    </div>
+  );
 
   return (
     <div className="p-6 md:p-8 max-w-[1280px]">
@@ -27,10 +98,36 @@ export default function ReceivingPage() {
           <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Receiving</h1>
           <p className="text-[#86868B] text-sm mt-0.5">Inbound shipments</p>
         </div>
-        <button className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">
+        <button onClick={() => setShowCreate(true)} className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">
           <span>+</span> New ASN
         </button>
       </div>
+
+      {showCreate && (
+        <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
+          <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">New ASN (Advance Shipment Notice)</h2>
+          <form onSubmit={handleCreateASN} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Supplier</label>
+                <input type="text" value={supplier} onChange={(e) => setSupplier(e.target.value)} placeholder="Supplier name" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Expected Date</label>
+                <input type="date" value={expectedDate} onChange={(e) => setExpectedDate(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Item Count</label>
+                <input type="number" value={itemCount} onChange={(e) => setItemCount(e.target.value)} placeholder="0" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <button type="submit" className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors">Create ASN</button>
+              <button type="button" onClick={() => setShowCreate(false)} className="text-sm text-[#86868B] hover:text-[#1D1D1F] transition-colors">Cancel</button>
+            </div>
+          </form>
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">
         <div className="overflow-x-auto">
