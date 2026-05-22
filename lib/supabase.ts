@@ -11,7 +11,9 @@ function getPublicClient(): SupabaseClient | null {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !key || url === "your_supabase_url_here") {
-    console.warn("Supabase 未配置。请在 .env.local 中设置 NEXT_PUBLIC_SUPABASE_URL 和 NEXT_PUBLIC_SUPABASE_ANON_KEY");
+    if (process.env.NODE_ENV === "development") {
+      console.warn("Supabase 未配置。请在 .env.local 中设置 NEXT_PUBLIC_SUPABASE_URL 和 NEXT_PUBLIC_SUPABASE_ANON_KEY");
+    }
     return null;
   }
 
@@ -19,7 +21,9 @@ function getPublicClient(): SupabaseClient | null {
     publicCache = createClient(url, key);
     return publicCache;
   } catch (e) {
-    console.warn("Supabase 连接失败:", (e as Error).message);
+    if (process.env.NODE_ENV === "development") {
+      console.warn("Supabase 连接失败:", (e as Error).message);
+    }
     return null;
   }
 }
@@ -35,7 +39,9 @@ function getServiceClient(): SupabaseClient | null {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !key) {
-    console.warn("SUPABASE_SERVICE_ROLE_KEY 未配置，写入操作将不可用");
+    if (process.env.NODE_ENV === "development") {
+      console.warn("SUPABASE_SERVICE_ROLE_KEY 未配置，写入操作将不可用");
+    }
     return null;
   }
 
@@ -45,7 +51,9 @@ function getServiceClient(): SupabaseClient | null {
     });
     return serviceCache;
   } catch (e) {
-    console.warn("Supabase 服务端连接失败:", (e as Error).message);
+    if (process.env.NODE_ENV === "development") {
+      console.warn("Supabase 服务端连接失败:", (e as Error).message);
+    }
     return null;
   }
 }
