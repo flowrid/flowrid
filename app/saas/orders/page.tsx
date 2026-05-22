@@ -27,7 +27,7 @@ const STATUS_STYLES: Record<string, string> = {
   cancelled: "bg-[#FF3B30]/10 text-[#FF3B30]",
 };
 
-const DT = { orders: [], stats: { total: 0, pending: 0, shipped: 0 } };
+const DT: Record<string, any> = { orders: [], data: [], stats: { total: 0, pending: 0, shipped: 0 } };
 
 function generateOrderNumber() {
   return `ORD-${Date.now().toString(36).toUpperCase()}`;
