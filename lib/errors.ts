@@ -1,3 +1,5 @@
+import { ZodError } from "zod";
+
 export class AppError extends Error {
   constructor(
     message: string,
@@ -46,7 +48,7 @@ export class DatabaseError extends AppError {
   }
 }
 
-export function formatZodError(error: import("zod").ZodError) {
+export function formatZodError(error: ZodError) {
   return error.issues.map((e) => ({
     path: e.path.join("."),
     message: e.message,
