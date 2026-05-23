@@ -26,7 +26,7 @@ async function handleGet(req: Request) {
   const mapped = (orders || []).map((r: any) => {
     let meta: any = {};
     try {
-      if (r.notes) meta = JSON.parse(r.notes);
+      if (r.reference_number) meta = JSON.parse(r.reference_number);
     } catch {}
 
     return {
@@ -61,15 +61,20 @@ async function handlePost(req: Request) {
   if (body.supplier) meta.supplier = body.supplier;
   if (body.item_count != null) meta.item_count = Number(body.item_count);
 
+  const insertRow: Record<string, unknown> = {
+    tenant_id: operator.tenantId,
+    order_number: body.order_number.trim(),
+    expected_date: body.expected_date || null,
+    status: "pending",
+  };
+
+  if (Object.keys(meta).length > 0) {
+    insertRow.reference_number = JSON.stringify(meta);
+  }
+
   const { data, error } = await supabase
     .from("receiving_orders")
-    .insert({
-      tenant_id: operator.tenantId,
-      order_number: body.order_number.trim(),
-      expected_date: body.expected_date || null,
-      status: "pending",
-      notes: Object.keys(meta).length > 0 ? JSON.stringify(meta) : null,
-    })
+    .insert(insertRow)
     .select("*")
     .single();
 
