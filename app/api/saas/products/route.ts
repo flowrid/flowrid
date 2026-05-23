@@ -3,7 +3,7 @@ import { createServiceClient } from "@/lib/supabase";
 import { verifyOperatorToken } from "@/lib/saas-auth";
 import { apiHandler } from "@/lib/api-handler";
 import { ProductCreateSchema, sanitizeSearch } from "@/lib/validation";
-import { UnauthorizedError, ConflictError, safeErrorMessage } from "@/lib/errors";
+import { UnauthorizedError, ConflictError } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +24,7 @@ async function handleGet(req: Request) {
 
   let query = supabase
     .from("products")
-    .select("id, sku, name, description, category, barcode, unit_price, weight_lbs, dimensions_lwh, image_url, requires_lot, requires_serial, min_quantity, max_quantity, reorder_point, created_at, updated_at", { count: "exact" })
+    .select("id, sku, upc, name, description, category, brand, image_url, unit_weight_lbs, unit_length_in, unit_width_in, unit_height_in, requires_lot_tracking, requires_serial_tracking, requires_expiration, is_hazmat, is_active, created_at, updated_at", { count: "exact" })
     .eq("tenant_id", TENANT_ID);
 
   if (q) {
@@ -66,31 +66,38 @@ async function handlePost(req: Request) {
 
   if (existing) throw new ConflictError("A product with this SKU already exists");
 
+  const insertRow: Record<string, unknown> = {
+    tenant_id: TENANT_ID,
+    sku: body.sku,
+    name: body.name,
+  };
+
+  if (body.description != null) insertRow.description = body.description;
+  if (body.upc != null) insertRow.upc = body.upc;
+  if (body.barcode != null) insertRow.upc = body.barcode;
+  if (body.category != null) insertRow.category = body.category;
+  if (body.brand != null) insertRow.brand = body.brand;
+  if (body.image_url != null) insertRow.image_url = body.image_url;
+  if (body.unit_weight_lbs != null) insertRow.unit_weight_lbs = body.unit_weight_lbs;
+  if (body.weight_lbs != null && body.unit_weight_lbs == null) insertRow.unit_weight_lbs = body.weight_lbs;
+  if (body.unit_length_in != null) insertRow.unit_length_in = body.unit_length_in;
+  if (body.unit_width_in != null) insertRow.unit_width_in = body.unit_width_in;
+  if (body.unit_height_in != null) insertRow.unit_height_in = body.unit_height_in;
+  if (body.requires_lot_tracking != null) insertRow.requires_lot_tracking = body.requires_lot_tracking;
+  if (body.requires_serial_tracking != null) insertRow.requires_serial_tracking = body.requires_serial_tracking;
+  if (body.requires_expiration != null) insertRow.requires_expiration = body.requires_expiration;
+  if (body.is_hazmat != null) insertRow.is_hazmat = body.is_hazmat;
+  if (body.is_active != null) insertRow.is_active = body.is_active;
+
   const { data, error } = await supabase
     .from("products")
-    .insert({
-      tenant_id: TENANT_ID,
-      sku: body.sku,
-      name: body.name,
-      description: body.description ?? null,
-      category: body.category ?? null,
-      barcode: body.barcode ?? null,
-      unit_price: body.unit_price ?? null,
-      unit_cost: body.unit_cost ?? null,
-      weight_lbs: body.weight_lbs ?? null,
-      dimensions_lwh: body.dimensions_lwh ?? null,
-      requires_lot: body.requires_lot ?? false,
-      requires_serial: body.requires_serial ?? false,
-      min_quantity: body.min_quantity ?? 0,
-      max_quantity: body.max_quantity ?? 0,
-      reorder_point: body.reorder_point ?? 0,
-    })
-    .select("id, sku, name, description, category, barcode, unit_price, weight_lbs, dimensions_lwh, image_url, requires_lot, requires_serial, min_quantity, max_quantity, reorder_point, created_at, updated_at")
+    .insert(insertRow)
+    .select("id, sku, upc, name, description, category, brand, image_url, unit_weight_lbs, unit_length_in, unit_width_in, unit_height_in, requires_lot_tracking, requires_serial_tracking, requires_expiration, is_hazmat, is_active, created_at, updated_at")
     .single();
 
   if (error) {
     if (error.code === "23505") throw new ConflictError("A product with this SKU already exists");
-    return NextResponse.json({ error: safeErrorMessage(error) }, { status: 400 });
+    return NextResponse.json({ error: error.message || "Failed to create product" }, { status: 400 });
   }
 
   return NextResponse.json({ product: data }, { status: 201 });

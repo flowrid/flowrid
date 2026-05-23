@@ -25,6 +25,11 @@ export default function ShippingPage() {
   const [creating, setCreating] = useState(false);
   const [success, setSuccess] = useState("");
 
+  // Auto-fetch rates on mount
+  useEffect(() => {
+    fetchRates();
+  }, []);
+
   async function fetchRates() {
     setLoading(true);
     setError("");

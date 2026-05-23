@@ -3,7 +3,7 @@ import { createServiceClient } from "@/lib/supabase";
 import { verifyOperatorToken, requireRole } from "@/lib/saas-auth";
 import { apiHandler } from "@/lib/api-handler";
 import { ProductUpdateSchema } from "@/lib/validation";
-import { UnauthorizedError, NotFoundError, ConflictError, safeErrorMessage } from "@/lib/errors";
+import { UnauthorizedError, NotFoundError, ConflictError } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +38,6 @@ async function handleGet(
   const { data: inventory } = await supabase
     .from("inventory")
     .select("*, warehouses(name, code), locations(zone, aisle, rack, shelf, bin, barcode)")
-    .eq("tenant_id", TENANT_ID)
     .eq("product_id", id);
 
   // 关联订单
@@ -76,7 +75,7 @@ async function handlePatch(
 
   const body = (req as any).validatedBody;
 
-  const allowed = ["name", "description", "category", "barcode", "unit_price", "unit_cost", "weight_lbs", "dimensions_lwh", "requires_lot", "requires_serial", "min_quantity", "max_quantity", "reorder_point"];
+  const allowed = ["name", "description", "category", "brand", "upc", "barcode", "image_url", "unit_weight_lbs", "unit_length_in", "unit_width_in", "unit_height_in", "requires_lot_tracking", "requires_serial_tracking", "requires_expiration", "is_hazmat", "is_active"];
   const updates: Record<string, unknown> = {};
   for (const key of allowed) {
     if (body[key] !== undefined) updates[key] = body[key];
@@ -110,7 +109,7 @@ async function handlePatch(
 
   if (error) {
     if (error.code === "23505") throw new ConflictError("A product with this SKU already exists");
-    return NextResponse.json({ error: safeErrorMessage(error) }, { status: 400 });
+    return NextResponse.json({ error: error.message || "Failed to update product" }, { status: 400 });
   }
   if (!data) throw new NotFoundError("Product");
 
@@ -146,7 +145,7 @@ async function handleDelete(
         error: "Cannot delete this product because it is referenced by inventory or order items. Please remove those references first.",
       }, { status: 409 });
     }
-    return NextResponse.json({ error: safeErrorMessage(error) }, { status: 400 });
+    return NextResponse.json({ error: error.message || "Failed to update product" }, { status: 400 });
   }
 
   return NextResponse.json({ success: true });

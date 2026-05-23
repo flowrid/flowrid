@@ -1,25 +1,81 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
-const DT = { products: [], warehouses: [], stats: { totalSKUs: 0 } };
+const DT: Record<string, any> = { products: [], warehouses: [], stats: { totalSKUs: 0 } };
 
 export default function InventoryPage() {
   const [data, setData] = useState(DT);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
-  useEffect(() => {
+  // Inline create form state
+  const [showCreate, setShowCreate] = useState(false);
+  const [sku, setSku] = useState("");
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
+  const [brand, setBrand] = useState("");
+  const [weight, setWeight] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [createMsg, setCreateMsg] = useState<string | null>(null);
+
+  function fetchInventory() {
+    setLoading(true);
     let cancelled = false;
     fetch("/api/saas/inventory")
       .then(r => { if (!r.ok) throw new Error(`请求失败 (${r.status})`); return r.json(); })
-      .then(d => { if (!cancelled) setData(d); })
-      .catch(e => { if (!cancelled) setError(e.message || "加载失败"); })
-      .finally(() => { if (!cancelled) setLoading(false); });
+      .then(d => { if (!cancelled) { setData(d); setLoading(false); } })
+      .catch(e => { if (!cancelled) { setError(e.message || "加载失败"); setLoading(false); } });
     return () => { cancelled = true; };
+  }
+
+  useEffect(() => {
+    const cancel = fetchInventory();
+    return cancel;
   }, []);
+
+  async function handleCreate(e: React.FormEvent) {
+    e.preventDefault();
+    if (!sku.trim() || !name.trim()) {
+      setCreateMsg("SKU and Name are required");
+      return;
+    }
+    setCreating(true);
+    setCreateMsg(null);
+    try {
+      const body: Record<string, unknown> = {
+        sku: sku.trim(),
+        name: name.trim(),
+      };
+      if (category.trim()) body.category = category.trim();
+      if (brand.trim()) body.brand = brand.trim();
+      if (weight.trim()) body.unit_weight_lbs = parseFloat(weight);
+
+      const res = await fetch("/api/saas/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        setShowCreate(false);
+        setSku(""); setName(""); setCategory(""); setBrand(""); setWeight("");
+        fetchInventory();
+      } else {
+        const err = await res.json();
+        setCreateMsg(err.error || "Failed to create");
+      }
+    } catch {
+      setCreateMsg("Network error");
+    } finally {
+      setCreating(false);
+    }
+  }
+
+  function openCreateForm() {
+    setSku(""); setName(""); setCategory(""); setBrand(""); setWeight("");
+    setCreateMsg(null);
+    setShowCreate(true);
+  }
 
   const { products, stats } = data;
 
@@ -30,7 +86,7 @@ export default function InventoryPage() {
     </div>
   );
 
-  if (error) return <div className="p-8 text-center"><p className="text-[#FF3B30] text-sm mb-3">{error}</p><button onClick={() => { setError(null); setLoading(true); fetch("/api/saas/inventory").then(r => r.json()).then(d => { setData(d); setLoading(false); }).catch(e => { setError(e.message); setLoading(false); }); }} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">重试</button></div>;
+  if (error) return <div className="p-8 text-center"><p className="text-[#FF3B30] text-sm mb-3">{error}</p><button onClick={() => { setError(null); fetchInventory(); }} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">重试</button></div>;
 
   return (
     <div className="p-6 md:p-8 max-w-[1280px]">
@@ -39,8 +95,45 @@ export default function InventoryPage() {
           <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Inventory</h1>
           <p className="text-[#86868B] text-sm mt-0.5">{stats.totalSKUs} SKUs</p>
         </div>
-        <button onClick={() => router.push("/saas/products")} className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">+ Add Product</button>
+        <button onClick={openCreateForm} className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">+ Add Product</button>
       </div>
+
+      {showCreate && (
+        <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
+          <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">Add Product</h2>
+          <form onSubmit={handleCreate} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">SKU *</label>
+                <input type="text" value={sku} onChange={(e) => setSku(e.target.value)} placeholder="SKU-001" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Name *</label>
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Product Name" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Category</label>
+                <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Electronics" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Brand</label>
+                <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="Brand" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Weight (lbs)</label>
+                <input type="number" step="0.01" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="0.00" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <button type="submit" disabled={creating} className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
+                {creating ? "Creating..." : "Create Product"}
+              </button>
+              <button type="button" onClick={() => setShowCreate(false)} className="text-sm text-[#86868B] hover:text-[#1D1D1F] transition-colors">Cancel</button>
+              {createMsg && <span className="text-xs text-[#FF3B30]">{createMsg}</span>}
+            </div>
+          </form>
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">
         <div className="overflow-x-auto">
