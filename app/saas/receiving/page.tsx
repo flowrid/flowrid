@@ -21,11 +21,10 @@ export default function ReceivingPage() {
   const [items, setItems] = useState<typeof DEMO_RECEIVING>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showCreate, setShowCreate] = useState(false);
   const [supplier, setSupplier] = useState("");
   const [expectedDate, setExpectedDate] = useState("");
   const [itemCount, setItemCount] = useState("");
-  const [asnNumber, setAsnNumber] = useState("");
+  const [asnNumber, setAsnNumber] = useState(`ASN-${Date.now().toString(36).toUpperCase()}`);
 
   async function load() {
     try {
@@ -71,11 +70,10 @@ export default function ReceivingPage() {
       status: "In Transit" as const,
     };
     setItems([newAsn, ...items]);
-    setShowCreate(false);
     setSupplier("");
     setExpectedDate("");
     setItemCount("");
-    setAsnNumber("");
+    setAsnNumber(`ASN-${Date.now().toString(36).toUpperCase()}`);
   }
 
   if (loading) return (
@@ -99,40 +97,35 @@ export default function ReceivingPage() {
           <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Receiving</h1>
           <p className="text-[#86868B] text-sm mt-0.5">Inbound shipments</p>
         </div>
-        <button onClick={() => { setAsnNumber(`ASN-${Date.now().toString(36).toUpperCase()}`); setShowCreate(true); }} className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">
-          <span>+</span> New ASN
-        </button>
       </div>
 
-      {showCreate && (
-        <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-          <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">New ASN (Advance Shipment Notice)</h2>
-          <form onSubmit={handleCreateASN} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">ASN Number</label>
-                <input type="text" value={asnNumber} onChange={(e) => setAsnNumber(e.target.value)} placeholder="ASN-XXXX" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Supplier</label>
-                <input type="text" value={supplier} onChange={(e) => setSupplier(e.target.value)} placeholder="Supplier name" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Expected Date</label>
-                <input type="date" value={expectedDate} onChange={(e) => setExpectedDate(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Item Count</label>
-                <input type="number" value={itemCount} onChange={(e) => setItemCount(e.target.value)} placeholder="0" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
+      {/* New ASN form — always visible */}
+      <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
+        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">New ASN (Advance Shipment Notice)</h2>
+        <form onSubmit={handleCreateASN} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">ASN Number</label>
+              <input type="text" value={asnNumber} onChange={(e) => setAsnNumber(e.target.value)} placeholder="ASN-XXXX" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
-            <div className="flex items-center gap-3">
-              <button type="submit" className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors">Create ASN</button>
-              <button type="button" onClick={() => setShowCreate(false)} className="text-sm text-[#86868B] hover:text-[#1D1D1F] transition-colors">Cancel</button>
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Supplier</label>
+              <input type="text" value={supplier} onChange={(e) => setSupplier(e.target.value)} placeholder="Supplier name" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
-          </form>
-        </div>
-      )}
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Expected Date</label>
+              <input type="date" value={expectedDate} onChange={(e) => setExpectedDate(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+            </div>
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Item Count</label>
+              <input type="number" value={itemCount} onChange={(e) => setItemCount(e.target.value)} placeholder="0" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button type="submit" className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors">Create ASN</button>
+          </div>
+        </form>
+      </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">
         <div className="overflow-x-auto">

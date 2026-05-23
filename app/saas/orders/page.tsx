@@ -37,7 +37,6 @@ export default function OrdersPage() {
   const [data, setData] = useState(DT);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showCreate, setShowCreate] = useState(false);
   const [creating, setCreating] = useState(false);
   const [createMsg, setCreateMsg] = useState<string | null>(null);
   const [orderNumber, setOrderNumber] = useState(generateOrderNumber());
@@ -64,29 +63,18 @@ export default function OrdersPage() {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
-
-  async function openCreateForm() {
-    setOrderNumber(generateOrderNumber());
-    setCustomerName("");
-    setCustomerEmail("");
-    setSource("manual");
-    setShippingZip("");
-    setCreateMsg(null);
-
     // Fetch warehouses for dropdown
-    try {
-      const res = await fetch("/api/saas/warehouses");
-      if (res.ok) {
-        const d = await res.json();
-        const whs = d.data || d.warehouses || [];
-        setWarehouses(whs);
-        if (whs.length > 0) setWarehouseId(whs[0].id);
-      }
-    } catch {}
-
-    setShowCreate(true);
-  }
+    fetch("/api/saas/warehouses")
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d) {
+          const whs = d.data || d.warehouses || [];
+          setWarehouses(whs);
+          if (whs.length > 0) setWarehouseId(whs[0].id);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   async function handleCreateOrder(e: React.FormEvent) {
     e.preventDefault();
@@ -112,7 +100,11 @@ export default function OrdersPage() {
         body: JSON.stringify(body),
       });
       if (res.ok) {
-        setShowCreate(false);
+        setOrderNumber(generateOrderNumber());
+        setCustomerName("");
+        setCustomerEmail("");
+        setShippingZip("");
+        setCreateMsg(null);
         setLoading(true);
         fetchOrders();
       } else {
@@ -157,60 +149,58 @@ export default function OrdersPage() {
           <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Orders</h1>
           <p className="text-[#86868B] text-sm mt-0.5">{stats.total} total · {stats.pending} pending · {stats.shipped} shipped</p>
         </div>
-        <button onClick={openCreateForm} className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">+ New Order</button>
       </div>
 
-      {showCreate && (
-        <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-          <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">New Order</h2>
-          <form onSubmit={handleCreateOrder} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Order Number *</label>
-                <input type="text" value={orderNumber} onChange={(e) => setOrderNumber(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Customer Name</label>
-                <input type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Walk-in Customer" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Customer Email</label>
-                <input type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} placeholder="email@example.com" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Source</label>
-                <select value={source} onChange={(e) => setSource(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
-                  <option value="manual">Manual</option>
-                  <option value="shopify">Shopify</option>
-                  <option value="amazon">Amazon</option>
-                  <option value="ebay">eBay</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Warehouse</label>
-                <select value={warehouseId} onChange={(e) => setWarehouseId(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
-                  <option value="">Auto-select</option>
-                  {warehouses.map((wh: any) => (
-                    <option key={wh.id} value={wh.id}>{wh.name} ({wh.code})</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Shipping ZIP</label>
-                <input type="text" value={shippingZip} onChange={(e) => setShippingZip(e.target.value)} placeholder="optional" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
+      {/* New Order form — always visible */}
+      <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
+        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">New Order</h2>
+        <form onSubmit={handleCreateOrder} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Order Number *</label>
+              <input type="text" value={orderNumber} onChange={(e) => setOrderNumber(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
-            <div className="flex items-center gap-3">
-              <button type="submit" disabled={creating} className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
-                {creating ? "Creating..." : "Create Order"}
-              </button>
-              <button type="button" onClick={() => setShowCreate(false)} className="text-sm text-[#86868B] hover:text-[#1D1D1F] transition-colors">Cancel</button>
-              {createMsg && <span className="text-xs text-[#FF3B30]">{createMsg}</span>}
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Customer Name</label>
+              <input type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Walk-in Customer" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
-          </form>
-        </div>
-      )}
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Customer Email</label>
+              <input type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} placeholder="email@example.com" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+            </div>
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Source</label>
+              <select value={source} onChange={(e) => setSource(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
+                <option value="manual">Manual</option>
+                <option value="shopify">Shopify</option>
+                <option value="amazon">Amazon</option>
+                <option value="ebay">eBay</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Warehouse</label>
+              <select value={warehouseId} onChange={(e) => setWarehouseId(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
+                <option value="">Auto-select</option>
+                {warehouses.map((wh: any) => (
+                  <option key={wh.id} value={wh.id}>{wh.name} ({wh.code})</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Shipping ZIP</label>
+              <input type="text" value={shippingZip} onChange={(e) => setShippingZip(e.target.value)} placeholder="optional" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button type="submit" disabled={creating} className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
+              {creating ? "Creating..." : "Create Order"}
+            </button>
+            {createMsg && <span className="text-xs text-[#FF3B30]">{createMsg}</span>}
+          </div>
+        </form>
+      </div>
 
+      {/* Orders list */}
       <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
