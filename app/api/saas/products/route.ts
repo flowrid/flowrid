@@ -66,13 +66,41 @@ async function handlePost(req: Request) {
 
   if (existing) throw new ConflictError("A product with this SKU already exists");
 
+  const insertRow: Record<string, unknown> = {
+    tenant_id: TENANT_ID,
+    sku: body.sku,
+    name: body.name,
+  };
+
+  const safeFields: Array<[string, string?]> = [
+    ["description"],
+    ["category"],
+    ["brand"],
+    ["upc"],
+    ["barcode", "upc"],
+    ["image_url"],
+    ["unit_weight_lbs"],
+    ["weight_lbs", "unit_weight_lbs"],
+    ["unit_length_in"],
+    ["unit_width_in"],
+    ["unit_height_in"],
+    ["requires_lot_tracking"],
+    ["requires_serial_tracking"],
+    ["requires_expiration"],
+    ["is_hazmat"],
+    ["is_active"],
+  ];
+
+  for (const [field, dbCol] of safeFields) {
+    const col = dbCol || field;
+    if (body[field] != null && insertRow[col] == null) {
+      insertRow[col] = body[field];
+    }
+  }
+
   const { data, error } = await supabase
     .from("products")
-    .insert({
-      tenant_id: TENANT_ID,
-      sku: body.sku,
-      name: body.name,
-    })
+    .insert(insertRow)
     .select("*")
     .single();
 
