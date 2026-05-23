@@ -34,6 +34,8 @@ export default function ReceivingPage() {
   const [asnNumber, setAsnNumber] = useState(`ASN-${Date.now().toString(36).toUpperCase()}`);
   const [creating, setCreating] = useState(false);
   const [createMsg, setCreateMsg] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
 
   async function load() {
     try {
@@ -101,6 +103,32 @@ export default function ReceivingPage() {
     }
   }
 
+  async function handleDeleteSelected() {
+    if (selectedIds.size === 0) return;
+    setDeleting(true);
+    for (const id of selectedIds) {
+      try { await fetch(`/api/saas/receiving/${id}`, { method: "DELETE" }); } catch {}
+    }
+    setSelectedIds(new Set());
+    setDeleting(false);
+    load();
+  }
+
+  function toggleSelect(id: string) {
+    const next = new Set(selectedIds);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setSelectedIds(next);
+  }
+
+  function toggleSelectAll() {
+    const allIds = items.map((r) => r.id);
+    if (allIds.every((id) => selectedIds.has(id))) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(allIds));
+    }
+  }
+
   if (loading) return (
     <div className="p-8 space-y-4 animate-pulse">
       <div className="h-8 w-36 bg-black/5 rounded-xl" />
@@ -160,16 +188,25 @@ export default function ReceivingPage() {
           <table className="w-full">
             <thead>
               <tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
+                <th className="px-5 py-3.5 w-10"><input type="checkbox" checked={items.length > 0 && items.every((r) => selectedIds.has(r.id))} onChange={toggleSelectAll} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></th>
                 <th className="px-5 py-3.5">ASN</th>
                 <th className="px-5 py-3.5">Supplier</th>
                 <th className="px-5 py-3.5">Expected</th>
                 <th className="px-5 py-3.5">Items</th>
                 <th className="px-5 py-3.5">Status</th>
+                <th className="px-5 py-3.5 text-right">
+                  {selectedIds.size > 0 && (
+                    <button onClick={handleDeleteSelected} disabled={deleting} className="text-[11px] text-[#FF3B30] font-medium hover:text-[#FF6B6B] disabled:opacity-50">
+                      {deleting ? "Deleting..." : `Delete (${selectedIds.size})`}
+                    </button>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black/[0.04]">
               {items.map((r) => (
                 <tr key={r.id} className="hover:bg-black/[0.01] transition-colors">
+                  <td className="px-5 py-3.5"><input type="checkbox" checked={selectedIds.has(r.id)} onChange={() => toggleSelect(r.id)} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></td>
                   <td className="px-5 py-3.5 text-sm font-medium text-[#1D1D1F]">{r.id}</td>
                   <td className="px-5 py-3.5 text-sm text-[#1D1D1F]">{r.supplier}</td>
                   <td className="px-5 py-3.5 text-xs text-[#86868B]">{r.expected}</td>
@@ -179,10 +216,11 @@ export default function ReceivingPage() {
                       {r.status}
                     </span>
                   </td>
+                  <td className="px-5 py-3.5" />
                 </tr>
               ))}
               {items.length === 0 && (
-                <tr><td colSpan={5} className="px-5 py-12 text-center text-[#86868B] text-sm">No ASNs yet</td></tr>
+                <tr><td colSpan={7} className="px-5 py-12 text-center text-[#86868B] text-sm">No ASNs yet</td></tr>
               )}
             </tbody>
           </table>

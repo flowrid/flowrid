@@ -46,6 +46,8 @@ export default function OrdersPage() {
   const [warehouseId, setWarehouseId] = useState("");
   const [warehouses, setWarehouses] = useState<any[]>([]);
   const [shippingZip, setShippingZip] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
   const router = useRouter();
 
   async function fetchOrders() {
@@ -115,6 +117,37 @@ export default function OrdersPage() {
       setCreateMsg("Network error");
     } finally {
       setCreating(false);
+    }
+  }
+
+  async function handleDeleteSelected() {
+    if (selectedIds.size === 0) return;
+    setDeleting(true);
+    let count = 0;
+    for (const id of selectedIds) {
+      try {
+        const res = await fetch(`/api/saas/orders/${id}`, { method: "DELETE" });
+        if (res.ok) count++;
+      } catch {}
+    }
+    setSelectedIds(new Set());
+    setDeleting(false);
+    setLoading(true);
+    fetchOrders();
+  }
+
+  function toggleSelect(id: string) {
+    const next = new Set(selectedIds);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setSelectedIds(next);
+  }
+
+  function toggleSelectAll() {
+    const allIds = orders.map((o: any) => o.id);
+    if (allIds.every((id: string) => selectedIds.has(id))) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(allIds));
     }
   }
 
@@ -206,10 +239,18 @@ export default function OrdersPage() {
           <table className="w-full">
             <thead>
               <tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
+                <th className="px-5 py-3.5 w-10"><input type="checkbox" checked={orders.length > 0 && orders.every((o: any) => selectedIds.has(o.id))} onChange={toggleSelectAll} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></th>
                 <th className="px-5 py-3.5">Order</th><th className="px-5 py-3.5">Customer</th>
                 <th className="px-5 py-3.5">Warehouse</th>
                 <th className="px-5 py-3.5">Source</th><th className="px-5 py-3.5">Status</th>
                 <th className="px-5 py-3.5 text-right">Time</th>
+                <th className="px-5 py-3.5 text-right">
+                  {selectedIds.size > 0 && (
+                    <button onClick={handleDeleteSelected} disabled={deleting} className="text-[11px] text-[#FF3B30] font-medium hover:text-[#FF6B6B] disabled:opacity-50">
+                      {deleting ? "Deleting..." : `Delete (${selectedIds.size})`}
+                    </button>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black/[0.04]">
@@ -218,6 +259,7 @@ export default function OrdersPage() {
                 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
                 return (
                   <tr key={o.id} className="hover:bg-black/[0.01] transition-colors cursor-pointer" onClick={() => router.push(`/saas/orders/${o.id}`)}>
+                    <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}><input type="checkbox" checked={selectedIds.has(o.id)} onChange={() => toggleSelect(o.id)} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></td>
                     <td className="px-5 py-3.5 text-sm font-medium text-[#1D1D1F]">{o.order_number || o.id}</td>
                     <td className="px-5 py-3.5 text-sm text-[#1D1D1F]">{o.customer_name || o.clients?.name || "—"}</td>
                     <td className="px-5 py-3.5 text-xs text-[#86868B]">{o.warehouses?.name || o.warehouses?.code || "—"}</td>
@@ -226,11 +268,12 @@ export default function OrdersPage() {
                       <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${STATUS_STYLES[displayStatus] || ""}`}>{cap(displayStatus)}</span>
                     </td>
                     <td className="px-5 py-3.5 text-xs text-[#86868B] text-right">{fmtTime(o.created_at || o.time)}</td>
+                    <td className="px-5 py-3.5" /> {/* spacer for delete column */}
                   </tr>
                 );
               })}
               {orders.length === 0 && (
-                <tr><td colSpan={6} className="px-5 py-12 text-center text-[#86868B] text-sm">No orders yet</td></tr>
+                <tr><td colSpan={8} className="px-5 py-12 text-center text-[#86868B] text-sm">No orders yet</td></tr>
               )}
             </tbody>
           </table>

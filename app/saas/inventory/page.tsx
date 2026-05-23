@@ -16,6 +16,8 @@ export default function InventoryPage() {
   const [weight, setWeight] = useState("");
   const [creating, setCreating] = useState(false);
   const [createMsg, setCreateMsg] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
 
   function fetchInventory() {
     setLoading(true);
@@ -66,6 +68,32 @@ export default function InventoryPage() {
       setCreateMsg("Network error");
     } finally {
       setCreating(false);
+    }
+  }
+
+  async function handleDeleteSelected() {
+    if (selectedIds.size === 0) return;
+    setDeleting(true);
+    for (const id of selectedIds) {
+      try { await fetch(`/api/saas/products/${id}`, { method: "DELETE" }); } catch {}
+    }
+    setSelectedIds(new Set());
+    setDeleting(false);
+    fetchInventory();
+  }
+
+  function toggleSelect(id: string) {
+    const next = new Set(selectedIds);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setSelectedIds(next);
+  }
+
+  function toggleSelectAll() {
+    const allIds = products.map((p: any) => p.id);
+    if (allIds.every((id: string) => selectedIds.has(id))) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(allIds));
     }
   }
 
@@ -130,21 +158,31 @@ export default function InventoryPage() {
           <table className="w-full">
             <thead>
               <tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
+                <th className="px-5 py-3.5 w-10"><input type="checkbox" checked={products.length > 0 && products.every((p: any) => selectedIds.has(p.id))} onChange={toggleSelectAll} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></th>
                 <th className="px-5 py-3.5">SKU</th><th className="px-5 py-3.5">Product</th>
                 <th className="px-5 py-3.5">Category</th><th className="px-5 py-3.5 text-right">Weight</th>
+                <th className="px-5 py-3.5 text-right">
+                  {selectedIds.size > 0 && (
+                    <button onClick={handleDeleteSelected} disabled={deleting} className="text-[11px] text-[#FF3B30] font-medium hover:text-[#FF6B6B] disabled:opacity-50">
+                      {deleting ? "Deleting..." : `Delete (${selectedIds.size})`}
+                    </button>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black/[0.04]">
               {products.map((p: any) => (
                 <tr key={p.id} className="hover:bg-black/[0.01] transition-colors">
+                  <td className="px-5 py-3.5"><input type="checkbox" checked={selectedIds.has(p.id)} onChange={() => toggleSelect(p.id)} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></td>
                   <td className="px-5 py-3.5 text-xs font-mono text-[#86868B]">{p.sku}</td>
                   <td className="px-5 py-3.5 text-sm font-medium text-[#1D1D1F]">{p.name}</td>
                   <td className="px-5 py-3.5 text-xs text-[#86868B]">{p.category}</td>
                   <td className="px-5 py-3.5 text-sm text-[#1D1D1F] text-right">{p.unit_weight_lbs} lbs</td>
+                  <td className="px-5 py-3.5" />
                 </tr>
               ))}
               {products.length === 0 && (
-                <tr><td colSpan={4} className="px-5 py-12 text-center text-[#86868B] text-sm">No products yet</td></tr>
+                <tr><td colSpan={6} className="px-5 py-12 text-center text-[#86868B] text-sm">No products yet</td></tr>
               )}
             </tbody>
           </table>
