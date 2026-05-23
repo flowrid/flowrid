@@ -2,29 +2,38 @@
 
 import { useEffect, useState } from "react";
 
-const DEMO_RECEIVING = [
-  { id: "ASN-1042", supplier: "Overseas Textile Co.", expected: "May 22", items: 2400, status: "In Transit" },
-  { id: "ASN-1041", supplier: "Shenzhen Electronics", expected: "May 20", items: 850, status: "Arrived" },
-  { id: "ASN-1040", supplier: "BeautySupply Ltd.", expected: "May 19", items: 12000, status: "Received" },
-  { id: "ASN-1039", supplier: "GearUp Mfg", expected: "May 18", items: 3600, status: "Complete" },
-  { id: "ASN-1038", supplier: "Organic Foods Co.", expected: "May 15", items: 4800, status: "Complete" },
-];
+interface ReceivingItem {
+  id: string;
+  supplier: string;
+  expected: string;
+  items: number;
+  status: string;
+}
 
 const STATUS_STYLES: Record<string, string> = {
   "In Transit": "bg-[#ed6d00]/10 text-[#ed6d00]",
   Arrived: "bg-[#FF9500]/10 text-[#FF9500]",
   Received: "bg-[#AF52DE]/10 text-[#AF52DE]",
   Complete: "bg-[#34C759]/10 text-[#34C759]",
+  pending: "bg-[#8E8E93]/10 text-[#8E8E93]",
 };
 
+function capStatus(s: string): string {
+  if (!s) return "Pending";
+  if (s === s.toUpperCase()) return s.charAt(0) + s.slice(1).toLowerCase();
+  return s;
+}
+
 export default function ReceivingPage() {
-  const [items, setItems] = useState<typeof DEMO_RECEIVING>([]);
+  const [items, setItems] = useState<ReceivingItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [supplier, setSupplier] = useState("");
   const [expectedDate, setExpectedDate] = useState("");
   const [itemCount, setItemCount] = useState("");
   const [asnNumber, setAsnNumber] = useState(`ASN-${Date.now().toString(36).toUpperCase()}`);
+  const [creating, setCreating] = useState(false);
+  const [createMsg, setCreateMsg] = useState<string | null>(null);
 
   async function load() {
     try {
@@ -39,41 +48,57 @@ export default function ReceivingPage() {
             supplier: r.customer_name || r.supplier || "—",
             expected: r.expected_date ? new Date(r.expected_date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—",
             items: r.item_count || 0,
-            status: r.status || "pending",
+            status: capStatus(r.status || "pending"),
           })));
           return;
         }
       }
-      // Fallback to demo data
-      await new Promise(resolve => setTimeout(resolve, 300));
-      setItems(DEMO_RECEIVING);
+      setItems([]);
     } catch {
-      setItems(DEMO_RECEIVING);
+      setError("Failed to load");
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    let cancelled = false;
-    if (!cancelled) load();
-    return () => { cancelled = true; };
+    load();
   }, []);
 
-  function handleCreateASN(e: React.FormEvent) {
+  async function handleCreateASN(e: React.FormEvent) {
     e.preventDefault();
-    const newAsn = {
-      id: asnNumber.trim() || `ASN-${Date.now().toString(36).toUpperCase()}`,
-      supplier: supplier || "New Supplier",
-      expected: expectedDate || new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-      items: parseInt(itemCount) || 0,
-      status: "In Transit" as const,
-    };
-    setItems([newAsn, ...items]);
-    setSupplier("");
-    setExpectedDate("");
-    setItemCount("");
-    setAsnNumber(`ASN-${Date.now().toString(36).toUpperCase()}`);
+    if (!asnNumber.trim()) {
+      setCreateMsg("ASN number is required");
+      return;
+    }
+    setCreating(true);
+    setCreateMsg(null);
+    try {
+      const res = await fetch("/api/saas/receiving", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          order_number: asnNumber.trim(),
+          supplier: supplier || undefined,
+          expected_date: expectedDate || undefined,
+          item_count: itemCount ? parseInt(itemCount) : undefined,
+        }),
+      });
+      if (res.ok) {
+        setSupplier("");
+        setExpectedDate("");
+        setItemCount("");
+        setAsnNumber(`ASN-${Date.now().toString(36).toUpperCase()}`);
+        load();
+      } else {
+        const d = await res.json();
+        setCreateMsg(d.error || "Failed to create");
+      }
+    } catch {
+      setCreateMsg("Network error");
+    } finally {
+      setCreating(false);
+    }
   }
 
   if (loading) return (
@@ -122,7 +147,10 @@ export default function ReceivingPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button type="submit" className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors">Create ASN</button>
+            <button type="submit" disabled={creating} className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
+              {creating ? "Creating..." : "Create ASN"}
+            </button>
+            {createMsg && <span className="text-xs text-[#FF3B30]">{createMsg}</span>}
           </div>
         </form>
       </div>
@@ -147,12 +175,15 @@ export default function ReceivingPage() {
                   <td className="px-5 py-3.5 text-xs text-[#86868B]">{r.expected}</td>
                   <td className="px-5 py-3.5 text-sm text-[#1D1D1F]">{r.items.toLocaleString()}</td>
                   <td className="px-5 py-3.5">
-                    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${STATUS_STYLES[r.status]}`}>
+                    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${STATUS_STYLES[r.status] || ""}`}>
                       {r.status}
                     </span>
                   </td>
                 </tr>
               ))}
+              {items.length === 0 && (
+                <tr><td colSpan={5} className="px-5 py-12 text-center text-[#86868B] text-sm">No ASNs yet</td></tr>
+              )}
             </tbody>
           </table>
         </div>
