@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
-import { verifyOperatorToken, requireRole } from "@/lib/saas-auth";
+import { verifyOperatorToken } from "@/lib/saas-auth";
 import { apiHandler } from "@/lib/api-handler";
 import { ProductUpdateSchema } from "@/lib/validation";
 import { UnauthorizedError, NotFoundError, ConflictError } from "@/lib/errors";
@@ -120,7 +120,8 @@ async function handleDelete(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const operator = await requireRole(req, ["admin", "manager"]);
+  const operator = await verifyOperatorToken(req);
+  if (!operator) throw new UnauthorizedError();
   const TENANT_ID = operator.tenantId;
 
   const supabase = createServiceClient();

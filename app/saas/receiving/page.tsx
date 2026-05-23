@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 interface ReceivingItem {
   id: string;
+  orderNumber: string;
   supplier: string;
   expected: string;
   items: number;
@@ -46,7 +47,8 @@ export default function ReceivingPage() {
         const d = await res.json();
         if (d.data?.length) {
           setItems(d.data.map((r: any) => ({
-            id: r.order_number || r.id,
+            id: r.id,
+            orderNumber: r.order_number || r.id,
             supplier: r.customer_name || r.supplier || "—",
             expected: r.expected_date ? new Date(r.expected_date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—",
             items: r.item_count || 0,
@@ -207,7 +209,7 @@ export default function ReceivingPage() {
               {items.map((r) => (
                 <tr key={r.id} className="hover:bg-black/[0.01] transition-colors">
                   <td className="px-5 py-3.5"><input type="checkbox" checked={selectedIds.has(r.id)} onChange={() => toggleSelect(r.id)} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></td>
-                  <td className="px-5 py-3.5 text-sm font-medium text-[#1D1D1F]">{r.id}</td>
+                  <td className="px-5 py-3.5 text-sm font-medium text-[#1D1D1F]">{r.orderNumber}</td>
                   <td className="px-5 py-3.5 text-sm text-[#1D1D1F]">{r.supplier}</td>
                   <td className="px-5 py-3.5 text-xs text-[#86868B]">{r.expected}</td>
                   <td className="px-5 py-3.5 text-sm text-[#1D1D1F]">{r.items.toLocaleString()}</td>
