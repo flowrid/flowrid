@@ -125,116 +125,125 @@ export default function ShippingPage() {
       {error && <p className="text-[#FF3B30] text-sm bg-[#FF3B30]/5 rounded-xl px-4 py-3 mb-6">{error}</p>}
       {success && <p className="text-[#34C759] text-sm bg-[#34C759]/10 rounded-xl px-4 py-3 mb-6">{success}</p>}
 
-      {/* Results */}
-      {quotes.length > 0 && (
-        <>
-          {/* Desktop Table */}
-          <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden mb-6">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
-                    <th className="px-5 py-3.5">Carrier</th>
-                    <th className="px-5 py-3.5">Service</th>
-                    <th className="px-5 py-3.5">Delivery</th>
-                    <th className="px-5 py-3.5">Base Rate</th>
-                    <th className="px-5 py-3.5">Fuel</th>
-                    <th className="px-5 py-3.5 text-right">Total</th>
-                    <th className="px-5 py-3.5"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-black/[0.04]">
-                  {quotes.map((q, i) => {
-                    const isBest = i === 0;
-                    const isSelected = selectedQuote?.carrier === q.carrier && selectedQuote?.serviceLevel === q.serviceLevel;
-                    return (
-                      <tr key={`${q.carrier}-${q.serviceLevel}`} className={`hover:bg-black/[0.01] transition-colors ${isSelected ? "bg-[#ed6d00]/5" : ""}`}>
-                        <td className="px-5 py-3.5">
-                          <div className="flex items-center gap-2">
-                            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: CARRIER_COLORS[q.carrier] || "#86868B" }} />
-                            <span className="text-sm font-semibold text-[#1D1D1F]">{q.carrierName}</span>
-                            {isBest && <span className="text-[10px] bg-[#34C759]/10 text-[#34C759] px-1.5 py-0.5 rounded-full font-medium">Best</span>}
-                          </div>
-                        </td>
-                        <td className="px-5 py-3.5 text-sm text-[#1D1D1F]">{q.serviceName}</td>
-                        <td className="px-5 py-3.5 text-sm text-[#86868B]">{q.estimatedDays}d <span className="text-[11px]">({q.deliveryDate})</span></td>
-                        <td className="px-5 py-3.5 text-sm">${q.baseRate.toFixed(2)}</td>
-                        <td className="px-5 py-3.5 text-sm">${q.fuelSurcharge.toFixed(2)}</td>
-                        <td className="px-5 py-3.5 text-sm font-bold text-right">${q.totalCost.toFixed(2)}</td>
-                        <td className="px-5 py-3.5">
-                          <button
-                            onClick={() => setSelectedQuote(isSelected ? null : q)}
-                            className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-colors ${isSelected ? "bg-[#ed6d00] text-white" : "bg-black/5 text-[#86868B] hover:bg-black/10"}`}
-                          >
-                            {isSelected ? "Selected" : "Select"}
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+      {/* Results — always visible */}
+      <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden mb-6">
+        {loading && !quotes.length && (
+          <div className="p-12 text-center">
+            <div className="animate-spin w-6 h-6 border-2 border-[#ed6d00] border-t-transparent rounded-full mx-auto mb-3" />
+            <p className="text-[#86868B] text-sm">Fetching live rates...</p>
           </div>
+        )}
 
-          {/* Mobile Cards */}
-          <div className="md:hidden space-y-3 mb-6">
-            {quotes.map((q, i) => {
-              const isBest = i === 0;
-              const isSelected = selectedQuote?.carrier === q.carrier && selectedQuote?.serviceLevel === q.serviceLevel;
-              return (
-                <div key={`${q.carrier}-${q.serviceLevel}`} className={`bg-white rounded-2xl p-4 shadow-sm border ${isSelected ? "border-[#ed6d00]" : "border-black/5"} ${isBest ? "ring-1 ring-[#34C759]/30" : ""}`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: CARRIER_COLORS[q.carrier] || "#86868B" }} />
-                      <span className="text-sm font-semibold text-[#1D1D1F]">{q.carrierName} {q.serviceName}</span>
-                    </div>
-                    {isBest && <span className="text-[10px] bg-[#34C759]/10 text-[#34C759] px-1.5 py-0.5 rounded-full font-medium">Best</span>}
-                  </div>
-                  <div className="flex items-center justify-between text-xs text-[#86868B] mb-3">
-                    <span>{q.estimatedDays} days · {q.deliveryDate}</span>
-                    <span>{q.billableWeight} lbs billable</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <p className="text-[22px] font-bold text-[#1D1D1F]">${q.totalCost.toFixed(2)}</p>
-                    <button
-                      onClick={() => setSelectedQuote(isSelected ? null : q)}
-                      className={`px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${isSelected ? "bg-[#ed6d00] text-white" : "bg-black/5 text-[#86868B]"}`}
-                    >
-                      {isSelected ? "Selected" : "Select"}
-                    </button>
-                  </div>
-                  <div className="mt-2 text-[11px] text-[#86868B]">
-                    Base ${q.baseRate.toFixed(2)} + Fuel ${q.fuelSurcharge.toFixed(2)}{q.residentialSurcharge > 0 ? ` + Residential $${q.residentialSurcharge.toFixed(2)}` : ""}
-                  </div>
-                  {q.isSimulated && <p className="text-[10px] text-[#FF9500] mt-1">Estimated — connect carrier for live rates</p>}
-                </div>
-              );
-            })}
+        {!loading && quotes.length === 0 && !error && (
+          <div className="text-center py-16">
+            <p className="text-[#86868B] text-lg">No rates available</p>
+            <p className="text-[#86868B] text-sm mt-1">Adjust package details and try again</p>
           </div>
+        )}
 
-          {selectedQuote && (
-            <div className="bg-white rounded-2xl shadow-sm border border-[#ed6d00]/20 p-6 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-[#1D1D1F]">Create shipment with {selectedQuote.carrierName} {selectedQuote.serviceName}</p>
-                <p className="text-xs text-[#86868B] mt-0.5">Total: ${selectedQuote.totalCost.toFixed(2)} · {selectedQuote.estimatedDays} days · {selectedQuote.isSimulated ? "Simulated rate" : ""}</p>
+        {quotes.length > 0 && (
+          <>
+            {/* Desktop Table */}
+            <div className="hidden md:block">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
+                      <th className="px-5 py-3.5">Carrier</th>
+                      <th className="px-5 py-3.5">Service</th>
+                      <th className="px-5 py-3.5">Delivery</th>
+                      <th className="px-5 py-3.5">Base Rate</th>
+                      <th className="px-5 py-3.5">Fuel</th>
+                      <th className="px-5 py-3.5 text-right">Total</th>
+                      <th className="px-5 py-3.5"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-black/[0.04]">
+                    {quotes.map((q, i) => {
+                      const isBest = i === 0;
+                      const isSelected = selectedQuote?.carrier === q.carrier && selectedQuote?.serviceLevel === q.serviceLevel;
+                      return (
+                        <tr key={`${q.carrier}-${q.serviceLevel}`} className={`hover:bg-black/[0.01] transition-colors ${isSelected ? "bg-[#ed6d00]/5" : ""}`}>
+                          <td className="px-5 py-3.5">
+                            <div className="flex items-center gap-2">
+                              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: CARRIER_COLORS[q.carrier] || "#86868B" }} />
+                              <span className="text-sm font-semibold text-[#1D1D1F]">{q.carrierName}</span>
+                              {isBest && <span className="text-[10px] bg-[#34C759]/10 text-[#34C759] px-1.5 py-0.5 rounded-full font-medium">Best</span>}
+                            </div>
+                          </td>
+                          <td className="px-5 py-3.5 text-sm text-[#1D1D1F]">{q.serviceName}</td>
+                          <td className="px-5 py-3.5 text-sm text-[#86868B]">{q.estimatedDays}d <span className="text-[11px]">({q.deliveryDate})</span></td>
+                          <td className="px-5 py-3.5 text-sm">${q.baseRate.toFixed(2)}</td>
+                          <td className="px-5 py-3.5 text-sm">${q.fuelSurcharge.toFixed(2)}</td>
+                          <td className="px-5 py-3.5 text-sm font-bold text-right">${q.totalCost.toFixed(2)}</td>
+                          <td className="px-5 py-3.5">
+                            <button
+                              onClick={() => setSelectedQuote(isSelected ? null : q)}
+                              className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-colors ${isSelected ? "bg-[#ed6d00] text-white" : "bg-black/5 text-[#86868B] hover:bg-black/10"}`}
+                            >
+                              {isSelected ? "Selected" : "Select"}
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
-              <button
-                onClick={() => createShipment(selectedQuote)}
-                disabled={creating}
-                className="bg-[#ed6d00] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors shadow-sm"
-              >
-                {creating ? "Creating..." : "Create Shipment"}
-              </button>
             </div>
-          )}
-        </>
-      )}
 
-      {!loading && quotes.length === 0 && !error && (
-        <div className="text-center py-16">
-          <p className="text-[#86868B] text-lg">Enter package details and click Compare Rates</p>
-          <p className="text-[#86868B] text-sm mt-1">Real-time rate comparison across USPS, UPS, and FedEx</p>
+            {/* Mobile Cards */}
+            <div className="md:hidden space-y-3 p-4">
+              {quotes.map((q, i) => {
+                const isBest = i === 0;
+                const isSelected = selectedQuote?.carrier === q.carrier && selectedQuote?.serviceLevel === q.serviceLevel;
+                return (
+                  <div key={`${q.carrier}-${q.serviceLevel}`} className={`bg-[#F5F5F7] rounded-2xl p-4 ${isSelected ? "ring-2 ring-[#ed6d00]" : ""} ${isBest ? "ring-1 ring-[#34C759]/30" : ""}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-full" style={{ backgroundColor: CARRIER_COLORS[q.carrier] || "#86868B" }} />
+                        <span className="text-sm font-semibold text-[#1D1D1F]">{q.carrierName} {q.serviceName}</span>
+                      </div>
+                      {isBest && <span className="text-[10px] bg-[#34C759]/10 text-[#34C759] px-1.5 py-0.5 rounded-full font-medium">Best</span>}
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-[#86868B] mb-3">
+                      <span>{q.estimatedDays} days · {q.deliveryDate}</span>
+                      <span>{q.billableWeight} lbs billable</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[22px] font-bold text-[#1D1D1F]">${q.totalCost.toFixed(2)}</p>
+                      <button
+                        onClick={() => setSelectedQuote(isSelected ? null : q)}
+                        className={`px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${isSelected ? "bg-[#ed6d00] text-white" : "bg-black/5 text-[#86868B]"}`}
+                      >
+                        {isSelected ? "Selected" : "Select"}
+                      </button>
+                    </div>
+                    <div className="mt-2 text-[11px] text-[#86868B]">
+                      Base ${q.baseRate.toFixed(2)} + Fuel ${q.fuelSurcharge.toFixed(2)}{q.residentialSurcharge > 0 ? ` + Residential $${q.residentialSurcharge.toFixed(2)}` : ""}
+                    </div>
+                    {q.isSimulated && <p className="text-[10px] text-[#FF9500] mt-1">Estimated — connect carrier for live rates</p>}
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
+
+      {selectedQuote && (
+        <div className="bg-white rounded-2xl shadow-sm border border-[#ed6d00]/20 p-6 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-[#1D1D1F]">Create shipment with {selectedQuote.carrierName} {selectedQuote.serviceName}</p>
+            <p className="text-xs text-[#86868B] mt-0.5">Total: ${selectedQuote.totalCost.toFixed(2)} · {selectedQuote.estimatedDays} days · {selectedQuote.isSimulated ? "Simulated rate" : ""}</p>
+          </div>
+          <button
+            onClick={() => createShipment(selectedQuote)}
+            disabled={creating}
+            className="bg-[#ed6d00] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors shadow-sm"
+          >
+            {creating ? "Creating..." : "Create Shipment"}
+          </button>
         </div>
       )}
     </div>
