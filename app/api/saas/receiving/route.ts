@@ -57,12 +57,24 @@ async function handlePost(req: Request) {
     return NextResponse.json({ error: "ASN number is required" }, { status: 400 });
   }
 
+  // Find a warehouse for this tenant (required by schema)
+  const { data: warehouses, error: whError } = await supabase
+    .from("warehouses")
+    .select("id")
+    .eq("tenant_id", operator.tenantId)
+    .limit(1);
+
+  if (whError || !warehouses?.length) {
+    return NextResponse.json({ error: "No warehouse found for this tenant" }, { status: 400 });
+  }
+
   const meta: any = {};
   if (body.supplier) meta.supplier = body.supplier;
   if (body.item_count != null) meta.item_count = Number(body.item_count);
 
   const insertRow: Record<string, unknown> = {
     tenant_id: operator.tenantId,
+    warehouse_id: warehouses[0].id,
     order_number: body.order_number.trim(),
     expected_date: body.expected_date || null,
     status: "pending",
