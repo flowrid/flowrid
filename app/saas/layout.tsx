@@ -48,7 +48,7 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
                     : "text-[#1D1D1F] hover:bg-black/5"
                 }`}
               >
-                <span className="w-5 h-5 flex items-center justify-center"><img src={item.icon} alt="" className="w-4 h-4" /></span>
+                <span className="w-5 h-5 flex items-center justify-center"><img src={item.icon} alt="" className="w-4 h-4" style={active ? { filter: "brightness(0) invert(1)" } : undefined} /></span>
                 <span>{item.label}</span>
               </Link>
             );
@@ -83,7 +83,7 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
                 active ? "text-[#ed6d00]" : "text-[#86868B]"
               }`}
             >
-              <span className="text-base mb-0.5"><img src={item.icon} alt="" className="w-4 h-4" /></span>
+              <span className="text-base mb-0.5"><img src={item.icon} alt="" className="w-4 h-4" style={active ? { filter: "brightness(0) invert(1)" } : undefined} /></span>
               <span>{item.label}</span>
             </Link>
           );
