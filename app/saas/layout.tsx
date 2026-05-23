@@ -4,15 +4,15 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 const NAV_ITEMS = [
-  { label: "Dashboard", href: "/saas/dashboard", icon: "􀍟" },
-  { label: "Orders", href: "/saas/orders", icon: "􀐚" },
-  { label: "Inventory", href: "/saas/inventory", icon: "􀍞" },
-  { label: "Receiving", href: "/saas/receiving", icon: "􀐛" },
-  { label: "Scan", href: "/saas/scan", icon: "􀎲" },
-  { label: "Analytics", href: "/saas/analytics", icon: "􀍡" },
-  { label: "Shipping", href: "/saas/shipping", icon: "􀎻" },
-  { label: "Billing", href: "/saas/billing", icon: "􀌯" },
-  { label: "Settings", href: "/saas/settings", icon: "􀍟" },
+  { label: "Dashboard", href: "/saas/dashboard", icon: "/icons/dashboard.png" },
+  { label: "Orders", href: "/saas/orders", icon: "/icons/orders.png" },
+  { label: "Inventory", href: "/saas/inventory", icon: "/icons/inventory.png" },
+  { label: "Receiving", href: "/saas/receiving", icon: "/icons/receiving.png" },
+  { label: "Scan", href: "/saas/scan", icon: "/icons/scan.png" },
+  { label: "Analytics", href: "/saas/analytics", icon: "/icons/analytics.png" },
+  { label: "Shipping", href: "/saas/shipping", icon: "/icons/shipping.png" },
+  { label: "Billing", href: "/saas/billing", icon: "/icons/billing.png" },
+  { label: "Settings", href: "/saas/settings", icon: "/icons/settings.png" },
 ];
 
 export default function SaasLayout({ children }: { children: React.ReactNode }) {
@@ -30,10 +30,9 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
       {/* Sidebar — frosted glass */}
       <aside className="w-60 shrink-0 hidden md:flex flex-col bg-white/70 backdrop-blur-xl border-r border-black/5">
         <div className="px-5 py-6">
-          <Link href="/saas/dashboard" className="text-xl font-bold tracking-tight text-[#1D1D1F]">
-            <img src="/flowrid-logo.png" alt="Flowrid" className="h-7 w-auto" />
+          <Link href="/saas/dashboard" className="inline-block">
+            <img src="/logo.png" alt="Flowrid" className="h-7 w-auto" />
           </Link>
-          <p className="text-xs text-[#86868B] mt-0.5 tracking-wide">3PL OS</p>
         </div>
 
         <nav className="flex-1 px-3 space-y-0.5">
@@ -49,7 +48,7 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
                     : "text-[#1D1D1F] hover:bg-black/5"
                 }`}
               >
-                <span className="text-[13px] w-5 text-center">{item.icon}</span>
+                <span className="w-5 h-5 flex items-center justify-center"><img src={item.icon} alt="" className="w-4 h-4" /></span>
                 <span>{item.label}</span>
               </Link>
             );
@@ -84,7 +83,7 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
                 active ? "text-[#ed6d00]" : "text-[#86868B]"
               }`}
             >
-              <span className="text-base mb-0.5">{item.icon}</span>
+              <span className="text-base mb-0.5"><img src={item.icon} alt="" className="w-4 h-4" /></span>
               <span>{item.label}</span>
             </Link>
           );
