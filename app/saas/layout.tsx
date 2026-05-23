@@ -29,7 +29,7 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
     <div className="min-h-screen flex bg-[#F5F5F7]">
       {/* Sidebar — frosted glass */}
       <aside className="w-60 shrink-0 hidden md:flex flex-col bg-white/70 backdrop-blur-xl border-r border-black/5">
-        <div className="px-5 pt-6 pb-11">
+        <div className="px-5 pt-7 pb-12">
           <Link href="/saas/dashboard" className="inline-block">
             <img src="/logo.png" alt="Flowrid" className="h-9 w-auto" />
           </Link>
