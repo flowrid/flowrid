@@ -109,7 +109,13 @@ export default function ReceivingPage() {
     if (selectedIds.size === 0) return;
     setDeleting(true);
     for (const id of selectedIds) {
-      try { await fetch(`/api/saas/receiving/${id}`, { method: "DELETE" }); } catch {}
+      try {
+        const res = await fetch(`/api/saas/receiving/${id}`, { method: "DELETE" });
+        if (!res.ok) {
+          const err = await res.json();
+          setCreateMsg(err.error || `Delete failed (${res.status})`);
+        }
+      } catch { setCreateMsg("Network error"); }
     }
     setSelectedIds(new Set());
     setDeleting(false);
