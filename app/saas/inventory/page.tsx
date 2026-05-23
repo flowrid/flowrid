@@ -9,8 +9,6 @@ export default function InventoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Inline create form state
-  const [showCreate, setShowCreate] = useState(false);
   const [sku, setSku] = useState("");
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
@@ -57,8 +55,8 @@ export default function InventoryPage() {
         body: JSON.stringify(body),
       });
       if (res.ok) {
-        setShowCreate(false);
         setSku(""); setName(""); setCategory(""); setBrand(""); setWeight("");
+        setCreateMsg(null);
         fetchInventory();
       } else {
         const err = await res.json();
@@ -69,12 +67,6 @@ export default function InventoryPage() {
     } finally {
       setCreating(false);
     }
-  }
-
-  function openCreateForm() {
-    setSku(""); setName(""); setCategory(""); setBrand(""); setWeight("");
-    setCreateMsg(null);
-    setShowCreate(true);
   }
 
   const { products, stats } = data;
@@ -95,46 +87,44 @@ export default function InventoryPage() {
           <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Inventory</h1>
           <p className="text-[#86868B] text-sm mt-0.5">{stats.totalSKUs} SKUs</p>
         </div>
-        <button onClick={openCreateForm} className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm">+ Add Product</button>
       </div>
 
-      {showCreate && (
-        <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-          <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">Add Product</h2>
-          <form onSubmit={handleCreate} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">SKU *</label>
-                <input type="text" value={sku} onChange={(e) => setSku(e.target.value)} placeholder="SKU-001" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Name *</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Product Name" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Category</label>
-                <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Electronics" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Brand</label>
-                <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="Brand" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Weight (lbs)</label>
-                <input type="number" step="0.01" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="0.00" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
-              </div>
+      {/* Add Product form — always visible */}
+      <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
+        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">Add Product</h2>
+        <form onSubmit={handleCreate} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">SKU *</label>
+              <input type="text" value={sku} onChange={(e) => setSku(e.target.value)} placeholder="SKU-001" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
-            <div className="flex items-center gap-3">
-              <button type="submit" disabled={creating} className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
-                {creating ? "Creating..." : "Create Product"}
-              </button>
-              <button type="button" onClick={() => setShowCreate(false)} className="text-sm text-[#86868B] hover:text-[#1D1D1F] transition-colors">Cancel</button>
-              {createMsg && <span className="text-xs text-[#FF3B30]">{createMsg}</span>}
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Name *</label>
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Product Name" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
-          </form>
-        </div>
-      )}
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Category</label>
+              <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Electronics" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+            </div>
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Brand</label>
+              <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="Brand" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+            </div>
+            <div>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Weight (lbs)</label>
+              <input type="number" step="0.01" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="0.00" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button type="submit" disabled={creating} className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
+              {creating ? "Creating..." : "Create Product"}
+            </button>
+            {createMsg && <span className="text-xs text-[#FF3B30]">{createMsg}</span>}
+          </div>
+        </form>
+      </div>
 
+      {/* Product list */}
       <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">

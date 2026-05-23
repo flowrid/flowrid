@@ -115,8 +115,7 @@ export default function ShippingPage() {
         </div>
         <button
           onClick={fetchRates}
-          disabled={loading}
-          className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors disabled:opacity-50 shadow-sm"
+          className="inline-flex items-center gap-2 bg-[#ed6d00] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm"
         >
           {loading ? "Calculating..." : "Compare Rates"}
         </button>
