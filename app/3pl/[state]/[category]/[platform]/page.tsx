@@ -38,7 +38,7 @@ export default async function FullSEOPage({ params }: Props) {
   const supabase = createServerClient();
   if (!supabase) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 py-16 text-center">
+      <div className="max-w-[1460px] mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Database Not Configured</h1>
         <p className="mt-2 text-text-secondary">
           Please configure Supabase to view {formatName(category)} 3PLs for {platform} in {formatName(state)}.
@@ -53,7 +53,8 @@ export default async function FullSEOPage({ params }: Props) {
     .select("*")
     .eq("state", state.toLowerCase())
     .contains("categories", [category.toLowerCase()])
-    .contains("platforms", [platform.toLowerCase()]);
+    .contains("platforms", [platform.toLowerCase()])
+    .limit(5000);
 
   // 2. 评分排序
   const scored = threePLs
@@ -77,7 +78,7 @@ export default async function FullSEOPage({ params }: Props) {
   );
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-8 pb-20">
+    <div className="max-w-[1460px] mx-auto px-4 py-8 pb-20">
       {/* H1 Title */}
       <h1 className="text-2xl md:text-3xl font-bold text-text">
         Best {platform} {formatName(category)} 3PLs in {formatName(state)}
@@ -135,7 +136,7 @@ export default async function FullSEOPage({ params }: Props) {
           <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">
             Top Match{scored.length > 1 ? "es" : ""}
           </h2>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 lg:gap-5 md:grid-cols-2 lg:grid-cols-6">
             {scored.slice(0, 3).map((item) => (
               <ThreePLCard key={item.id} data={item} />
             ))}
@@ -149,7 +150,7 @@ export default async function FullSEOPage({ params }: Props) {
           <h2 className="text-lg font-bold text-text mb-4">
             All {platform} {formatName(category)} 3PLs in {formatName(state)}
           </h2>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 lg:gap-5 md:grid-cols-2 lg:grid-cols-6">
             {scored.slice(3).map((item) => (
               <ThreePLCard key={item.id} data={item} />
             ))}

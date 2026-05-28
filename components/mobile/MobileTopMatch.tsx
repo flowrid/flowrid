@@ -16,7 +16,7 @@ export default function MobileTopMatch({ data }: { data: ThreePLCardData }) {
         <div className="min-w-0 flex-1">
           <h3 className="text-sm font-bold truncate">{data.name}</h3>
           <p className="text-xs text-text-secondary mt-0.5">
-            {data.city}, {formatState(data.state)} · {data.shipping_speed} shipping
+            {data.city ? `${data.city}, ${formatState(data.state)}` : formatState(data.state)} · {data.shipping_speed} shipping
           </p>
         </div>
         <span className="inline-flex items-center justify-center bg-success text-white text-xs font-bold rounded-lg w-10 h-7 shrink-0">

@@ -33,7 +33,7 @@ export default async function StatePage({ params }: Props) {
   const supabase = createServerClient();
   if (!supabase) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 py-16 text-center">
+      <div className="max-w-[1460px] mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Database Not Configured</h1>
         <p className="mt-2 text-text-secondary">Please configure Supabase to view 3PLs in {formatName(state)}.</p>
       </div>
@@ -43,11 +43,12 @@ export default async function StatePage({ params }: Props) {
   const { data: threePLs } = await supabase
     .from("pl_providers")
     .select("*")
-    .eq("state", state.toLowerCase());
+    .eq("state", state.toLowerCase())
+    .limit(5000);
 
   if (!threePLs || threePLs.length === 0) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 py-16 text-center">
+      <div className="max-w-[1460px] mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold text-text">
           No 3PLs Found in {formatName(state)}
         </h1>
@@ -71,7 +72,7 @@ export default async function StatePage({ params }: Props) {
     .sort((a, b) => b.score - a.score);
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-8 pb-20">
+    <div className="max-w-[1460px] mx-auto px-4 py-8 pb-20">
       <h1 className="text-2xl md:text-3xl font-bold text-text">
         Best 3PL Fulfillment Centers in {formatName(state)}
       </h1>
@@ -86,7 +87,7 @@ export default async function StatePage({ params }: Props) {
           <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">
             Top Match
           </h2>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 lg:gap-5 lg:grid-cols-6">
             {scored.slice(0, 3).map((item) => (
               <ThreePLCard key={item.id} data={item} />
             ))}
@@ -100,7 +101,7 @@ export default async function StatePage({ params }: Props) {
           <h2 className="text-lg font-bold text-text mb-4">
             All {formatName(state)} 3PLs
           </h2>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 lg:gap-5 lg:grid-cols-6">
             {scored.slice(3).map((item) => (
               <ThreePLCard key={item.id} data={item} />
             ))}

@@ -1,0 +1,93 @@
+
+=== NODE 0: id=1:9 name=Rectangle 3 type=RECTANGLE ===
+  Position: x=1535.0, y=-1309.0, w=472.0, h=472.0
+
+=== NODE 1: id=10:350 name=Rectangle 6 type=RECTANGLE ===
+  Position: x=1858.0, y=-1234.0, w=111.0, h=77.0
+
+=== NODE 2: id=10:348 name=92 type=TEXT ===
+  Position: x=1871.0, y=-1202.9999914540822, w=41.007539389058365, h=39.00792602439469
+
+=== NODE 3: id=8:85 name=San Francisco, California type=TEXT ===
+  Position: x=1573.0006103515625, y=-1091.9999482484127, w=234.00463962403592, h=24.045236334350193
+
+=== NODE 4: id=10:354 name=Suitable for TikTok beauty brands type=TEXT ===
+  Position: x=1573.0006103515625, y=-985.0000126161322, w=318.0046396240359, h=24.061475018475903
+
+=== NODE 5: id=10:342 name=Ops Score type=TEXT ===
+  Position: x=1869.0, y=-1228.999993358404, w=89.00425298869959, h=22.017205272466526
+
+=== NODE 6: id=8:103 name=3-5 days type=TEXT ===
+  Position: x=1670.0, y=-901.9999223490886, w=94.0052195770404, h=27.018171860807342
+
+=== NODE 7: id=8:104 name=logo图标 type=RECTANGLE ===
+  Position: x=1817.0, y=-920.0, w=152.0, h=49.0
+
+=== NODE 8: id=7:81 name=Mask group type=GROUP ===
+  Position: x=1573.0, y=-1274.0, w=115.0, h=115.0
+  Child 0: id=7:77 name=logo图标 type=RECTANGLE x=1573.0 y=-1274.0 w=115.0 h=115.0
+  Child 1: id=7:76 name=图标 2 type=RECTANGLE x=1572.0 y=-1275.0 w=118.0 h=118.0
+    IMAGE FILL: scaleMode=FILL, imageRef=dbb199d4e726409a7fdfff0c9ff6c2f0d3251cfa
+
+=== NODE 9: id=7:5 name=选择框 type=RECTANGLE ===
+  Position: x=1945.0, y=-1275.0, w=24.0, h=24.0
+
+=== NODE 10: id=6:66 name=Title type=TEXT ===
+  Position: x=1573.0, y=-1130.9999926318037, w=287.27829122316325, h=36.05553462399121
+
+=== NODE 11: id=8:101 name=Title type=TEXT ===
+  Position: x=1572.0, y=-902.9999713121437, w=89.20728925681033, h=29.017244261362407
+
+=== NODE 12: id=8:112 name=amazon 2 type=RECTANGLE ===
+  Position: x=1607.0, y=-1027.0, w=31.0, h=31.0
+  IMAGE FILL: scaleMode=FILL, imageRef=5aacef70942bf60122fb4cc7eceaa6744b7476d1
+
+=== NODE 13: id=8:113 name=Chewy 2 type=RECTANGLE ===
+  Position: x=1865.0, y=-1027.0, w=31.0, h=31.0
+  IMAGE FILL: scaleMode=FILL, imageRef=5ce085447e803583cd62822acce7c314ac5f2a2e
+
+=== NODE 14: id=8:114 name=ebay 2 type=RECTANGLE ===
+  Position: x=1718.0, y=-1027.0, w=31.0, h=31.0
+  IMAGE FILL: scaleMode=FILL, imageRef=bb9c5e0bd3882c7863dd521ef2a724315ca65b3c
+
+=== NODE 15: id=8:115 name=etsy 2 type=RECTANGLE ===
+  Position: x=1755.0, y=-1027.0, w=31.0, h=31.0
+  IMAGE FILL: scaleMode=FILL, imageRef=a051507a24263cb17de140d877aa65a785983d4a
+
+=== NODE 16: id=8:116 name=shein 2 type=RECTANGLE ===
+  Position: x=1791.0, y=-1027.0, w=31.0, h=31.0
+  IMAGE FILL: scaleMode=FILL, imageRef=3c51f8c67034b1c71151e7d04e559895e7411855
+
+=== NODE 17: id=8:117 name=shopify 2 type=RECTANGLE ===
+  Position: x=1573.0, y=-1027.0, w=31.0, h=31.0
+  IMAGE FILL: scaleMode=FILL, imageRef=a2ad9a528d7f4074d3de721a288deff35e8a47d8
+
+=== NODE 18: id=8:118 name=temu 2 type=RECTANGLE ===
+  Position: x=1828.0, y=-1027.0, w=31.0, h=31.0
+  IMAGE FILL: scaleMode=FILL, imageRef=3bb2092dad7ba1fa9f3745ad25cbc0e31cd21aeb
+
+=== NODE 19: id=8:119 name=tiktok 2 type=RECTANGLE ===
+  Position: x=1644.0, y=-1027.0, w=32.0, h=31.0
+  IMAGE FILL: scaleMode=FILL, imageRef=73dd57554b48d98f2004fbb18bf3e7925b56f87e
+
+=== NODE 20: id=8:120 name=walmart 2 type=RECTANGLE ===
+  Position: x=1682.0, y=-1027.0, w=29.0, h=30.0
+  IMAGE FILL: scaleMode=FILL, imageRef=1a09e77087e7cc0076f635c4024083b421b064e0
+
+=== NODE 21: id=8:121 name=wayfair 2 type=RECTANGLE ===
+  Position: x=1902.0, y=-1027.0, w=31.0, h=31.0
+  IMAGE FILL: scaleMode=FILL, imageRef=0890d1d960384d67a7c4db91cc6f0d4ff9abb132
+
+=== NODE 22: id=8:110 name=View Details type=TEXT ===
+  Position: x=1833.0, y=-906.9999741242063, w=117.00463962403592, h=24.022618167175096
+
+=== NODE 23: id=8:122 name=whatnot 2 type=RECTANGLE ===
+  Position: x=1938.0, y=-1027.0, w=30.0, h=30.0
+  IMAGE FILL: scaleMode=FILL, imageRef=0e15879ad71143666549ae3847d4d4df67898858
+
+=== NODE 24: id=10:341 name=Verified 1 type=RECTANGLE ===
+  Position: x=1928.0, y=-1201.0, w=30.0, h=36.0
+  IMAGE FILL: scaleMode=FILL, imageRef=58bc46ff540f2484e12fbf1573a0c4c6835dceb5
+
+=== NODE 25: id=10:346 name=Rectangle 5 type=RECTANGLE ===
+  Position: x=1659.0, y=-896.9999389648438, w=1.0, h=17.0

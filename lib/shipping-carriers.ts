@@ -11,7 +11,6 @@ export interface CarrierAdapter {
   getRates(request: ShipmentRequest): Promise<RateQuote[]>;
 }
 
-const TENANT_ID = "00000000-0000-0000-0000-000000000001";
 
 // Simulated rate tables — reasonable approximations of 2025 commercial rates
 const RATE_TABLE: Record<string, Record<string, { basePerLb: number; minCharge: number; maxWeight: number; deliveryDays: Record<string, number> }>> = {

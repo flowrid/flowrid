@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
 import { exchangeShopifyToken, registerShopifyWebhooks } from "@/lib/shopify";
-
-const TENANT_ID = "00000000-0000-0000-0000-000000000001";
+import { verifyOperatorToken } from "@/lib/saas-auth";
 
 /**
  * GET /api/saas/integrations/shopify/callback
@@ -17,6 +16,12 @@ export async function GET(req: Request) {
   if (!code || !shop) {
     return NextResponse.json({ error: "Missing code or shop" }, { status: 400 });
   }
+
+  const operator = await verifyOperatorToken(req);
+  if (!operator) {
+    return NextResponse.redirect(new URL("/saas/login?redirect=/saas/settings", req.url));
+  }
+  const TENANT_ID = operator.tenantId;
 
   try {
     // 交换 token

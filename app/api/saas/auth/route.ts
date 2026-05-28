@@ -68,7 +68,7 @@ async function handleRegister(
   const { data: user, error } = await supabase
     .from("users")
     .insert(insertData as any)
-    .select("id, email, name, role")
+    .select("id, email, name, role, tenant_id")
     .single();
 
   if (error) {
@@ -83,7 +83,11 @@ async function handleRegister(
     return NextResponse.json({ error: "Failed to create account. Is the users table set up?" }, { status: 500 });
   }
 
-  const token = await createToken((user as { id: string }).id, (user as { email: string }).email);
+  const token = await createToken(
+    (user as { id: string }).id,
+    (user as { email: string }).email,
+    (user as { tenant_id: string }).tenant_id || "00000000-0000-0000-0000-000000000001"
+  );
   const response = NextResponse.json({
     success: true,
     user: { id: (user as { id: string }).id, name: (user as { name: string }).name, email: (user as { email: string }).email, role: (user as { role: string }).role },
@@ -110,7 +114,7 @@ async function handleLogin(
   // 用原始 .select 显式取所有字段，绕过 TypeScript 类型限制
   const { data, error } = await supabase
     .from("users")
-    .select("id, email, name, role, password_hash, is_active")
+    .select("id, email, name, role, password_hash, is_active, tenant_id")
     .eq("email", cleanEmail)
     .maybeSingle();
 
@@ -133,7 +137,11 @@ async function handleLogin(
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }
 
-  const token = await createToken(userData.id as string, userData.email as string);
+  const token = await createToken(
+    userData.id as string,
+    userData.email as string,
+    (userData.tenant_id as string) || "00000000-0000-0000-0000-000000000001"
+  );
   const response = NextResponse.json({
     success: true,
     user: { id: userData.id, name: userData.name, email: userData.email, role: userData.role },
@@ -166,8 +174,8 @@ function demoLogin(email: string) {
   return response;
 }
 
-async function createToken(userId: string, email: string) {
-  return new SignJWT({ sub: userId, email })
+async function createToken(userId: string, email: string, tenantId: string) {
+  return new SignJWT({ sub: userId, email, tenantId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")

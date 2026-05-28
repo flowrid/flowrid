@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
+import { verifyOperatorToken } from "@/lib/saas-auth";
 
 export const dynamic = "force-dynamic";
 
-const TENANT_ID = "00000000-0000-0000-0000-000000000001";
-
 export async function GET(req: Request) {
+  const operator = await verifyOperatorToken(req);
+  if (!operator) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const TENANT_ID = operator.tenantId;
+
   const { searchParams } = new URL(req.url);
   const warehouseId = searchParams.get("warehouse_id");
   const global = searchParams.get("global") === "true";

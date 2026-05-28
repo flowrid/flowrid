@@ -1,4 +1,4 @@
-import { createServerClient } from "@/lib/supabase";
+﻿import { createServerClient } from "@/lib/supabase";
 import Link from "next/link";
 import type { ThreePL } from "@/types/3pl";
 
@@ -20,7 +20,7 @@ export default async function ComparePage({
 
   if (!supabase || slugs.length === 0) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 py-8">
+      <div className="max-w-[1460px] mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold text-text">Compare 3PL Providers</h1>
         <div className="mt-8 text-center py-16">
           <p className="text-text-secondary text-lg">
@@ -44,7 +44,7 @@ export default async function ComparePage({
 
   if (providers.length < 2) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 py-8">
+      <div className="max-w-[1460px] mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold text-text">Compare 3PL Providers</h1>
         <p className="mt-8 text-center text-text-secondary">
           Select at least 2 providers to compare.
@@ -56,11 +56,11 @@ export default async function ComparePage({
   // 计算评分
   const scored = providers.map((p) => ({
     ...p,
-    score: Math.round((p.rating || 0) * 20),
+    score: Math.round(p.rating || 0),
   }));
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-8 pb-20">
+    <div className="max-w-[1460px] mx-auto px-4 py-8 pb-20">
       <h1 className="text-2xl font-bold text-text">
         Compare {providers.length} 3PL Providers
       </h1>
@@ -109,8 +109,8 @@ export default async function ComparePage({
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            <CompareRow label="Location" values={scored.map((p) => `${p.city}, ${formatState(p.state)}`)} />
-            <CompareRow label="Rating" values={scored.map((p) => `${p.rating}/5 (${p.review_count} reviews)`)} />
+            <CompareRow label="Location" values={scored.map((p) => p.city ? `${p.city}, ${formatState(p.state)}` : formatState(p.state))} />
+            <CompareRow label="Rating" values={scored.map((p) => `${p.rating}/100 (${p.review_count} reviews)`)} />
             <CompareRow label="Shipping" values={scored.map((p) => p.shipping_speed)} />
             <CompareRow label="Cost Level" values={scored.map((p) => p.cost_level)} />
             <CompareRow

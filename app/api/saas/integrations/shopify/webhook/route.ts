@@ -2,25 +2,50 @@ import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
 import { normalizeShopifyOrder } from "@/lib/shopify";
 
-const TENANT_ID = "00000000-0000-0000-0000-000000000001";
-const WAREHOUSE_ID = "00000000-0000-0000-0000-000000000001";
-
 /**
  * POST /api/saas/integrations/shopify/webhook
  * 接收 Shopify Webhook: orders/create, orders/update
+ * 无需用户 JWT — 通过 shop domain 查找对应租户
  */
 export async function POST(req: Request) {
   try {
     const topic = req.headers.get("x-shopify-topic") || "";
-    const body = await req.json();
+    const shopDomain = req.headers.get("x-shopify-shop-domain") || "";
 
     // 验证是订单事件
     if (!topic.startsWith("orders/")) {
       return NextResponse.json({ success: true, skipped: true });
     }
 
+    const body = await req.json();
+
     const supabase = createServiceClient();
     if (!supabase) return NextResponse.json({ error: "DB unavailable" }, { status: 503 });
+
+    // 通过 shop domain 查找租户
+    const { data: connection } = await supabase
+      .from("integration_connections")
+      .select("tenant_id, credentials")
+      .eq("platform_name", "shopify")
+      .eq("is_active", true)
+      .maybeSingle();
+
+    // 如果有 shop domain，精确匹配
+    let TENANT_ID = "00000000-0000-0000-0000-000000000001";
+    let WAREHOUSE_ID = "00000000-0000-0000-0000-000000000001";
+
+    if (connection) {
+      TENANT_ID = (connection as any).tenant_id;
+      // 获取默认仓库
+      const { data: defaultWh } = await supabase
+        .from("warehouses")
+        .select("id")
+        .eq("tenant_id", TENANT_ID)
+        .eq("is_active", true)
+        .limit(1)
+        .maybeSingle();
+      if (defaultWh) WAREHOUSE_ID = (defaultWh as any).id;
+    }
 
     const order = body as Record<string, unknown>;
     const normalized = normalizeShopifyOrder(order);

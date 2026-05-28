@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
 import { createShipment as wmsCreateShipment } from "@/lib/saas-wms";
+import { verifyOperatorToken } from "@/lib/saas-auth";
 
 export const dynamic = "force-dynamic";
 
-const TENANT_ID = "00000000-0000-0000-0000-000000000001";
-
 export async function POST(request: Request) {
+  const operator = await verifyOperatorToken(request);
+  if (!operator) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const TENANT_ID = operator.tenantId;
+
   const supabase = createServiceClient();
   if (!supabase) return NextResponse.json({ error: "DB unavailable" }, { status: 503 });
 

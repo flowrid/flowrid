@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
 import { fetchShopifyOrders } from "@/lib/shopify";
-
-const TENANT_ID = "00000000-0000-0000-0000-000000000001";
-const WAREHOUSE_ID = "00000000-0000-0000-0000-000000000001";
+import { verifyOperatorToken } from "@/lib/saas-auth";
 
 /**
  * POST /api/saas/integrations/shopify/sync
  * 手动触发 Shopify 订单同步
  */
-export async function POST() {
+export async function POST(req: Request) {
+  const operator = await verifyOperatorToken(req);
+  if (!operator) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const TENANT_ID = operator.tenantId;
+
   const supabase = createServiceClient();
   if (!supabase) return NextResponse.json({ error: "DB unavailable" }, { status: 503 });
 
@@ -26,6 +28,17 @@ export async function POST() {
   const c = conn as any;
   const { shop, access_token } = c.credentials || {};
   if (!shop || !access_token) return NextResponse.json({ error: "Invalid connection" }, { status: 400 });
+
+  // 获取默认仓库
+  const { data: defaultWh } = await supabase
+    .from("warehouses")
+    .select("id")
+    .eq("tenant_id", TENANT_ID)
+    .eq("is_active", true)
+    .limit(1)
+    .maybeSingle();
+  const WAREHOUSE_ID = (defaultWh as any)?.id;
+  if (!WAREHOUSE_ID) return NextResponse.json({ error: "No active warehouse found" }, { status: 400 });
 
   try {
     const orders = await fetchShopifyOrders(shop, access_token, new Date(Date.now() - 30 * 86400000));

@@ -39,7 +39,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
 
   if (!supabase) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 py-16 text-center">
+      <div className="max-w-[1460px] mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Database Not Configured</h1>
       </div>
     );
@@ -53,7 +53,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
 
   if (!data) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 py-16 text-center">
+      <div className="max-w-[1460px] mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold text-text">3PL Not Found</h1>
         <p className="mt-2 text-text-secondary">
           <Link href="/3pl" className="text-primary hover:underline">
@@ -65,10 +65,10 @@ export default async function ThreePLDetailPage({ params }: Props) {
   }
 
   const p = data as ThreePL;
-  const score = Math.round((p.rating || 0) * 20);
+  const score = Math.round(p.rating || 0);
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-8 pb-20">
+    <div className="max-w-[1460px] mx-auto px-4 py-8 pb-20">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -100,7 +100,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
             {p.name}
           </h1>
           <p className="text-text-secondary mt-1">
-            {p.city}, {formatState(p.state)}
+            {p.city ? `${p.city}, ${formatState(p.state)}` : formatState(p.state)}
           </p>
         </div>
         <ScoreBadge score={score} />
@@ -123,7 +123,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
         </div>
         <div className="p-4 bg-card border border-border rounded-xl">
           <p className="text-xs text-text-secondary uppercase">Rating</p>
-          <p className="text-lg font-bold text-text mt-1">{p.rating} / 5.0</p>
+          <p className="text-lg font-bold text-text mt-1">{p.rating} / 100</p>
         </div>
         <div className="p-4 bg-card border border-border rounded-xl">
           <p className="text-xs text-text-secondary uppercase">Capacity</p>

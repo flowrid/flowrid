@@ -5,19 +5,19 @@ import type { ThreePL } from "@/types/3pl";
 
 export const dynamic = "force-dynamic";
 
-/**
- * 3PL Directory — 全部列表页，支持筛选 + 对比选择
- */
+const PAGE_SIZE = 24;
+
 export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   const params = await searchParams;
+  const page = Math.max(0, parseInt(params.page || "0") || 0);
   const supabase = createServerClient();
   if (!supabase) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 py-16 text-center">
+      <div className="max-w-[1460px] mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Database Not Configured</h1>
         <p className="mt-2 text-text-secondary">
           Please configure Supabase environment variables.
@@ -26,7 +26,18 @@ export default async function Page({
     );
   }
 
-  let query = supabase.from("pl_providers").select("*");
+  // Get total count
+  const { count } = await supabase
+    .from("pl_providers")
+    .select("*", { count: "exact", head: true });
+
+  const totalCount = count || 0;
+
+  // Fetch current page with range
+  const from = page * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+
+  let query = supabase.from("pl_providers").select("*").range(from, to);
 
   if (params.state) {
     query = query.eq("state", params.state);
@@ -49,10 +60,10 @@ export default async function Page({
         : "All 3PL Providers";
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-8 pb-20">
+    <div className="max-w-[1460px] mx-auto px-4 py-8 pb-20">
       <h1 className="text-2xl font-bold text-text mb-2">{title}</h1>
       <p className="text-text-secondary mb-6">
-        {threePLs?.length || 0} fulfillment centers found
+        {totalCount.toLocaleString()} fulfillment centers found
         {threePLs && threePLs.length >= 2 && (
           <span className="ml-2 text-xs">
             — check the box on any card to compare
@@ -62,6 +73,8 @@ export default async function Page({
 
       <DirectoryResults
         threePLs={(threePLs as ThreePL[]) || []}
+        totalCount={totalCount}
+        page={page}
         emptyTitle="No 3PLs Found"
         emptyMessage={
           <>

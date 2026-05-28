@@ -1,14 +1,17 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
 import { shopifyAPI } from "@/lib/shopify";
-
-const TENANT_ID = "00000000-0000-0000-0000-000000000001";
+import { verifyOperatorToken } from "@/lib/saas-auth";
 
 /**
  * POST /api/saas/integrations/shopify/connect
  * 直接用 Admin API Token 连接 Shopify
  */
 export async function POST(req: Request) {
+  const operator = await verifyOperatorToken(req);
+  if (!operator) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const TENANT_ID = operator.tenantId;
+
   try {
     const { shop, access_token } = await req.json();
     if (!shop || !access_token) {

@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ProductsPage() {
+  const router = useRouter();
   const [products, setProducts] = useState<any[]>([]);
   const [stats, setStats] = useState({ total: 0 });
   const [loading, setLoading] = useState(true);
@@ -195,7 +197,7 @@ export default function ProductsPage() {
             </thead>
             <tbody className="divide-y divide-black/[0.04]">
               {products.map((p: any) => (
-                <tr key={p.id} className="hover:bg-black/[0.01] transition-colors">
+                <tr key={p.id} className="hover:bg-black/[0.01] transition-colors cursor-pointer" onClick={() => router.push(`/saas/products/${p.id}`)}>
                   <td className="px-5 py-3.5 text-xs font-mono text-[#86868B]">{p.sku}</td>
                   <td className="px-5 py-3.5 text-sm font-medium text-[#1D1D1F]">{p.name}</td>
                   <td className="px-5 py-3.5 text-xs text-[#86868B]">{p.category || "—"}</td>
@@ -210,7 +212,7 @@ export default function ProductsPage() {
                     </div>
                   </td>
                   <td className="px-5 py-3.5 text-right">
-                    <button onClick={() => handleDelete(p.id)}
+                    <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }}
                       className="text-[11px] text-[#FF3B30] hover:bg-[#FF3B30]/5 px-2 py-1 rounded-full font-medium transition-colors">
                       Delete
                     </button>

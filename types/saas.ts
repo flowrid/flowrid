@@ -335,6 +335,13 @@ export interface IntegrationSyncLog {
 
 // ---- API & Auth ----
 
+export interface OperatorJwtPayload {
+  userId: string;
+  email: string;
+  tenantId: string;
+  role?: string;
+}
+
 export interface ApiKey {
   id: string;
   tenant_id: string;

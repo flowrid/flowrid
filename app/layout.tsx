@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { websiteSchema, organizationSchema } from "@/lib/jsonld";
@@ -58,9 +58,9 @@ export default function RootLayout({
           }}
         />
         <header className="border-b border-border bg-card">
-          <nav className="max-w-[1200px] mx-auto px-4 h-20 flex items-center justify-between">
+          <nav className="max-w-[1460px] mx-auto px-4 h-20 flex items-center justify-between">
             <a href="/">
-              <img src="/flowrid-logo.png" alt="Flowrid" className="h-9 w-auto" />
+              <img src="/flowrid-logo.png" alt="Flowrid" className="h-8 w-auto" />
             </a>
             <div className="flex items-center gap-4 text-sm text-text-secondary">
               <a href="/3pl" className="hover:text-text transition-colors">
@@ -80,7 +80,7 @@ export default function RootLayout({
         </header>
         <main className="flex-1">{children}</main>
         <footer className="border-t border-border bg-card mt-16">
-          <div className="max-w-[1200px] mx-auto px-4 py-8 text-sm text-text-secondary">
+          <div className="max-w-[1460px] mx-auto px-4 py-8 text-sm text-text-secondary">
             <div className="flex flex-wrap gap-6 justify-between">
               <div>
                 <p className="font-semibold text-text mb-1">Flowrid</p>

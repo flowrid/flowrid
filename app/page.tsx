@@ -1,4 +1,4 @@
-import HeroSearch from "@/components/HeroSearch";
+﻿import HeroSearch from "@/components/HeroSearch";
 import ThreePLCard from "@/components/3PLCard";
 import { createServerClient } from "@/lib/supabase";
 import { rankThreePLs } from "@/lib/scoring";
@@ -17,7 +17,8 @@ export default async function Home() {
   const query = supabase
     ?.from("pl_providers")
     .select("*")
-    .order("rating", { ascending: false });
+    .order("rating", { ascending: false })
+    .limit(5000);
   const allProviders = query ? (await query).data : null;
 
   const providers = (allProviders as ThreePL[]) || [];
@@ -34,7 +35,7 @@ export default async function Home() {
   const featured = providers
     .map((p) => ({
       ...p,
-      score: (p.rating || 0) * 20, // 简化评分：rating × 20
+      score: (p.rating || 0),
     }))
     .sort((a, b) => b.score - a.score)
     .slice(0, 3);
@@ -71,14 +72,14 @@ export default async function Home() {
 
       {/* Featured 3PLs */}
       {featured.length > 0 && (
-        <section className="max-w-[1200px] mx-auto px-4 py-12">
+        <section className="max-w-[1460px] mx-auto px-4 py-12">
           <h2 className="text-xl font-bold text-text text-center mb-2">
             Top-Rated 3PL Providers
           </h2>
           <p className="text-text-secondary text-center text-sm mb-8">
             Highest rated fulfillment centers on Flowrid
           </p>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 grid-cols-2 lg:grid-cols-6">
             {featured.map((item) => (
               <ThreePLCard key={item.id} data={item} />
             ))}
@@ -88,7 +89,7 @@ export default async function Home() {
 
       {/* Dynamic Category Entry Points */}
       {categories.length > 0 && (
-        <section className="max-w-[1200px] mx-auto px-4 py-8">
+        <section className="max-w-[1460px] mx-auto px-4 py-8">
           <h2 className="text-xl font-bold text-text text-center mb-8">
             Find 3PLs by Category
           </h2>
@@ -110,7 +111,7 @@ export default async function Home() {
 
       {/* Dynamic State Entry Points */}
       {states.length > 0 && (
-        <section className="max-w-[1200px] mx-auto px-4 py-8">
+        <section className="max-w-[1460px] mx-auto px-4 py-8">
           <h2 className="text-xl font-bold text-text text-center mb-8">
             Find 3PLs by State
           </h2>

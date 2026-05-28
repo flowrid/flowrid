@@ -2,6 +2,7 @@ import { jwtVerify } from "jose";
 import type { NextRequest } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
 import { UnauthorizedError, ForbiddenError } from "@/lib/errors";
+import type { OperatorJwtPayload } from "@/types/saas";
 
 const FALLBACK_SECRET = "flowrid-saas-secret-change-in-production-2026";
 const JWT_SECRET = new TextEncoder().encode(
@@ -9,13 +10,6 @@ const JWT_SECRET = new TextEncoder().encode(
 );
 
 const DEMO_TENANT = "00000000-0000-0000-0000-000000000001";
-
-export interface OperatorJwtPayload {
-  userId: string;
-  email: string;
-  tenantId: string;
-  role?: string;
-}
 
 export async function verifyOperatorToken(
   request: NextRequest | Request
