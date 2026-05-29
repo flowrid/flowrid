@@ -5,6 +5,7 @@ import {
   generateOverviewSecondary,
   generateFAQItems,
 } from "@/lib/detail-content";
+import { geocodeCity } from "@/lib/geocode";
 import HeroSection from "@/components/detail/HeroSection";
 import TabNavigation from "@/components/detail/TabNavigation";
 import OverviewSection from "@/components/detail/OverviewSection";
@@ -115,6 +116,11 @@ export default async function ThreePLDetailPage({ params }: Props) {
   const overviewText = generateOverview(p);
   const secondaryText = generateOverviewSecondary(p);
 
+  // 地理编码
+  const geo = await geocodeCity(p.city || "", p.state);
+  const lat = geo?.lat;
+  const lng = geo?.lng;
+
   return (
     <>
       {/* JSON-LD 结构化数据 */}
@@ -196,6 +202,8 @@ export default async function ThreePLDetailPage({ params }: Props) {
               name={p.name}
               city={p.city || ""}
               state={p.state}
+              lat={lat}
+              lng={lng}
             />
           </section>
 
