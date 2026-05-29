@@ -49,7 +49,7 @@ export default function TechnologySection({ name, platforms, integrations }: Tec
         {name} integrates with a wide range of eCommerce platforms and tools to streamline your fulfillment:
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
         {unique.slice(0, 12).map((tech) => {
           const key = tech.toLowerCase().trim().replace(/\s+/g, "");
           const icon = PLATFORM_ICONS[key];

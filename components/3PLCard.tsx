@@ -27,6 +27,8 @@ interface ThreePLCardProps {
 export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLCardProps) {
   const showCompare = typeof onToggleSelect === "function";
   const [hovered, setHovered] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const isActive = hovered || pressed;
 
   return (
     <div
@@ -176,6 +178,13 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
           href={`/3pl/d/${data.slug}`}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
+          onPointerDown={() => setPressed(true)}
+          onPointerUp={() => setPressed(false)}
+          onPointerCancel={() => setPressed(false)}
+          onTouchStart={() => setPressed(true)}
+          onTouchEnd={() => setPressed(false)}
+          onTouchCancel={() => setPressed(false)}
+          className="view-details-button"
           style={{
             display: "inline-flex",
             flexDirection: "column",
@@ -191,8 +200,8 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
             height: "max(42px, 14cqw)",
             fontSize: "clamp(0.6rem, 4.4cqw, 1.1rem)",
             padding: "4%",
-            background: hovered ? "#ed6d00" : "#fff",
-            color: hovered ? "#fff" : "#ed6d00",
+            background: isActive ? "#ed6d00" : "#fff",
+            color: isActive ? "#fff" : "#ed6d00",
             border: "1px solid #ed6d00",
             transition: "all 0.2s ease",
             cursor: "pointer",

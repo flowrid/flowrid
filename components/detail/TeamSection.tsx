@@ -34,7 +34,7 @@ export default function TeamSection({ name }: TeamSectionProps) {
         Meet the team driving {name}&apos;s success.
       </p>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
         {team.map((member) => (
           <div key={member.name} className="bg-card border border-border rounded-xl overflow-hidden">
             {/* 头像占位 */}

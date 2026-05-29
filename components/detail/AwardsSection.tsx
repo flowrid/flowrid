@@ -52,7 +52,7 @@ export default function AwardsSection({ name, rating, state }: AwardsSectionProp
         Industry awards and certifications earned by {name}.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {badges.map((b) => (
           <div key={b.title} className="bg-card border border-border rounded-xl p-5 text-center hover:shadow-sm transition-shadow">
             <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: `${b.color}15` }}>

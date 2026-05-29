@@ -61,7 +61,7 @@ export default function HeroSection({
   return (
     <section className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
       {/* 左侧文字区 (占3/5) */}
-      <div className="lg:col-span-3 space-y-4">
+      <div className="lg:col-span-3 space-y-4 order-2 lg:order-1">
         {/* Logo + 名称 */}
         <div className="flex items-center gap-4">
           {logo ? (
@@ -124,7 +124,7 @@ export default function HeroSection({
         <div className="flex flex-wrap gap-3 pt-2">
           <a
             href={`/rfq?pl=${slug}`}
-            className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-dark transition-colors"
+            className="inline-flex w-full md:w-auto items-center justify-center gap-2 bg-primary text-white px-6 py-3.5 rounded-xl font-semibold text-sm md:text-base hover:bg-primary-dark transition-colors"
           >
             Get Matched With {name}
           </a>
@@ -132,8 +132,8 @@ export default function HeroSection({
       </div>
 
       {/* 右侧仓库/品牌大图 (占2/5) */}
-      <div className="lg:col-span-2">
-        <div className="rounded-2xl aspect-[4/3] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent">
+      <div className="lg:col-span-2 order-1 lg:order-2">
+        <div className="rounded-2xl aspect-[4/3] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent shadow-sm">
           {heroImage ? (
             <img
               src={heroImage}

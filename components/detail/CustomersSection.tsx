@@ -42,7 +42,7 @@ export default function CustomersSection({ name, categories }: CustomersSectionP
         Brands that trust {name} with their fulfillment.
       </p>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
         {customers.map((cust, i) => (
           <div
             key={cust.name}
