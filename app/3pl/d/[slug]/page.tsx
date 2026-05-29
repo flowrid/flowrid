@@ -24,7 +24,7 @@ import type { Metadata } from "next";
 import type { ThreePL } from "@/types/3pl";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ slug: string }>;
