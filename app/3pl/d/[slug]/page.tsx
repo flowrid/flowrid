@@ -1,8 +1,24 @@
 import { createServerClient } from "@/lib/supabase";
-import ScoreBadge from "@/components/ScoreBadge";
-import { StickyCTA } from "@/components/CTAButton";
-import FAQ from "@/components/FAQ";
 import { localBusinessSchema } from "@/lib/jsonld";
+import {
+  generateOverview,
+  generateOverviewSecondary,
+  generateFAQItems,
+} from "@/lib/detail-content";
+import HeroSection from "@/components/detail/HeroSection";
+import TabNavigation from "@/components/detail/TabNavigation";
+import OverviewSection from "@/components/detail/OverviewSection";
+import ReviewsSection from "@/components/detail/ReviewsSection";
+import LocationsSection from "@/components/detail/LocationsSection";
+import SpecialtiesSection from "@/components/detail/SpecialtiesSection";
+import AlternativesSection from "@/components/detail/AlternativesSection";
+import TeamSection from "@/components/detail/TeamSection";
+import CustomersSection from "@/components/detail/CustomersSection";
+import TechnologySection from "@/components/detail/TechnologySection";
+import AwardsSection from "@/components/detail/AwardsSection";
+import AtAGlanceSection from "@/components/detail/AtAGlanceSection";
+import DetailFAQ from "@/components/detail/DetailFAQ";
+import BottomCTA from "@/components/detail/BottomCTA";
 import type { Metadata } from "next";
 import type { ThreePL } from "@/types/3pl";
 import Link from "next/link";
@@ -12,6 +28,27 @@ export const dynamic = "force-dynamic";
 interface Props {
   params: Promise<{ slug: string }>;
 }
+
+function formatState(s: string): string {
+  return s
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+const TABS = [
+  { id: "overview", label: "Overview" },
+  { id: "reviews", label: "Reviews" },
+  { id: "locations", label: "Locations" },
+  { id: "specialties", label: "Specialties" },
+  { id: "alternatives", label: "Alternatives" },
+  { id: "team", label: "Team" },
+  { id: "customers", label: "Customers" },
+  { id: "technology", label: "Technology" },
+  { id: "awards", label: "Awards" },
+  { id: "at-a-glance", label: "At a Glance" },
+  { id: "faq", label: "FAQ" },
+];
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -65,10 +102,22 @@ export default async function ThreePLDetailPage({ params }: Props) {
   }
 
   const p = data as ThreePL;
-  const score = Math.round(p.rating || 0);
+
+  // 查询同州替代 3PL
+  const { data: alternatives } = await supabase
+    .from("pl_providers")
+    .select("*")
+    .eq("state", p.state)
+    .neq("slug", p.slug)
+    .order("rating", { ascending: false })
+    .limit(6);
+
+  const overviewText = generateOverview(p);
+  const secondaryText = generateOverviewSecondary(p);
 
   return (
-    <div className="max-w-[1460px] mx-auto px-4 py-8 pb-20">
+    <>
+      {/* JSON-LD 结构化数据 */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -85,123 +134,147 @@ export default async function ThreePLDetailPage({ params }: Props) {
           ),
         }}
       />
-      {/* Back link */}
-      <Link
-        href={`/3pl/${p.state}`}
-        className="text-sm text-primary hover:underline mb-4 inline-block"
-      >
-        &larr; Back to {formatState(p.state)} 3PLs
-      </Link>
 
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4 mt-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-text">
-            {p.name}
-          </h1>
-          <p className="text-text-secondary mt-1">
-            {p.city ? `${p.city}, ${formatState(p.state)}` : formatState(p.state)}
-          </p>
-        </div>
-        <ScoreBadge score={score} />
-      </div>
-
-      {/* Description */}
-      <p className="mt-6 text-text-secondary leading-relaxed max-w-3xl">
-        {p.description}
-      </p>
-
-      {/* Key Info Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-        <div className="p-4 bg-card border border-border rounded-xl">
-          <p className="text-xs text-text-secondary uppercase">Shipping Speed</p>
-          <p className="text-lg font-bold text-text mt-1">{p.shipping_speed}</p>
-        </div>
-        <div className="p-4 bg-card border border-border rounded-xl">
-          <p className="text-xs text-text-secondary uppercase">Cost Level</p>
-          <p className="text-lg font-bold text-text mt-1">{p.cost_level}</p>
-        </div>
-        <div className="p-4 bg-card border border-border rounded-xl">
-          <p className="text-xs text-text-secondary uppercase">Rating</p>
-          <p className="text-lg font-bold text-text mt-1">{p.rating} / 100</p>
-        </div>
-        <div className="p-4 bg-card border border-border rounded-xl">
-          <p className="text-xs text-text-secondary uppercase">Capacity</p>
-          <p className="text-lg font-bold text-text mt-1">
-            {(p.order_capacity || 0).toLocaleString()} orders/mo
-          </p>
-        </div>
-      </div>
-
-      {/* Categories */}
-      <section className="mt-8">
-        <h2 className="text-lg font-bold text-text mb-3">Product Categories</h2>
-        <div className="flex flex-wrap gap-2">
-          {(p.categories || []).map((c) => (
-            <Link
-              key={c}
-              href={`/3pl/${p.state}/${c}`}
-              className="px-3 py-1.5 bg-gray-100 rounded-lg text-sm text-text hover:bg-gray-200 transition-colors"
-            >
-              {formatName(c)}
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Platforms */}
-      <section className="mt-6">
-        <h2 className="text-lg font-bold text-text mb-3">Platform Integrations</h2>
-        <div className="flex flex-wrap gap-2">
-          {(p.platforms || []).map((plat) => (
-            <Link
-              key={plat}
-              href={`/3pl/${p.state}/${plat}`}
-              className="px-3 py-1.5 bg-gray-100 rounded-lg text-sm text-text hover:bg-gray-200 transition-colors"
-            >
-              {plat}
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA */}
-      <div className="mt-8 p-6 bg-card border border-border rounded-xl text-center">
-        <h2 className="text-xl font-bold text-text">
-          Ready to work with {p.name}?
-        </h2>
-        <p className="mt-2 text-text-secondary">
-          Get a personalized quote for your fulfillment needs.
-        </p>
-        <a
-          href={`/rfq?pl=${p.slug}`}
-          className="inline-block mt-4 bg-primary text-white px-8 py-3 rounded-xl font-semibold hover:bg-primary-dark transition-colors"
+      {/* 返回链接 */}
+      <div className="max-w-[1460px] mx-auto px-4 pt-4">
+        <Link
+          href={`/3pl/${p.state}`}
+          className="text-sm text-primary hover:underline inline-flex items-center gap-1"
         >
-          Get Quote
-        </a>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to {formatState(p.state)} 3PLs
+        </Link>
       </div>
 
-      {/* FAQ */}
-      <FAQ
-        items={[
-          `What types of products does ${p.name} handle?`,
-          `How fast is ${p.name}'s fulfillment process?`,
-          `Does ${p.name} integrate with my e-commerce platform?`,
-        ]}
-      />
+      {/* Hero Section */}
+      <div className="max-w-[1460px] mx-auto px-4 pt-6 pb-8">
+        <HeroSection
+          name={p.name}
+          slug={p.slug}
+          logo={p.logo}
+          rating={p.rating || 0}
+          reviewCount={p.review_count || 0}
+          description={p.description || ""}
+          city={p.city || ""}
+          state={p.state}
+          website={p.website}
+          orderCapacity={p.order_capacity || 0}
+        />
+      </div>
 
-      <StickyCTA />
-    </div>
+      {/* Tab Navigation */}
+      <TabNavigation tabs={TABS} />
+
+      {/* 各 Section */}
+      <div className="max-w-[1460px] mx-auto px-4">
+        <div className="space-y-14 py-10">
+          {/* Overview */}
+          <section id="overview">
+            <OverviewSection
+              name={p.name}
+              overviewText={overviewText}
+              secondaryText={secondaryText}
+            />
+          </section>
+
+          {/* Reviews */}
+          <section id="reviews">
+            <ReviewsSection
+              name={p.name}
+              rating={p.rating || 0}
+              reviewCount={p.review_count || 0}
+              slug={p.slug}
+            />
+          </section>
+
+          {/* Locations */}
+          <section id="locations">
+            <LocationsSection
+              name={p.name}
+              city={p.city || ""}
+              state={p.state}
+            />
+          </section>
+
+          {/* Specialties */}
+          <section id="specialties">
+            <SpecialtiesSection
+              name={p.name}
+              state={p.state}
+              categories={p.categories || []}
+              platforms={p.platforms || []}
+              integrations={p.integrations || []}
+            />
+          </section>
+
+          {/* Alternatives */}
+          <section id="alternatives">
+            <AlternativesSection
+              currentSlug={p.slug}
+              currentName={p.name}
+              state={p.state}
+              alternatives={(alternatives as ThreePL[]) || []}
+            />
+          </section>
+
+          {/* Team */}
+          <section id="team">
+            <TeamSection name={p.name} />
+          </section>
+
+          {/* Customers */}
+          <section id="customers">
+            <CustomersSection
+              name={p.name}
+              categories={p.categories || []}
+            />
+          </section>
+
+          {/* Technology */}
+          <section id="technology">
+            <TechnologySection
+              name={p.name}
+              platforms={p.platforms || []}
+              integrations={p.integrations || []}
+            />
+          </section>
+
+          {/* Awards */}
+          <section id="awards">
+            <AwardsSection
+              name={p.name}
+              rating={p.rating || 0}
+              state={p.state}
+            />
+          </section>
+
+          {/* At a Glance */}
+          <section id="at-a-glance">
+            <AtAGlanceSection
+              name={p.name}
+              state={p.state}
+              city={p.city || ""}
+              shippingSpeed={p.shipping_speed || ""}
+              costLevel={p.cost_level || "$"}
+              orderCapacity={p.order_capacity || 0}
+              skuCapacity={p.sku_capacity || 0}
+              categories={p.categories || []}
+              platforms={p.platforms || []}
+              integrations={p.integrations || []}
+            />
+          </section>
+
+          {/* FAQ */}
+          <DetailFAQ threePL={p} />
+        </div>
+      </div>
+
+      {/* Bottom CTA */}
+      <div className="max-w-[1460px] mx-auto px-4 pb-16">
+        <BottomCTA slug={p.slug} />
+      </div>
+    </>
   );
-}
-
-function formatState(s: string): string {
-  return s
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
-}
-
-function formatName(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
 }

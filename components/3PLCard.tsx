@@ -2,20 +2,7 @@
 
 import { ThreePLCardData } from "@/types/3pl";
 import { useState } from "react";
-
-const PLATFORM_ICONS: Record<string, string> = {
-  shopify: "/platforms/shopify.png",
-  amazon: "/platforms/amazon.png",
-  tiktok: "/platforms/tiktok.png",
-  walmart: "/platforms/walmart.png",
-  ebay: "/platforms/ebay.png",
-  etsy: "/platforms/etsy.png",
-  shein: "/platforms/shein.png",
-  temu: "/platforms/temu.png",
-  chewy: "/platforms/chewy.png",
-  wayfair: "/platforms/wayfair.png",
-  whatnot: "/platforms/whatnot.png",
-};
+import { PLATFORM_ICONS } from "@/lib/platform-icons";
 
 function formatStateName(state: string): string {
   return state

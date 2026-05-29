@@ -1,0 +1,14 @@
+/** 平台名称 → 图标路径映射（从 3PLCard 提取为共享常量） */
+export const PLATFORM_ICONS: Record<string, string> = {
+  shopify: "/platforms/shopify.png",
+  amazon: "/platforms/amazon.png",
+  tiktok: "/platforms/tiktok.png",
+  walmart: "/platforms/walmart.png",
+  ebay: "/platforms/ebay.png",
+  etsy: "/platforms/etsy.png",
+  shein: "/platforms/shein.png",
+  temu: "/platforms/temu.png",
+  chewy: "/platforms/chewy.png",
+  wayfair: "/platforms/wayfair.png",
+  whatnot: "/platforms/whatnot.png",
+};
