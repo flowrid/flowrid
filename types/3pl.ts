@@ -26,6 +26,7 @@ export interface ThreePL {
   description: string;
   website?: string;
   logo?: string;
+  hero_image?: string;
 
   created_at: string;
 }

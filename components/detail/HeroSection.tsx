@@ -6,6 +6,7 @@ interface HeroSectionProps {
   name: string;
   slug: string;
   logo?: string;
+  heroImage?: string;
   rating: number;
   reviewCount: number;
   description: string;
@@ -39,6 +40,7 @@ export default function HeroSection({
   name,
   slug,
   logo,
+  heroImage,
   rating,
   reviewCount,
   description,
@@ -129,10 +131,16 @@ export default function HeroSection({
         </div>
       </div>
 
-      {/* 右侧品牌图 (占2/5) */}
+      {/* 右侧仓库/品牌大图 (占2/5) */}
       <div className="lg:col-span-2">
-        <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-2xl aspect-[4/3] flex items-center justify-center overflow-hidden">
-          {logo ? (
+        <div className="rounded-2xl aspect-[4/3] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent">
+          {heroImage ? (
+            <img
+              src={heroImage}
+              alt={`${name} warehouse facility`}
+              className="w-full h-full object-cover"
+            />
+          ) : logo ? (
             <img
               src={logo}
               alt={name}

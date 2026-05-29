@@ -154,6 +154,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           name={p.name}
           slug={p.slug}
           logo={p.logo}
+          heroImage={(p as any).hero_image}
           rating={p.rating || 0}
           reviewCount={p.review_count || 0}
           description={p.description || ""}
