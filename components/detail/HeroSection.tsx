@@ -61,7 +61,7 @@ export default function HeroSection({
   return (
     <section className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-8 items-start">
       {/* 左侧文字区 (占3/5) */}
-      <div className="lg:col-span-3 space-y-4 order-2 lg:order-1 bg-card border border-border rounded-2xl p-4 shadow-sm lg:bg-transparent lg:border-0 lg:rounded-none lg:p-0 lg:shadow-none">
+      <div className="lg:col-span-3 space-y-4 order-2 lg:order-1">
         {/* Logo + 名称 */}
         <div className="flex items-center gap-4">
           {logo ? (
