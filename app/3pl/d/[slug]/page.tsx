@@ -178,7 +178,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
       <div className="max-w-[1460px] mx-auto px-4">
         <div className="space-y-5 py-5 md:space-y-14 md:py-10">
           {/* Overview */}
-          <section id="overview" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
+          <section id="overview" className="bg-card border border-border rounded-2xl p-4 shadow-sm md:bg-transparent md:border-0 md:rounded-none md:p-0 md:shadow-none">
             <OverviewSection
               name={p.name}
               overviewText={overviewText}
@@ -187,7 +187,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Reviews */}
-          <section id="reviews" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
+          <section id="reviews" className="bg-card border border-border rounded-2xl p-4 shadow-sm md:bg-transparent md:border-0 md:rounded-none md:p-0 md:shadow-none">
             <ReviewsSection
               name={p.name}
               rating={p.rating || 0}
@@ -197,7 +197,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Locations */}
-          <section id="locations" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
+          <section id="locations" className="bg-card border border-border rounded-2xl p-4 shadow-sm md:bg-transparent md:border-0 md:rounded-none md:p-0 md:shadow-none">
             <LocationsSection
               name={p.name}
               city={p.city || ""}
@@ -208,7 +208,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Specialties */}
-          <section id="specialties" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
+          <section id="specialties" className="bg-card border border-border rounded-2xl p-4 shadow-sm md:bg-transparent md:border-0 md:rounded-none md:p-0 md:shadow-none">
             <SpecialtiesSection
               name={p.name}
               state={p.state}
@@ -219,7 +219,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Alternatives */}
-          <section id="alternatives" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
+          <section id="alternatives" className="bg-card border border-border rounded-2xl p-4 shadow-sm md:bg-transparent md:border-0 md:rounded-none md:p-0 md:shadow-none">
             <AlternativesSection
               currentSlug={p.slug}
               currentName={p.name}
@@ -229,12 +229,12 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Team */}
-          <section id="team" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
+          <section id="team" className="bg-card border border-border rounded-2xl p-4 shadow-sm md:bg-transparent md:border-0 md:rounded-none md:p-0 md:shadow-none">
             <TeamSection name={p.name} />
           </section>
 
           {/* Customers */}
-          <section id="customers" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
+          <section id="customers" className="bg-card border border-border rounded-2xl p-4 shadow-sm md:bg-transparent md:border-0 md:rounded-none md:p-0 md:shadow-none">
             <CustomersSection
               name={p.name}
               categories={p.categories || []}
@@ -242,7 +242,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Technology */}
-          <section id="technology" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
+          <section id="technology" className="bg-card border border-border rounded-2xl p-4 shadow-sm md:bg-transparent md:border-0 md:rounded-none md:p-0 md:shadow-none">
             <TechnologySection
               name={p.name}
               platforms={p.platforms || []}
@@ -251,7 +251,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Awards */}
-          <section id="awards" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
+          <section id="awards" className="bg-card border border-border rounded-2xl p-4 shadow-sm md:bg-transparent md:border-0 md:rounded-none md:p-0 md:shadow-none">
             <AwardsSection
               name={p.name}
               rating={p.rating || 0}
@@ -260,7 +260,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* At a Glance */}
-          <section id="at-a-glance" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
+          <section id="at-a-glance" className="bg-card border border-border rounded-2xl p-4 shadow-sm md:bg-transparent md:border-0 md:rounded-none md:p-0 md:shadow-none">
             <AtAGlanceSection
               name={p.name}
               state={p.state}
@@ -276,7 +276,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* FAQ */}
-          <div className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
+          <div className="bg-card border border-border rounded-2xl p-4 shadow-sm md:bg-transparent md:border-0 md:rounded-none md:p-0 md:shadow-none">
             <DetailFAQ threePL={p} />
           </div>
         </div>

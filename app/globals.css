@@ -42,21 +42,10 @@ body {
   color: #fff !important;
 }
 
-@media (max-width: 767px) {
-  .mobile-detail-card {
-    background: var(--color-card);
-    border: 1px solid var(--color-border);
-    border-radius: 1rem;
-    padding: 1rem;
-    box-shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
-  }
-
-  .mobile-scrollbar-hide {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .mobile-scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+.mobile-scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.mobile-scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
