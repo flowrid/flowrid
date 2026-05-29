@@ -36,16 +36,3 @@ body {
     0 0 0 1px rgba(237, 109, 0, 0.55),
     0 0 25px rgba(237, 109, 0, 0.22);
 }
-
-.view-details-button:active {
-  background: #ed6d00 !important;
-  color: #fff !important;
-}
-
-.mobile-scrollbar-hide {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.mobile-scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
