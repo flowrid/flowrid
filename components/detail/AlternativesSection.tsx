@@ -41,17 +41,15 @@ export default function AlternativesSection({
           </Link>
         </div>
       ) : (
-        <div className="flex overflow-x-auto gap-3 mobile-scrollbar-hide pb-2 md:grid md:grid-cols-3 lg:grid-cols-6 md:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {alternatives.map((alt) => (
-            <div key={alt.id} className="w-[72vw] md:w-auto shrink-0">
-              <ThreePLCard
-                key={alt.id}
-                data={{
-                  ...alt,
-                  score: Math.round(alt.rating || 0),
-                }}
-              />
-            </div>
+            <ThreePLCard
+              key={alt.id}
+              data={{
+                ...alt,
+                score: Math.round(alt.rating || 0),
+              }}
+            />
           ))}
         </div>
       )}
