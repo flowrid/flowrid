@@ -11,4 +11,7 @@ export const PLATFORM_ICONS: Record<string, string> = {
   chewy: "/platforms/chewy.png",
   wayfair: "/platforms/wayfair.png",
   whatnot: "/platforms/whatnot.png",
+  bigcommerce: "/platforms/bigcommerce.png",
+  woocommerce: "/platforms/woocommerce.png",
+  magento: "/platforms/magento.png",
 };
