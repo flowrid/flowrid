@@ -155,7 +155,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
       </div>
 
       {/* Hero Section */}
-      <div className="max-w-[1460px] mx-auto px-4 pt-6 pb-8">
+      <div className="max-w-[1460px] mx-auto px-4 pt-6 pb-5 md:pb-8">
         <HeroSection
           name={p.name}
           slug={p.slug}
@@ -176,9 +176,9 @@ export default async function ThreePLDetailPage({ params }: Props) {
 
       {/* 各 Section */}
       <div className="max-w-[1460px] mx-auto px-4">
-        <div className="space-y-14 py-10">
+        <div className="space-y-5 py-5 md:space-y-14 md:py-10">
           {/* Overview */}
-          <section id="overview">
+          <section id="overview" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
             <OverviewSection
               name={p.name}
               overviewText={overviewText}
@@ -187,7 +187,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Reviews */}
-          <section id="reviews">
+          <section id="reviews" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
             <ReviewsSection
               name={p.name}
               rating={p.rating || 0}
@@ -197,7 +197,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Locations */}
-          <section id="locations">
+          <section id="locations" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
             <LocationsSection
               name={p.name}
               city={p.city || ""}
@@ -208,7 +208,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Specialties */}
-          <section id="specialties">
+          <section id="specialties" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
             <SpecialtiesSection
               name={p.name}
               state={p.state}
@@ -219,7 +219,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Alternatives */}
-          <section id="alternatives">
+          <section id="alternatives" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
             <AlternativesSection
               currentSlug={p.slug}
               currentName={p.name}
@@ -229,12 +229,12 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Team */}
-          <section id="team">
+          <section id="team" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
             <TeamSection name={p.name} />
           </section>
 
           {/* Customers */}
-          <section id="customers">
+          <section id="customers" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
             <CustomersSection
               name={p.name}
               categories={p.categories || []}
@@ -242,7 +242,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Technology */}
-          <section id="technology">
+          <section id="technology" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
             <TechnologySection
               name={p.name}
               platforms={p.platforms || []}
@@ -251,7 +251,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* Awards */}
-          <section id="awards">
+          <section id="awards" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
             <AwardsSection
               name={p.name}
               rating={p.rating || 0}
@@ -260,7 +260,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* At a Glance */}
-          <section id="at-a-glance">
+          <section id="at-a-glance" className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
             <AtAGlanceSection
               name={p.name}
               state={p.state}
@@ -276,7 +276,9 @@ export default async function ThreePLDetailPage({ params }: Props) {
           </section>
 
           {/* FAQ */}
-          <DetailFAQ threePL={p} />
+          <div className="mobile-detail-card md:block md:p-0 md:border-0 md:shadow-none md:bg-transparent">
+            <DetailFAQ threePL={p} />
+          </div>
         </div>
       </div>
 

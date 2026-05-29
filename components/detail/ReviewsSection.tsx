@@ -59,9 +59,9 @@ export default function ReviewsSection({ name, rating, reviewCount, slug }: Revi
       </div>
 
       {/* 评分摘要 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
         {/* 总体评分 */}
-        <div className="bg-card border border-border rounded-xl p-6 flex flex-col items-center md:items-start">
+        <div className="bg-card border border-border rounded-xl p-5 md:p-6 flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0">
           <div className="flex items-center gap-3">
             <span className="text-5xl font-bold text-text">{starDisplay}</span>
             <div>

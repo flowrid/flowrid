@@ -45,7 +45,7 @@ export default function AtAGlanceSection({
       <h2 className="text-xl md:text-2xl font-bold text-text mb-4">{name} at a Glance</h2>
 
       {/* 事实网格 */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-3 mb-4 md:mb-6">
         {facts.map((f) => (
           <div key={f.label} className="bg-gray-50 rounded-xl p-4">
             <p className="text-xs text-text-secondary uppercase tracking-wide">{f.label}</p>

@@ -59,9 +59,9 @@ export default function HeroSection({
   else badges.push({ label: "Growing 3PL", color: "bg-blue-100 text-blue-800" });
 
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+    <section className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-8 items-start">
       {/* 左侧文字区 (占3/5) */}
-      <div className="lg:col-span-3 space-y-4">
+      <div className="lg:col-span-3 space-y-4 order-2 lg:order-1 bg-card border border-border rounded-2xl p-4 shadow-sm lg:bg-transparent lg:border-0 lg:rounded-none lg:p-0 lg:shadow-none">
         {/* Logo + 名称 */}
         <div className="flex items-center gap-4">
           {logo ? (
@@ -76,9 +76,9 @@ export default function HeroSection({
             </div>
           )}
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-text">{name}</h1>
+            <h1 className="text-xl md:text-3xl font-bold text-text leading-tight">{name}</h1>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-sm text-text-secondary">
+              <span className="text-xs md:text-sm text-text-secondary">
                 {city ? `${city}, ${stateFormatted}` : stateFormatted}
               </span>
               {website && (
@@ -116,7 +116,7 @@ export default function HeroSection({
         </div>
 
         {/* 描述 */}
-        <p className="text-text-secondary leading-relaxed max-w-2xl text-sm md:text-base">
+        <p className="text-text-secondary leading-relaxed max-w-2xl text-sm md:text-base line-clamp-4 md:line-clamp-none">
           {description || `${name} is a ${stateFormatted}-based fulfillment provider offering comprehensive warehousing and logistics services for e-commerce brands.`}
         </p>
 
@@ -124,16 +124,16 @@ export default function HeroSection({
         <div className="flex flex-wrap gap-3 pt-2">
           <a
             href={`/rfq?pl=${slug}`}
-            className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-dark transition-colors"
+            className="inline-flex w-full md:w-auto items-center justify-center gap-2 bg-primary text-white px-6 py-3.5 rounded-xl font-semibold text-sm md:text-base hover:bg-primary-dark transition-colors"
           >
             Get Matched With {name}
           </a>
         </div>
       </div>
 
-      {/* 右侧仓库/品牌大图 (占2/5) */}
-      <div className="lg:col-span-2">
-        <div className="rounded-2xl aspect-[4/3] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent">
+      {/* 右侧仓库/品牌大图 (占2/5) — 移动端在先 */}
+      <div className="lg:col-span-2 order-1 lg:order-2">
+        <div className="rounded-2xl aspect-[4/3] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent shadow-sm">
           {heroImage ? (
             <img
               src={heroImage}
