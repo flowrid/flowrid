@@ -34,42 +34,77 @@ export const COUNTRIES = [
   "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe",
 ];
 
-/** 通过 OpenStreetMap Nominatim 搜索城市 */
-export async function searchCities(query: string): Promise<string[]> {
+/** 通过 OpenStreetMap Nominatim 搜索城市，可按国家过滤 */
+export async function searchCities(query: string, country?: string): Promise<string[]> {
   if (query.length < 2) return [];
   try {
     const q = encodeURIComponent(query);
-    // 优先搜索美国城市
-    const [usResp, worldResp] = await Promise.all([
-      fetch(
-        `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=5&featureType=city&countrycodes=us`,
-        { headers: { "User-Agent": "Flowrid/1.0" } }
-      ),
-      fetch(
-        `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=5&featureType=city`,
-        { headers: { "User-Agent": "Flowrid/1.0" } }
-      ),
-    ]);
+
+    // 确定国家码
+    let countryCode = "";
+    if (country) {
+      countryCode = countryToCode(country);
+    }
+
+    const urls: string[] = [];
+    if (countryCode) {
+      urls.push(
+        `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=8&featureType=city&countrycodes=${countryCode}`
+      );
+    } else {
+      // 默认优先美国
+      urls.push(
+        `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=5&featureType=city&countrycodes=us`
+      );
+      urls.push(
+        `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=5&featureType=city`
+      );
+    }
 
     const results: string[] = [];
-    if (usResp.ok) {
-      const usData = await usResp.json();
-      for (const item of usData) {
-        const state = item.display_name?.split(",").slice(-3, -2)[0]?.trim() || "";
-        const label = state ? `${item.name}, ${state}, US` : `${item.name}, US`;
+    for (const url of urls) {
+      const resp = await fetch(url, {
+        headers: { "User-Agent": "Flowrid/1.0" },
+      });
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      for (const item of data) {
+        const parts = item.display_name?.split(",").map((s: string) => s.trim()) || [];
+        const itemCountry = parts[parts.length - 1] || "";
+        const state = parts.length >= 3 ? parts[parts.length - 3] : "";
+        let label: string;
+        if (itemCountry === "United States" && state) {
+          label = `${item.name}, ${state}`;
+        } else {
+          label = `${item.name}, ${itemCountry}`;
+        }
         if (!results.includes(label)) results.push(label);
-      }
-    }
-    if (worldResp.ok) {
-      const worldData = await worldResp.json();
-      for (const item of worldData) {
-        const country = item.display_name?.split(",").pop()?.trim() || "";
-        const label = `${item.name}, ${country}`;
-        if (!results.includes(label) && !label.startsWith("United States")) results.push(label);
       }
     }
     return results.slice(0, 8);
   } catch {
     return [];
   }
+}
+
+/** 国家名 → ISO 3166-1 alpha-2 国家码 */
+function countryToCode(name: string): string {
+  const map: Record<string, string> = {
+    "United States": "us", "Canada": "ca", "United Kingdom": "gb",
+    "Australia": "au", "Germany": "de", "France": "fr", "Italy": "it",
+    "Spain": "es", "Japan": "jp", "China": "cn", "India": "in",
+    "Brazil": "br", "Mexico": "mx", "Netherlands": "nl", "Poland": "pl",
+    "Sweden": "se", "Switzerland": "ch", "South Korea": "kr",
+    "Russia": "ru", "Turkey": "tr", "Indonesia": "id", "Saudi Arabia": "sa",
+    "United Arab Emirates": "ae", "Singapore": "sg", "Hong Kong": "hk",
+    "Taiwan": "tw", "Thailand": "th", "Vietnam": "vn", "Malaysia": "my",
+    "Philippines": "ph", "New Zealand": "nz", "South Africa": "za",
+    "Argentina": "ar", "Chile": "cl", "Colombia": "co", "Peru": "pe",
+    "Egypt": "eg", "Nigeria": "ng", "Kenya": "ke", "Morocco": "ma",
+    "Israel": "il", "Norway": "no", "Denmark": "dk", "Finland": "fi",
+    "Ireland": "ie", "Portugal": "pt", "Austria": "at", "Belgium": "be",
+    "Greece": "gr", "Czech Republic": "cz", "Hungary": "hu", "Romania": "ro",
+    "Ukraine": "ua", "Pakistan": "pk", "Bangladesh": "bd",
+  };
+  return map[name] || "";
 }

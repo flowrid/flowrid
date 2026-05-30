@@ -183,7 +183,6 @@ export default function AccountSettingsPage() {
           <div>
             <p className="text-sm text-text-secondary">Member ID</p>
             <p className="text-lg font-mono font-bold text-text tracking-wider">{memberId}</p>
-            <p className="text-xs text-text-secondary mt-0.5">Unique identifier — cannot be changed</p>
           </div>
         </div>
 
@@ -202,7 +201,6 @@ export default function AccountSettingsPage() {
                 placeholder="Start typing..."
                 options={COUNTRIES}
               />
-              <p className="text-xs text-text-secondary mt-1">Optional — select from list</p>
             </div>
             <div>
               <label className={labelClass}>City</label>
@@ -210,9 +208,8 @@ export default function AccountSettingsPage() {
                 value={city}
                 onChange={setCity}
                 placeholder="Start typing your city..."
-                fetchOptions={searchCities}
+                fetchOptions={(q) => searchCities(q, country)}
               />
-              <p className="text-xs text-text-secondary mt-1">Optional — US cities prioritized</p>
             </div>
           </div>
           <div>
