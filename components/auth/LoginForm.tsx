@@ -69,11 +69,21 @@ export default function LoginForm() {
       return;
     }
 
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    });
-    if (error) setError(error.message);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${window.location.origin}/auth/callback` },
+      });
+      if (error) {
+        if (error.message.includes("not enabled") || error.message.includes("Unsupported provider")) {
+          setError("Google login is not yet configured. Please use email to sign in.");
+        } else {
+          setError(error.message);
+        }
+      }
+    } catch (e: any) {
+      setError("Google login is not available. Please use email to sign in.");
+    }
   }
 
   return (
