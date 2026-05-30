@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { createBrowserClient } from "@/lib/supabase";
 
 export default function NavUser() {
-  const [user, setUser] = useState<{ email: string; role: string } | null>(null);
+  const [user, setUser] = useState<{ email: string; role: string; avatar?: string } | null>(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -21,6 +21,7 @@ export default function NavUser() {
         setUser({
           email: data.session.user.email,
           role: (meta?.role as string) || "brand",
+          avatar: (meta?.avatar_url as string) || "",
         });
       }
       setLoading(false);
@@ -32,6 +33,7 @@ export default function NavUser() {
         setUser({
           email: session.user.email,
           role: (meta?.role as string) || "brand",
+          avatar: (meta?.avatar_url as string) || "",
         });
       } else {
         setUser(null);
@@ -76,9 +78,16 @@ export default function NavUser() {
     <div ref={menuRef} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-text transition-colors cursor-pointer"
+        className="flex items-center gap-2 text-sm text-text-secondary hover:text-text transition-colors cursor-pointer"
       >
-        <span className="truncate max-w-[120px]">{user.email.split("@")[0]}</span>
+        {user.avatar ? (
+          <img src={user.avatar} alt="" className="w-6 h-6 rounded-full object-cover border border-border" />
+        ) : (
+          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
+            {user.email.charAt(0).toUpperCase()}
+          </div>
+        )}
+        <span className="truncate max-w-[100px]">{user.email.split("@")[0]}</span>
         <svg className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
