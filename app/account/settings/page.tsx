@@ -208,7 +208,7 @@ export default function AccountSettingsPage() {
                 value={city}
                 onChange={setCity}
                 placeholder="Start typing your city..."
-                fetchOptions={(q) => searchCities(q, country)}
+                fetchOptions={(q) => Promise.resolve(searchCities(q, country))}
               />
             </div>
           </div>

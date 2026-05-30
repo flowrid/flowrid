@@ -1,3 +1,5 @@
+/** 按国家分类的主要城市数据（静态本地数据，瞬间响应） */
+
 /** 全世界 249 个国家/地区列表 */
 export const COUNTRIES = [
   "Afghanistan", "Albania", "Algeria", "Andorra", "Angola",
@@ -34,77 +36,174 @@ export const COUNTRIES = [
   "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe",
 ];
 
-/** 通过 OpenStreetMap Nominatim 搜索城市，可按国家过滤 */
-export async function searchCities(query: string, country?: string): Promise<string[]> {
-  if (query.length < 2) return [];
-  try {
-    const q = encodeURIComponent(query);
+const US_CITIES = [
+  "New York City", "Los Angeles", "Chicago", "Houston", "Phoenix",
+  "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose",
+  "Austin", "Jacksonville", "Fort Worth", "Columbus", "Charlotte",
+  "Indianapolis", "San Francisco", "Seattle", "Denver", "Nashville",
+  "Oklahoma City", "El Paso", "Washington", "Boston", "Las Vegas",
+  "Portland", "Memphis", "Louisville", "Baltimore", "Milwaukee",
+  "Albuquerque", "Tucson", "Fresno", "Sacramento", "Mesa",
+  "Kansas City", "Atlanta", "Omaha", "Colorado Springs", "Raleigh",
+  "Long Beach", "Virginia Beach", "Miami", "Oakland", "Minneapolis",
+  "Tampa", "Tulsa", "Arlington", "New Orleans", "Wichita",
+  "Cleveland", "Bakersfield", "Aurora", "Anaheim", "Honolulu",
+  "Santa Ana", "Riverside", "Corpus Christi", "Lexington", "Stockton",
+  "Henderson", "Saint Paul", "St. Louis", "Cincinnati", "Pittsburgh",
+  "Greensboro", "Anchorage", "Plano", "Lincoln", "Orlando",
+  "Irvine", "Newark", "Toledo", "Durham", "Chula Vista",
+  "Fort Wayne", "Jersey City", "St. Petersburg", "Laredo", "Madison",
+  "Chandler", "Buffalo", "Lubbock", "Scottsdale", "Reno",
+  "Glendale", "Gilbert", "Winston-Salem", "North Las Vegas", "Norfolk",
+  "Chesapeake", "Garland", "Irving", "Hialeah", "Fremont",
+  "Boise", "Richmond", "Baton Rouge", "Spokane", "Des Moines",
+  "Tacoma", "San Bernardino", "Modesto", "Fontana", "Santa Clarita",
+  "Birmingham", "Oxnard", "Fayetteville", "Moreno Valley", "Rochester",
+  "Glendale", "Huntington Beach", "Salt Lake City", "Grand Rapids", "Amarillo",
+  "Yonkers", "Montgomery", "Akron", "Little Rock", "Huntsville",
+  "Augusta", "Port St. Lucie", "Grand Prairie", "Tallahassee", "Overland Park",
+  "Tempe", "McKinney", "Mobile", "Cape Coral", "Shreveport",
+  "Frisco", "Knoxville", "Worcester", "Brownsville", "Vancouver",
+  "Fort Lauderdale", "Sioux Falls", "Ontario", "Chattanooga", "Providence",
+  "Newport News", "Rancho Cucamonga", "Santa Rosa", "Oceanside", "Salem",
+  "Elk Grove", "Garden Grove", "Pembroke Pines", "Eugene", "Peoria",
+  "Corona", "Springfield", "Jackson", "Alexandria", "Hayward",
+  "Lancaster", "Lakewood", "Clarksville", "Palmdale", "Salinas",
+  "Springfield", "Hollywood", "Pasadena", "Sunnyvale", "Macon",
+  "Pomona", "Escondido", "Killeen", "Naperville", "Joliet",
+  "Bellevue", "Rockford", "Savannah", "Paterson", "Torrance",
+  "Bridgeport", "McAllen", "Mesquite", "Syracuse", "Midland",
+  "Pasadena", "Murfreesboro", "Miramar", "Dayton", "Fullerton",
+  "Olathe", "Orange", "Thornton", "Roseville", "Denton",
+  "Waco", "Surprise", "Carrollton", "West Valley City", "Charleston",
+  "Warren", "Hampton", "Gainesville", "Cedar Rapids", "Visalia",
+  "Coral Springs", "New Haven", "Stamford", "Thousand Oaks", "Vallejo",
+  "Concord", "Elizabeth", "Athens", "Lafayette", "Simi Valley",
+  "Topeka", "Norman", "Fargo", "Wilmington", "Abilene",
+  "Odessa", "Columbia", "Pearland", "Victorville", "Hartford",
+  "Vallejo", "Allentown", "Berkeley", "Richardson", "Arvada",
+  "Ann Arbor", "Rochester", "Cambridge", "Sugar Land", "Lansing",
+  "Evansville", "College Station", "Fairfield", "Clearwater", "Beaumont",
+  "Independence", "Provo", "West Jordan", "Murrieta", "Palm Bay",
+  "El Monte", "Carlsbad", "North Charleston", "Temecula", "Clovis",
+  "Meridian", "Westminster", "Costa Mesa", "High Point", "Manchester",
+  "Pueblo", "Lakeland", "Pompano Beach", "West Palm Beach", "Antioch",
+  "Everett", "Downey", "Lowell", "Centennial", "Elgin",
+  "Richmond", "Peoria", "Broken Arrow", "Miami Gardens", "Billings",
+  "Jurupa Valley", "Sandy Springs", "Gresham", "Lewisville", "Hillsboro",
+  "Ventura", "Inglewood", "Edison", "Sparks", "San Mateo",
+  "Boulder", "Daly City", "Allen", "Rio Rancho", "Rialto",
+  "Woodbridge", "South Bend", "Spokane Valley", "Norwalk", "Menifee",
+  "Vacaville", "Wichita Falls", "Davenport", "Quincy", "Chico",
+  "Lynn", "Lee's Summit", "New Bedford", "Federal Way", "Elk Grove",
+  "Hesperia", "Brockton", "Roswell", "Miami", "Santa Fe",
+  "Duluth", "Nashua", "Palm Springs", "Tracy", "Tustin",
+  "Apple Valley", "Lehigh Acres", "Fishers",
+];
 
-    // 确定国家码
-    let countryCode = "";
-    if (country) {
-      countryCode = countryToCode(country);
-    }
+const CA_CITIES = [
+  "Toronto", "Montreal", "Vancouver", "Calgary", "Edmonton",
+  "Ottawa", "Winnipeg", "Quebec City", "Hamilton", "Kitchener",
+  "London", "Victoria", "Halifax", "Oshawa", "Windsor",
+  "Saskatoon", "Regina", "St. John's", "Kelowna", "Barrie",
+];
 
-    const urls: string[] = [];
-    if (countryCode) {
-      urls.push(
-        `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=8&featureType=city&countrycodes=${countryCode}`
-      );
-    } else {
-      // 默认优先美国
-      urls.push(
-        `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=5&featureType=city&countrycodes=us`
-      );
-      urls.push(
-        `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=5&featureType=city`
-      );
-    }
+const GB_CITIES = [
+  "London", "Manchester", "Birmingham", "Liverpool", "Edinburgh",
+  "Glasgow", "Bristol", "Leeds", "Sheffield", "Leicester",
+  "Coventry", "Nottingham", "Southampton", "Newcastle", "Cardiff",
+  "Belfast", "Brighton", "Bournemouth", "Oxford", "Cambridge",
+];
 
-    const results: string[] = [];
-    for (const url of urls) {
-      const resp = await fetch(url, {
-        headers: { "User-Agent": "Flowrid/1.0" },
-      });
-      if (!resp.ok) continue;
-      const data = await resp.json();
-      for (const item of data) {
-        const parts = item.display_name?.split(",").map((s: string) => s.trim()) || [];
-        const itemCountry = parts[parts.length - 1] || "";
-        const state = parts.length >= 3 ? parts[parts.length - 3] : "";
-        let label: string;
-        if (itemCountry === "United States" && state) {
-          label = `${item.name}, ${state}`;
-        } else {
-          label = `${item.name}, ${itemCountry}`;
+const AU_CITIES = [
+  "Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide",
+  "Gold Coast", "Canberra", "Hobart", "Darwin", "Cairns",
+];
+
+const WORLD_CITIES: Record<string, string[]> = {
+  "United States": US_CITIES,
+  "Canada": CA_CITIES,
+  "United Kingdom": GB_CITIES,
+  "Australia": AU_CITIES,
+  "Germany": ["Berlin", "Munich", "Hamburg", "Frankfurt", "Cologne", "Stuttgart", "Dusseldorf"],
+  "France": ["Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Nantes", "Bordeaux"],
+  "Italy": ["Rome", "Milan", "Naples", "Turin", "Florence", "Venice", "Bologna"],
+  "Spain": ["Madrid", "Barcelona", "Valencia", "Seville", "Bilbao", "Malaga"],
+  "Japan": ["Tokyo", "Osaka", "Kyoto", "Yokohama", "Nagoya", "Fukuoka", "Sapporo"],
+  "China": ["Shanghai", "Beijing", "Shenzhen", "Guangzhou", "Chengdu", "Hangzhou", "Nanjing"],
+  "India": ["Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Pune"],
+  "Brazil": ["Sao Paulo", "Rio de Janeiro", "Brasilia", "Salvador", "Fortaleza", "Belo Horizonte"],
+  "Mexico": ["Mexico City", "Guadalajara", "Monterrey", "Puebla", "Tijuana", "Cancun"],
+  "Netherlands": ["Amsterdam", "Rotterdam", "The Hague", "Utrecht", "Eindhoven"],
+  "Singapore": ["Singapore"],
+  "Hong Kong": ["Hong Kong"],
+  "United Arab Emirates": ["Dubai", "Abu Dhabi", "Sharjah"],
+  "South Korea": ["Seoul", "Busan", "Incheon", "Daegu"],
+  "Sweden": ["Stockholm", "Gothenburg", "Malmo"],
+  "Switzerland": ["Zurich", "Geneva", "Basel", "Bern"],
+  "Poland": ["Warsaw", "Krakow", "Wroclaw", "Poznan", "Gdansk"],
+  "Turkey": ["Istanbul", "Ankara", "Izmir", "Antalya"],
+  "Thailand": ["Bangkok", "Chiang Mai", "Phuket"],
+  "Vietnam": ["Ho Chi Minh City", "Hanoi", "Da Nang"],
+  "Malaysia": ["Kuala Lumpur", "Penang", "Johor Bahru"],
+  "Philippines": ["Manila", "Cebu", "Davao"],
+  "New Zealand": ["Auckland", "Wellington", "Christchurch"],
+  "South Africa": ["Johannesburg", "Cape Town", "Durban", "Pretoria"],
+  "Argentina": ["Buenos Aires", "Cordoba", "Rosario"],
+  "Chile": ["Santiago", "Valparaiso"],
+  "Colombia": ["Bogota", "Medellin", "Cali"],
+  "Israel": ["Tel Aviv", "Jerusalem", "Haifa"],
+  "Russia": ["Moscow", "Saint Petersburg", "Novosibirsk"],
+  "Ireland": ["Dublin", "Cork", "Galway"],
+  "Portugal": ["Lisbon", "Porto"],
+  "Austria": ["Vienna", "Salzburg", "Graz"],
+  "Belgium": ["Brussels", "Antwerp", "Ghent"],
+  "Denmark": ["Copenhagen", "Aarhus"],
+  "Finland": ["Helsinki", "Espoo", "Tampere"],
+  "Norway": ["Oslo", "Bergen", "Trondheim"],
+  "Greece": ["Athens", "Thessaloniki"],
+  "Czech Republic": ["Prague", "Brno"],
+  "Hungary": ["Budapest", "Debrecen"],
+  "Romania": ["Bucharest", "Cluj-Napoca"],
+};
+
+/** 搜索城市：按国家过滤，首字母优先匹配 */
+export function searchCities(query: string, country?: string): string[] {
+  if (!query || query.length < 1) return [];
+
+  const q = query.toLowerCase().trim();
+
+  // 确定搜索哪些城市
+  let pool: string[] = [];
+  if (country && WORLD_CITIES[country]) {
+    pool = WORLD_CITIES[country];
+  } else if (!country) {
+    // 未选国家：默认所有
+    pool = US_CITIES;
+    for (const [c, cities] of Object.entries(WORLD_CITIES)) {
+      if (c !== "United States") {
+        for (const city of cities.slice(0, 3)) {
+          pool.push(`${city}, ${c}`);
         }
-        if (!results.includes(label)) results.push(label);
       }
     }
-    return results.slice(0, 8);
-  } catch {
+  } else {
+    // 选了国家但没预置数据：返回空
     return [];
   }
-}
 
-/** 国家名 → ISO 3166-1 alpha-2 国家码 */
-function countryToCode(name: string): string {
-  const map: Record<string, string> = {
-    "United States": "us", "Canada": "ca", "United Kingdom": "gb",
-    "Australia": "au", "Germany": "de", "France": "fr", "Italy": "it",
-    "Spain": "es", "Japan": "jp", "China": "cn", "India": "in",
-    "Brazil": "br", "Mexico": "mx", "Netherlands": "nl", "Poland": "pl",
-    "Sweden": "se", "Switzerland": "ch", "South Korea": "kr",
-    "Russia": "ru", "Turkey": "tr", "Indonesia": "id", "Saudi Arabia": "sa",
-    "United Arab Emirates": "ae", "Singapore": "sg", "Hong Kong": "hk",
-    "Taiwan": "tw", "Thailand": "th", "Vietnam": "vn", "Malaysia": "my",
-    "Philippines": "ph", "New Zealand": "nz", "South Africa": "za",
-    "Argentina": "ar", "Chile": "cl", "Colombia": "co", "Peru": "pe",
-    "Egypt": "eg", "Nigeria": "ng", "Kenya": "ke", "Morocco": "ma",
-    "Israel": "il", "Norway": "no", "Denmark": "dk", "Finland": "fi",
-    "Ireland": "ie", "Portugal": "pt", "Austria": "at", "Belgium": "be",
-    "Greece": "gr", "Czech Republic": "cz", "Hungary": "hu", "Romania": "ro",
-    "Ukraine": "ua", "Pakistan": "pk", "Bangladesh": "bd",
-  };
-  return map[name] || "";
+  // 首字母匹配优先，然后包含匹配
+  const prefix: string[] = [];
+  const contains: string[] = [];
+
+  for (const city of pool) {
+    const lower = city.toLowerCase();
+    if (lower.startsWith(q)) {
+      prefix.push(city);
+    } else if (lower.includes(q)) {
+      contains.push(city);
+    }
+  }
+
+  return [...prefix, ...contains].slice(0, 12);
 }
