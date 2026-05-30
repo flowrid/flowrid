@@ -69,6 +69,9 @@ export default function RootLayout({
               <a href="/compare" className="hover:text-text transition-colors">
                 Compare
               </a>
+              <a href="/login" className="hover:text-text transition-colors">
+                Login
+              </a>
               <a
                 href="/rfq"
                 className="bg-primary text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors"

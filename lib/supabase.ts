@@ -67,3 +67,25 @@ export function createServerClient(): SupabaseClient | null {
 export function createServiceClient(): SupabaseClient | null {
   return getServiceClient();
 }
+
+// 浏览器客户端（支持 Auth session）
+let browserCache: SupabaseClient | null = null;
+
+export function createBrowserClient(): SupabaseClient | null {
+  if (browserCache) return browserCache;
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !key) return null;
+
+  browserCache = createClient(url, key, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  });
+
+  return browserCache;
+}
