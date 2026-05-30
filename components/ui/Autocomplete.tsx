@@ -43,24 +43,34 @@ export default function Autocomplete({
     return () => document.removeEventListener("click", handleClick);
   }, []);
 
-  // 搜索
+  // 搜索（输入变化即过滤，不依赖 open 状态）
   useEffect(() => {
-    if (!open) return;
+    const q = input.trim();
+    if (!q) { setItems(options.slice(0, 6)); return; }
 
-    if (fetchOptions && input.trim()) {
+    if (fetchOptions) {
       setLoading(true);
       const timer = setTimeout(async () => {
-        const results = await fetchOptions(input.trim());
+        const results = await fetchOptions(q);
         setItems(results);
         setLoading(false);
-      }, 300);
+      }, 250);
       return () => clearTimeout(timer);
     }
 
-    // 静态过滤
-    const q = input.toLowerCase();
-    setItems(options.filter((o) => o.toLowerCase().includes(q)));
-  }, [input, open, options, fetchOptions]);
+    // 静态过滤：首字母精确匹配优先，然后包含匹配
+    const lowerQ = q.toLowerCase();
+    const prefix = options.filter((o) => o.toLowerCase().startsWith(lowerQ));
+    const contains = options.filter((o) => !o.toLowerCase().startsWith(lowerQ) && o.toLowerCase().includes(lowerQ));
+    setItems([...prefix, ...contains].slice(0, 12));
+  }, [input, options, fetchOptions]);
+
+  function handleChange(val: string) {
+    setInput(val);
+    onChange(val);
+    setOpen(true);
+    setHighlightIndex(-1);
+  }
 
   function select(item: string) {
     setInput(item);
@@ -69,7 +79,6 @@ export default function Autocomplete({
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (!open) { setOpen(true); return; }
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setHighlightIndex((prev) => Math.min(prev + 1, items.length - 1));
@@ -93,7 +102,7 @@ export default function Autocomplete({
         type="text"
         value={input}
         placeholder={placeholder}
-        onChange={(e) => { setInput(e.target.value); onChange(e.target.value); }}
+        onChange={(e) => handleChange(e.target.value)}
         onFocus={() => setOpen(true)}
         onKeyDown={handleKeyDown}
         className={`${baseClass} ${className}`}
