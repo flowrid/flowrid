@@ -40,16 +40,23 @@ export default function NavUser() {
     return () => listener?.subscription.unsubscribe();
   }, []);
 
-  // 点击外部关闭菜单
+  // 点击页面其他地方关闭菜单
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    if (open) document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
+    if (!open) return;
+    const timer = setTimeout(() => {
+      document.addEventListener("click", handleOutside);
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("click", handleOutside);
+    };
   }, [open]);
+
+  function handleOutside(e: MouseEvent) {
+    if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      setOpen(false);
+    }
+  }
 
   if (loading) {
     return <span className="w-12 h-5 bg-gray-200 rounded animate-pulse inline-block" />;
@@ -69,7 +76,7 @@ export default function NavUser() {
     <div ref={menuRef} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-text transition-colors"
+        className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-text transition-colors cursor-pointer"
       >
         <span className="truncate max-w-[120px]">{user.email.split("@")[0]}</span>
         <svg className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,7 +86,6 @@ export default function NavUser() {
 
       {open && (
         <div className="absolute right-0 top-full mt-2 w-56 bg-card border border-border rounded-xl shadow-lg py-1 z-50">
-          {/* 角色标签 */}
           <div className="px-4 py-2 border-b border-border">
             <p className="text-xs text-text-secondary uppercase tracking-wider">
               {isBrand ? "Brand Account" : "3PL Partner"}
