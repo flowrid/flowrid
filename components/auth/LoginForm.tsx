@@ -1,7 +1,7 @@
 "use client";
 
 import { createBrowserClient } from "@/lib/supabase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
@@ -12,6 +12,24 @@ export default function LoginForm() {
   const [message, setMessage] = useState("");
   const [mode, setMode] = useState<"password" | "magic">("password");
   const router = useRouter();
+
+  // 客户端处理 OAuth 回调 — 页面加载时自动检测
+  useEffect(() => {
+    const supabase = createBrowserClient();
+    if (!supabase) return;
+
+    // 检查 URL 中是否有 auth 回调参数
+    const hash = window.location.hash;
+    if (hash && hash.includes("access_token")) {
+      // Supabase 客户端会自动处理 hash 中的 token，刷新 session
+      supabase.auth.getSession().then(({ data }) => {
+        if (data?.session) {
+          router.push("/dashboard");
+          router.refresh();
+        }
+      });
+    }
+  }, [router]);
 
   async function handlePasswordLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -26,7 +44,6 @@ export default function LoginForm() {
     }
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-
     if (error) {
       setError(error.message);
       setLoading(false);
@@ -50,7 +67,7 @@ export default function LoginForm() {
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      options: { emailRedirectTo: `${window.location.origin}/login` },
     });
 
     if (error) {
@@ -72,7 +89,10 @@ export default function LoginForm() {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/auth/callback` },
+        options: {
+          // 让 Supabase 重定向回当前页面，客户端自动处理 hash token
+          redirectTo: `${window.location.origin}/login`,
+        },
       });
       if (error) {
         if (error.message.includes("not enabled") || error.message.includes("Unsupported provider")) {
