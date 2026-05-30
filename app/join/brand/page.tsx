@@ -32,7 +32,7 @@ export default function BrandJoinPage() {
       return;
     }
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
@@ -48,9 +48,12 @@ export default function BrandJoinPage() {
     if (error) {
       setError(error.message);
       setLoading(false);
-    } else {
+    } else if (data?.session) {
       router.push("/dashboard");
       router.refresh();
+    } else {
+      setLoading(false);
+      setError("Account created! Please check your email to confirm your account, then log in.");
     }
   }
 
