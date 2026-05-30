@@ -167,6 +167,23 @@ const WORLD_CITIES: Record<string, string[]> = {
   "Romania": ["Bucharest", "Cluj-Napoca"],
 };
 
+/** 根据国家返回城市列表（同步，瞬间响应） */
+export function getCityOptions(country?: string): string[] {
+  if (!country) {
+    // 未选国家：默认美国 + 国际主要城市
+    const list = [...US_CITIES];
+    for (const [c, cities] of Object.entries(WORLD_CITIES)) {
+      if (c !== "United States") {
+        for (const city of cities.slice(0, 3)) {
+          list.push(`${city}, ${c}`);
+        }
+      }
+    }
+    return list;
+  }
+  return WORLD_CITIES[country] || [];
+}
+
 /** 搜索城市：按国家过滤，首字母优先匹配 */
 export function searchCities(query: string, country?: string): string[] {
   if (!query || query.length < 1) return [];

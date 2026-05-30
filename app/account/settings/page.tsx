@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { createBrowserClient } from "@/lib/supabase";
 import Autocomplete from "@/components/ui/Autocomplete";
-import { COUNTRIES, searchCities } from "@/lib/locations";
+import { COUNTRIES, getCityOptions } from "@/lib/locations";
 
 export default function AccountSettingsPage() {
   const supabase = createBrowserClient();
@@ -208,7 +208,7 @@ export default function AccountSettingsPage() {
                 value={city}
                 onChange={setCity}
                 placeholder="Start typing your city..."
-                fetchOptions={(q) => Promise.resolve(searchCities(q, country))}
+                options={getCityOptions(country)}
               />
             </div>
           </div>
