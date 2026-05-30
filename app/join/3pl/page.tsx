@@ -49,7 +49,7 @@ export default function ThreePLJoinPage() {
       setError(error.message);
       setLoading(false);
     } else if (data?.session) {
-      router.push("/dashboard");
+      router.push("/");
       router.refresh();
     } else {
       setLoading(false);

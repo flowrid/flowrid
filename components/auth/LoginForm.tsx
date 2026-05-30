@@ -24,7 +24,7 @@ export default function LoginForm() {
       // Supabase 客户端会自动处理 hash 中的 token，刷新 session
       supabase.auth.getSession().then(({ data }) => {
         if (data?.session) {
-          router.push("/dashboard");
+          router.push("/");
           router.refresh();
         }
       });
@@ -48,7 +48,7 @@ export default function LoginForm() {
       setError(error.message);
       setLoading(false);
     } else {
-      router.push("/dashboard");
+      router.push("/");
       router.refresh();
     }
   }

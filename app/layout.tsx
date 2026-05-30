@@ -2,6 +2,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { websiteSchema, organizationSchema } from "@/lib/jsonld";
+import NavUser from "@/components/auth/NavUser";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -69,9 +70,7 @@ export default function RootLayout({
               <a href="/compare" className="hover:text-text transition-colors">
                 Compare
               </a>
-              <a href="/login" className="hover:text-text transition-colors">
-                Login
-              </a>
+              <NavUser />
               <a
                 href="/rfq"
                 className="bg-primary text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors"
