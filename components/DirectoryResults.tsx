@@ -56,10 +56,24 @@ export default function DirectoryResults({
 
     let ok = 0;
     for (const slug of selected) {
-      const { error } = await supabase.from("saved_3pls").upsert(
-        { user_id: userId, slug },
-        { onConflict: "user_id,slug", ignoreDuplicates: false }
-      );
+      // 先检查是否已存在
+      const { data: existing } = await supabase
+        .from("saved_3pls")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("slug", slug)
+        .maybeSingle();
+
+      if (existing) {
+        ok++; // 已存在也算成功
+        continue;
+      }
+
+      // 插入新记录
+      const { error } = await supabase
+        .from("saved_3pls")
+        .insert({ user_id: userId, slug });
+
       if (!error) ok++;
     }
 
