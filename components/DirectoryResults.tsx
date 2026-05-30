@@ -40,6 +40,7 @@ export default function DirectoryResults({
 
   async function handleSave() {
     setSaving(true);
+    setSaved(false);
     const supabase = createBrowserClient();
     if (!supabase) {
       setSaving(false);
@@ -57,7 +58,7 @@ export default function DirectoryResults({
     for (const slug of selected) {
       const { error } = await supabase.from("saved_3pls").upsert(
         { user_id: userId, slug },
-        { onConflict: "user_id,slug" }
+        { onConflict: "user_id,slug", ignoreDuplicates: false }
       );
       if (!error) ok++;
     }
@@ -67,6 +68,8 @@ export default function DirectoryResults({
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
       setSelected(new Set());
+    } else {
+      alert("Could not save. Make sure you have run the migration SQL in Supabase.");
     }
   }
 
