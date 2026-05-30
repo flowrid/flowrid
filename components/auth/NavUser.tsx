@@ -109,7 +109,7 @@ export default function NavUser() {
               </a>
               <a href="/account/saved" onClick={() => setOpen(false)}
                 className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-text transition-colors">
-                Saved 3PLs
+                Saved 3PL
               </a>
               <a href="/compare" onClick={() => setOpen(false)}
                 className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-text transition-colors">

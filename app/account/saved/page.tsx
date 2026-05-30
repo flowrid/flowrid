@@ -75,7 +75,7 @@ export default function Saved3PLsPage() {
   return (
     <>
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-2xl font-bold text-text">Saved 3PLs</h1>
+        <h1 className="text-2xl font-bold text-text">Saved 3PL</h1>
         {threePLs.length > 0 && (
           <Link href={`/compare?pls=${slugs.join(",")}`} className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors">
             Compare All ({threePLs.length})

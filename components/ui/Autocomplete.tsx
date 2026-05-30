@@ -108,7 +108,7 @@ export default function Autocomplete({
         className={`${baseClass} ${className}`}
       />
       {open && items.length > 0 && (
-        <div className="absolute left-0 right-0 top-full mt-1 bg-card border border-border rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto">
+        <div className="absolute left-0 right-0 top-full mt-1 bg-card border border-border rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto">
           {loading ? (
             <p className="px-4 py-2.5 text-sm text-text-secondary">Searching...</p>
           ) : (
