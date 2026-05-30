@@ -54,31 +54,16 @@ export default function DirectoryResults({
       return;
     }
 
-    let ok = 0;
-    for (const slug of selected) {
-      // 先检查是否已存在
-      const { data: existing } = await supabase
-        .from("saved_3pls")
-        .select("id")
-        .eq("user_id", userId)
-        .eq("slug", slug)
-        .maybeSingle();
-
-      if (existing) {
-        ok++; // 已存在也算成功
-        continue;
-      }
-
-      // 插入新记录
-      const { error } = await supabase
-        .from("saved_3pls")
-        .insert({ user_id: userId, slug });
-
-      if (!error) ok++;
-    }
+    // 通过 API 路由保存（绕过浏览器端权限问题）
+    const resp = await fetch("/api/save-3pls", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slugs: [...selected], userId }),
+    });
+    const result = await resp.json();
 
     setSaving(false);
-    if (ok > 0) {
+    if (result.saved > 0) {
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
       setSelected(new Set());
