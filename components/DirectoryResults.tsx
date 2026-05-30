@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import ThreePLCard from "@/components/3PLCard";
+import { createBrowserClient } from "@/lib/supabase";
 import type { ThreePL } from "@/types/3pl";
 
 const PAGE_SIZE = 24;
@@ -24,18 +25,54 @@ export default function DirectoryResults({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const toggle = useCallback((slug: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(slug)) {
-        next.delete(slug);
-      } else {
-        next.add(slug);
-      }
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
       return next;
     });
+    setSaved(false);
   }, []);
+
+  async function handleSave() {
+    setSaving(true);
+    const supabase = createBrowserClient();
+    if (!supabase) {
+      setSaving(false);
+      return;
+    }
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    const userId = sessionData?.session?.user?.id;
+    if (!userId) {
+      setSaving(false);
+      return;
+    }
+
+    let ok = 0;
+    for (const slug of selected) {
+      const { error } = await supabase.from("saved_3pls").upsert(
+        { user_id: userId, slug },
+        { onConflict: "user_id,slug" }
+      );
+      if (!error) ok++;
+    }
+
+    setSaving(false);
+    if (ok > 0) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+      setSelected(new Set());
+    }
+  }
+
+  function clearSelection() {
+    setSelected(new Set());
+  }
 
   if (!threePLs || threePLs.length === 0) {
     return (
@@ -48,14 +85,12 @@ export default function DirectoryResults({
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const selectedList = threePLs.filter((p) => selected.has(p.slug));
+  const count = selected.size;
 
   function goToPage(newPage: number) {
     const params = new URLSearchParams(searchParams.toString());
-    if (newPage > 0) {
-      params.set("page", String(newPage));
-    } else {
-      params.delete("page");
-    }
+    if (newPage > 0) params.set("page", String(newPage));
+    else params.delete("page");
     router.push(`?${params.toString()}`, { scroll: false });
   }
 
@@ -74,12 +109,11 @@ export default function DirectoryResults({
       <div className="grid grid-cols-2 gap-3 lg:gap-5 lg:grid-cols-6">
         {threePLs.map((item) => {
           const score = Math.round(item.rating || 0);
-          const isSelected = selected.has(item.slug);
           return (
             <ThreePLCard
               key={item.id}
               data={{ ...item, score }}
-              selected={isSelected}
+              selected={selected.has(item.slug)}
               onToggleSelect={() => toggle(item.slug)}
             />
           );
@@ -88,88 +122,80 @@ export default function DirectoryResults({
 
       {totalPages > 1 && (
         <div className="max-w-[1460px] mx-auto px-4 mt-8 flex items-center justify-center gap-2">
-          <button
-            onClick={() => goToPage(0)}
-            disabled={page === 0}
-            className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          >
+          <button onClick={() => goToPage(0)} disabled={page === 0}
+            className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
             First
           </button>
-          <button
-            onClick={() => goToPage(Math.max(0, page - 1))}
-            disabled={page === 0}
-            className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          >
+          <button onClick={() => goToPage(Math.max(0, page - 1))} disabled={page === 0}
+            className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
             Prev
           </button>
-
           {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
             let pageNum: number;
-            if (totalPages <= 7) {
-              pageNum = i;
-            } else if (page < 4) {
-              pageNum = i;
-            } else if (page > totalPages - 4) {
-              pageNum = totalPages - 7 + i;
-            } else {
-              pageNum = page - 3 + i;
-            }
+            if (totalPages <= 7) pageNum = i;
+            else if (page < 4) pageNum = i;
+            else if (page > totalPages - 4) pageNum = totalPages - 7 + i;
+            else pageNum = page - 3 + i;
             return (
-              <button
-                key={pageNum}
-                onClick={() => goToPage(pageNum)}
+              <button key={pageNum} onClick={() => goToPage(pageNum)}
                 className={`w-9 h-9 text-sm rounded-lg font-medium transition-colors ${
-                  pageNum === page
-                    ? "bg-primary text-white"
-                    : "border border-border hover:bg-card"
-                }`}
-              >
+                  pageNum === page ? "bg-primary text-white" : "border border-border hover:bg-card"
+                }`}>
                 {pageNum + 1}
               </button>
             );
           })}
-
-          <button
-            onClick={() => goToPage(Math.min(totalPages - 1, page + 1))}
-            disabled={page >= totalPages - 1}
-            className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          >
+          <button onClick={() => goToPage(Math.min(totalPages - 1, page + 1))} disabled={page >= totalPages - 1}
+            className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
             Next
           </button>
-          <button
-            onClick={() => goToPage(totalPages - 1)}
-            disabled={page >= totalPages - 1}
-            className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          >
+          <button onClick={() => goToPage(totalPages - 1)} disabled={page >= totalPages - 1}
+            className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
             Last
           </button>
         </div>
       )}
-
       {totalPages > 1 && (
         <p className="text-center text-xs text-text-secondary mt-2">
           Page {page + 1} of {totalPages}
         </p>
       )}
 
-      {selectedList.length >= 2 && (
-        <div className="fixed bottom-0 left-0 right-0 p-3 bg-card border-t border-border shadow-lg z-[60] flex items-center justify-between">
-          <p className="text-sm text-text">
-            <span className="font-bold">{selectedList.length}</span> 3PLs selected
-          </p>
-          <div className="flex gap-3">
-            <button
-              onClick={() => setSelected(new Set())}
-              className="text-sm text-text-secondary hover:text-text"
-            >
-              Clear
-            </button>
-            <Link
-              href={`/compare?pls=${selectedList.map((p) => p.slug).join(",")}`}
-              className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-primary-dark transition-colors"
-            >
-              Compare Now
-            </Link>
+      {/* 浮动操作栏 — 1+ 选中时显示 */}
+      {count > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-card border-t border-border shadow-lg z-[60]">
+          <div className="max-w-[1460px] mx-auto flex items-center justify-between">
+            <div>
+              <p className="text-sm text-text font-medium">
+                {count} {count === 1 ? "3PL" : "3PLs"} selected
+              </p>
+              {saved && (
+                <p className="text-xs text-success mt-0.5">Saved to your account!</p>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={clearSelection}
+                className="px-4 py-2 text-sm text-text-secondary hover:text-text border border-border rounded-lg transition-colors"
+              >
+                Clear
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="px-4 py-2 text-sm font-medium border border-primary text-primary hover:bg-primary/5 rounded-lg transition-colors disabled:opacity-50"
+              >
+                {saving ? "Saving..." : "Save"}
+              </button>
+              {count >= 2 && (
+                <Link
+                  href={`/compare?pls=${selectedList.map((p) => p.slug).join(",")}`}
+                  className="px-6 py-2 text-sm font-semibold bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+                >
+                  Compare Now
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       )}
