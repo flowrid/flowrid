@@ -12,10 +12,12 @@ export default function NavUser() {
   useEffect(() => {
     const supabase = createBrowserClient();
     if (!supabase) {
-      setLoading(false);
-      return;
+      const timer = setTimeout(() => setLoading(false), 0);
+      return () => clearTimeout(timer);
     }
-    supabase.auth.getSession().then(({ data }) => {
+
+    const loadUser = async () => {
+      const { data } = await supabase.auth.getSession();
       if (data?.session?.user?.email) {
         const meta = data.session.user.user_metadata;
         setUser({
@@ -25,7 +27,11 @@ export default function NavUser() {
         });
       }
       setLoading(false);
-    });
+    };
+
+    const timer = setTimeout(() => {
+      void loadUser();
+    }, 0);
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user?.email) {
@@ -39,10 +45,13 @@ export default function NavUser() {
         setUser(null);
       }
     });
-    return () => listener?.subscription.unsubscribe();
+    return () => {
+      clearTimeout(timer);
+      listener?.subscription.unsubscribe();
+    };
   }, []);
 
-  // 点击页面其他地方关闭菜单
+  // 点击外部关闭菜单
   useEffect(() => {
     if (!open) return;
     const timer = setTimeout(() => {
@@ -72,13 +81,11 @@ export default function NavUser() {
     );
   }
 
-  const isBrand = user.role === "brand";
-
   return (
-    <div ref={menuRef} className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 text-sm text-text-secondary hover:text-text transition-colors cursor-pointer"
+    <div ref={menuRef} className="relative flex items-center gap-1">
+      <a
+        href="/account"
+        className="flex items-center gap-2 text-sm text-text-secondary hover:text-text transition-colors"
       >
         {user.avatar ? (
           <img src={user.avatar} alt="" className="w-6 h-6 rounded-full object-cover border border-border" />
@@ -88,57 +95,26 @@ export default function NavUser() {
           </div>
         )}
         <span className="truncate max-w-[100px]">{user.email.split("@")[0]}</span>
+      </a>
+
+      <button
+        onClick={() => setOpen(!open)}
+        className="p-1 text-text-secondary hover:text-text transition-colors cursor-pointer"
+      >
         <svg className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-56 bg-card border border-border rounded-xl shadow-lg py-1 z-50">
-          <div className="px-4 py-2 border-b border-border">
-            <p className="text-xs text-text-secondary uppercase tracking-wider">
-              {isBrand ? "Brand Account" : "3PL Partner"}
-            </p>
-          </div>
-
-          {isBrand ? (
-            <>
-              <a href="/account/rfqs" onClick={() => setOpen(false)}
-                className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-text transition-colors">
-                My RFQs
-              </a>
-              <a href="/account/saved" onClick={() => setOpen(false)}
-                className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-text transition-colors">
-                Saved 3PL
-              </a>
-              <a href="/compare" onClick={() => setOpen(false)}
-                className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-text transition-colors">
-                Compare List
-              </a>
-            </>
-          ) : (
-            <>
-              <a href="/account/profile" onClick={() => setOpen(false)}
-                className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-text transition-colors">
-                Company Profile
-              </a>
-              <a href="/account/rfqs" onClick={() => setOpen(false)}
-                className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-text transition-colors">
-                Received RFQs
-              </a>
-            </>
-          )}
-
-          <div className="border-t border-border mt-1 pt-1">
-            <a href="/account/settings" onClick={() => setOpen(false)}
-              className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-text transition-colors">
-              Account Settings
-            </a>
-            <a href="/api/auth/signout"
-              className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-danger transition-colors">
-              Sign out
-            </a>
-          </div>
+        <div className="absolute right-0 top-full mt-2 w-36 bg-card border border-border rounded-xl shadow-lg py-1 z-50">
+          <a
+            href="/api/auth/signout"
+            onClick={() => setOpen(false)}
+            className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-danger transition-colors"
+          >
+            Sign out
+          </a>
         </div>
       )}
     </div>
