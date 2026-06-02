@@ -144,7 +144,7 @@ export default function LoginForm() {
         provider: "google",
         options: {
           // 让 Supabase 重定向回当前页面，客户端自动处理 hash token
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/login`,
         },
       });
       if (error) {
