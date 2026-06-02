@@ -44,33 +44,58 @@ async function verifySupabaseSession(
       new RegExp(`(?:^|;\\s*)${escapedKey}=([^;]*)`)
     );
 
+    // 调试日志
+    console.log("[saas-auth] cookie header length:", cookieHeader.length);
+    console.log("[saas-auth] has supabase.auth.token:", !!match);
+    if (!match) {
+      // 列出所有 cookie 名帮助诊断
+      const cookieNames = cookieHeader
+        .split(";")
+        .map((c) => c.trim().split("=")[0])
+        .filter(Boolean);
+      console.log("[saas-auth] available cookies:", cookieNames.join(", "));
+    }
+
     let accessToken: string | null = null;
 
     if (match) {
       try {
         const sessionData = JSON.parse(decodeURIComponent(match[1]));
         accessToken = sessionData?.access_token || null;
-      } catch {
-        // 解析失败，继续尝试其他方式
+        console.log("[saas-auth] access_token extracted:", !!accessToken);
+      } catch (e) {
+        console.log("[saas-auth] cookie parse error:", (e as Error).message);
       }
     }
 
     // 方法2: 如果 cookie 方式失败，检查 Authorization header
     if (!accessToken) {
       const authHeader = (request as Request).headers.get("authorization");
+      console.log("[saas-auth] auth header present:", !!authHeader);
       if (authHeader?.startsWith("Bearer ")) {
         accessToken = authHeader.slice("Bearer ".length).trim();
       }
     }
 
-    if (!accessToken) return null;
+    if (!accessToken) {
+      console.log("[saas-auth] no access token found, returning null");
+      return null;
+    }
 
     // 使用 service_role client 验证 Supabase JWT
     const supabase = createServiceClient();
-    if (!supabase) return null;
+    if (!supabase) {
+      console.log("[saas-auth] service client unavailable");
+      return null;
+    }
 
     const { data, error } = await supabase.auth.getUser(accessToken);
-    if (error || !data?.user) return null;
+    if (error || !data?.user) {
+      console.log("[saas-auth] getUser failed:", error?.message || "no user");
+      return null;
+    }
+
+    console.log("[saas-auth] user verified:", data.user.email);
 
     const metadata = data.user.user_metadata || {};
     const role = metadata?.role || "brand";
