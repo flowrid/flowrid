@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authedFetch } from "@/lib/authed-fetch";
 
 const DT: Record<string, any> = { products: [], warehouses: [], stats: { totalSKUs: 0 } };
 
@@ -22,7 +23,7 @@ export default function InventoryContent() {
   function fetchInventory() {
     setLoading(true);
     let cancelled = false;
-    fetch("/api/saas/inventory")
+    authedFetch("/api/saas/inventory")
       .then(r => { if (!r.ok) throw new Error(`请求失败 (${r.status})`); return r.json(); })
       .then(d => { if (!cancelled) { setData(d); setLoading(false); } })
       .catch(e => { if (!cancelled) { setError(e.message || "加载失败"); setLoading(false); } });
@@ -51,7 +52,7 @@ export default function InventoryContent() {
       if (brand.trim()) body.brand = brand.trim();
       if (weight.trim()) body.unit_weight_lbs = parseFloat(weight);
 
-      const res = await fetch("/api/saas/products", {
+      const res = await authedFetch("/api/saas/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -75,7 +76,7 @@ export default function InventoryContent() {
     if (selectedIds.size === 0) return;
     setDeleting(true);
     for (const id of selectedIds) {
-      try { await fetch(`/api/saas/products/${id}`, { method: "DELETE" }); } catch {}
+      try { await authedFetch(`/api/saas/products/${id}`, { method: "DELETE" }); } catch {}
     }
     setSelectedIds(new Set());
     setDeleting(false);

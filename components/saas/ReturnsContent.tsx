@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authedFetch } from "@/lib/authed-fetch";
 
 interface Return {
   id: string;
@@ -38,7 +39,7 @@ export default function ReturnsContent() {
     try {
       const params = new URLSearchParams();
       if (statusFilter) params.set("status", statusFilter);
-      const r = await fetch(`/api/saas/returns?${params.toString()}`);
+      const r = await authedFetch(`/api/saas/returns?${params.toString()}`);
       if (!r.ok) throw new Error(`Request failed (${r.status})`);
       const d = await r.json();
       setReturns(d.data || []);
@@ -61,7 +62,7 @@ export default function ReturnsContent() {
     setCreating(true);
     setCreateMsg(null);
     try {
-      const r = await fetch("/api/saas/returns", {
+      const r = await authedFetch("/api/saas/returns", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ order_number: orderNumber.trim(), reason: reason.trim(), condition: condition || undefined }),
@@ -83,7 +84,7 @@ export default function ReturnsContent() {
   async function updateStatus(id: string, newStatus: string) {
     setCreateMsg(null);
     try {
-      const res = await fetch(`/api/saas/returns/${id}`, {
+      const res = await authedFetch(`/api/saas/returns/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),

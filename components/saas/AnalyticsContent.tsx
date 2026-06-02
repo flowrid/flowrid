@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authedFetch } from "@/lib/authed-fetch";
 
 interface Data { daily_volume: any[]; source_breakdown: any[]; status_distribution: Record<string,number>; warehouse_throughput: any[]; client_revenue: any[]; }
 
@@ -13,7 +14,7 @@ export default function AnalyticsContent() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/saas/analytics");
+      const res = await authedFetch("/api/saas/analytics");
       if (!res.ok) throw new Error(`Request failed (${res.status})`);
       const nextData = await res.json();
       setData(nextData);

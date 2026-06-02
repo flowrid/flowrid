@@ -4,6 +4,7 @@
 // 嵌入式表单：选择订单 → 逐项检查 → 提交
 
 import { useState } from "react";
+import { authedFetch } from "@/lib/authed-fetch";
 
 interface QCCheckItem {
   category: "packing" | "product" | "labeling" | "documentation";
@@ -73,7 +74,7 @@ export default function QCChecklist({ orderId: initialOrderId, onComplete, compa
     setSubmitting(true);
     setResult(null);
     try {
-      const r = await fetch("/api/saas/qc", {
+      const r = await authedFetch("/api/saas/qc", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

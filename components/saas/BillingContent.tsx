@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authedFetch } from "@/lib/authed-fetch";
 
 const DT = { invoices: [], rates: [], stats: { totalRevenue: 0, invoiced: 0, outstanding: 0, invoiceCount: 0 } };
 
@@ -19,7 +20,7 @@ export default function BillingContent() {
 
   async function fetchData() {
     try {
-      const r = await fetch("/api/saas/billing");
+      const r = await authedFetch("/api/saas/billing");
       if (!r.ok) throw new Error(`请求失败 (${r.status})`);
       const d = await r.json();
       setData(d);
@@ -40,7 +41,7 @@ export default function BillingContent() {
     setGenerating(true);
     setGenMsg(null);
     try {
-      const res = await fetch("/api/saas/billing", { method: "POST" });
+      const res = await authedFetch("/api/saas/billing", { method: "POST" });
       if (res.ok) {
         setGenMsg("Invoice generated");
         setLoading(true);

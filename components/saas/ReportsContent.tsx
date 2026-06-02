@@ -3,6 +3,7 @@
 // 报表中心
 
 import { useEffect, useState } from "react";
+import { authedFetch } from "@/lib/authed-fetch";
 
 export default function ReportsContent() {
   const [reportType, setReportType] = useState("orders");
@@ -14,7 +15,7 @@ export default function ReportsContent() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/saas/warehouses")
+    authedFetch("/api/saas/warehouses")
       .then((r) => (r.ok ? r.json() : { data: [] }))
       .then((d) => setWarehouses(d.data || []))
       .catch(() => setWarehouses([]));
@@ -28,7 +29,7 @@ export default function ReportsContent() {
     try {
       const params = new URLSearchParams({ type: reportType, range });
       if (warehouseId) params.set("warehouse_id", warehouseId);
-      const r = await fetch(`/api/saas/reports?${params}`);
+      const r = await authedFetch(`/api/saas/reports?${params}`);
       if (!r.ok) {
         const d = await r.json().catch(() => ({}));
         throw new Error(d.error || `Request failed (${r.status})`);

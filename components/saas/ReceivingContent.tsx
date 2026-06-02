@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authedFetch } from "@/lib/authed-fetch";
 
 interface ReceivingItem {
   id: string;
@@ -42,7 +43,7 @@ export default function ReceivingContent() {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch("/api/saas/receiving");
+      const res = await authedFetch("/api/saas/receiving");
       if (res.ok) {
         const d = await res.json();
         if (d.data?.length) {
@@ -78,7 +79,7 @@ export default function ReceivingContent() {
     setCreating(true);
     setCreateMsg(null);
     try {
-      const res = await fetch("/api/saas/receiving", {
+      const res = await authedFetch("/api/saas/receiving", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -110,7 +111,7 @@ export default function ReceivingContent() {
     setDeleting(true);
     for (const id of selectedIds) {
       try {
-        const res = await fetch(`/api/saas/receiving/${id}`, { method: "DELETE" });
+        const res = await authedFetch(`/api/saas/receiving/${id}`, { method: "DELETE" });
         if (!res.ok) {
           const err = await res.json();
           setCreateMsg(err.error || `Delete failed (${res.status})`);

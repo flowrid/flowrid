@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { authedFetch } from "@/lib/authed-fetch";
 
 interface Order {
   id: string;
@@ -54,7 +55,7 @@ export default function OrdersContent() {
 
   async function fetchOrders() {
     try {
-      const r = await fetch("/api/saas/orders");
+      const r = await authedFetch("/api/saas/orders");
       if (!r.ok) throw new Error(`Request failed (${r.status})`);
       const d = await r.json();
       setData(d);
@@ -68,7 +69,7 @@ export default function OrdersContent() {
   useEffect(() => {
     fetchOrders();
     // Fetch warehouses for dropdown
-    fetch("/api/saas/warehouses")
+    authedFetch("/api/saas/warehouses")
       .then(r => r.ok ? r.json() : null)
       .then(d => {
         if (d) {
@@ -98,7 +99,7 @@ export default function OrdersContent() {
       if (warehouseId) body.warehouse_id = warehouseId;
       if (shippingZip) body.shipping_zip = shippingZip;
 
-      const res = await fetch("/api/saas/orders", {
+      const res = await authedFetch("/api/saas/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -128,7 +129,7 @@ export default function OrdersContent() {
     let count = 0;
     for (const id of selectedIds) {
       try {
-        const res = await fetch(`/api/saas/orders/${id}`, { method: "DELETE" });
+        const res = await authedFetch(`/api/saas/orders/${id}`, { method: "DELETE" });
         if (res.ok) count++;
       } catch {}
     }

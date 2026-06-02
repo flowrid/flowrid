@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { RateQuote } from "@/types/saas";
+import { authedFetch } from "@/lib/authed-fetch";
 
 const CARRIER_COLORS: Record<string, string> = {
   usps: "#004B87",
@@ -34,7 +35,7 @@ export default function ShippingContent() {
     setError("");
     setSelectedQuote(null);
     try {
-      const res = await fetch("/api/saas/shipping/rates", {
+      const res = await authedFetch("/api/saas/shipping/rates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ originZip, destinationZip: destZip, weightLbs: weight, lengthIn: length, widthIn: width, heightIn: height, isResidential: residential, isHazmat: hazmat }),

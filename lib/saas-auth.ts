@@ -11,10 +11,6 @@ const JWT_SECRET = new TextEncoder().encode(
 
 const DEMO_TENANT = "00000000-0000-0000-0000-000000000001";
 
-// Supabase 浏览器客户端使用 cookie storage 时的默认 key
-// 参见 lib/supabase.ts 中的 cookieStorage() 适配器
-const SUPABASE_STORAGE_KEY = "supabase.auth.token";
-
 function demoOperator(): OperatorJwtPayload {
   return { userId: "demo-001", email: "demo@flowrid.com", tenantId: DEMO_TENANT, role: "admin" };
 }
@@ -26,76 +22,27 @@ function allowLocalDemoRuntime(request: NextRequest | Request): boolean {
 }
 
 /**
- * 从请求 cookies 中提取 Supabase session 并验证
- * 用于 Brand Account 用户（通过 Supabase Auth 登录）访问 SaaS API 时回退认证
+ * 验证 Supabase Auth access token。
  *
- * 前提：createBrowserClient 使用 cookie storage 适配器
- * 浏览器会将 Supabase session JSON 存储在 supabase.auth.token cookie 中
- * 并自动随所有同站请求发送到服务器
+ * Supabase 浏览器 session 默认在 localStorage 中，浏览器不会自动发送给 API。
+ * Brand Account 复用 SaaS API 时，前端通过 Authorization: Bearer <access_token>
+ * 显式传递登录态。
  */
 async function verifySupabaseSession(
   request: NextRequest | Request
 ): Promise<OperatorJwtPayload | null> {
   try {
-    // 方法1: 从 supabase.auth.token cookie 中提取 session
-    const cookieHeader = (request as Request).headers.get("cookie") || "";
-    const escapedKey = SUPABASE_STORAGE_KEY.replace(/\./g, "\\.");
-    const match = cookieHeader.match(
-      new RegExp(`(?:^|;\\s*)${escapedKey}=([^;]*)`)
-    );
+    const authHeader = (request as Request).headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) return null;
 
-    // 调试日志
-    console.log("[saas-auth] cookie header length:", cookieHeader.length);
-    console.log("[saas-auth] has supabase.auth.token:", !!match);
-    if (!match) {
-      // 列出所有 cookie 名帮助诊断
-      const cookieNames = cookieHeader
-        .split(";")
-        .map((c) => c.trim().split("=")[0])
-        .filter(Boolean);
-      console.log("[saas-auth] available cookies:", cookieNames.join(", "));
-    }
+    const accessToken = authHeader.slice("Bearer ".length).trim();
+    if (!accessToken) return null;
 
-    let accessToken: string | null = null;
-
-    if (match) {
-      try {
-        const sessionData = JSON.parse(decodeURIComponent(match[1]));
-        accessToken = sessionData?.access_token || null;
-        console.log("[saas-auth] access_token extracted:", !!accessToken);
-      } catch (e) {
-        console.log("[saas-auth] cookie parse error:", (e as Error).message);
-      }
-    }
-
-    // 方法2: 如果 cookie 方式失败，检查 Authorization header
-    if (!accessToken) {
-      const authHeader = (request as Request).headers.get("authorization");
-      console.log("[saas-auth] auth header present:", !!authHeader);
-      if (authHeader?.startsWith("Bearer ")) {
-        accessToken = authHeader.slice("Bearer ".length).trim();
-      }
-    }
-
-    if (!accessToken) {
-      console.log("[saas-auth] no access token found, returning null");
-      return null;
-    }
-
-    // 使用 service_role client 验证 Supabase JWT
     const supabase = createServiceClient();
-    if (!supabase) {
-      console.log("[saas-auth] service client unavailable");
-      return null;
-    }
+    if (!supabase) return null;
 
     const { data, error } = await supabase.auth.getUser(accessToken);
-    if (error || !data?.user) {
-      console.log("[saas-auth] getUser failed:", error?.message || "no user");
-      return null;
-    }
-
-    console.log("[saas-auth] user verified:", data.user.email);
+    if (error || !data?.user) return null;
 
     const metadata = data.user.user_metadata || {};
     const role = metadata?.role || "brand";

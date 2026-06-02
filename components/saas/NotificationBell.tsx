@@ -4,6 +4,7 @@
 // 顶部通知图标 + 下拉列表
 
 import { useEffect, useState, useRef } from "react";
+import { authedFetch } from "@/lib/authed-fetch";
 
 interface Notification {
   id: string;
@@ -42,7 +43,7 @@ export default function NotificationBell({ onNotificationClick }: Props) {
 
   async function fetchNotifications() {
     try {
-      const r = await fetch("/api/saas/notifications?limit=20");
+      const r = await authedFetch("/api/saas/notifications?limit=20");
       if (!r.ok) return;
       const d = await r.json();
       setNotifications(d.data || []);
@@ -65,7 +66,7 @@ export default function NotificationBell({ onNotificationClick }: Props) {
   }, []);
 
   async function markRead(id: string) {
-    await fetch("/api/saas/notifications", {
+    await authedFetch("/api/saas/notifications", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mark_read: [id] }),
@@ -76,7 +77,7 @@ export default function NotificationBell({ onNotificationClick }: Props) {
 
   async function markAllRead() {
     setLoading(true);
-    await fetch("/api/saas/notifications", {
+    await authedFetch("/api/saas/notifications", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mark_all_read: true }),

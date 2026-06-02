@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { authedFetch } from "@/lib/authed-fetch";
 
 export default function ProductsContent() {
   const router = useRouter();
@@ -40,7 +41,7 @@ export default function ProductsContent() {
       if (categoryFilter) params.set("category", categoryFilter);
 
       const qs = params.toString();
-      const res = await fetch("/api/saas/products" + (qs ? "?" + qs : ""));
+      const res = await authedFetch("/api/saas/products" + (qs ? "?" + qs : ""));
       if (!mountedRef.current) return;
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -62,7 +63,7 @@ export default function ProductsContent() {
     setMessage(null);
 
     try {
-      const res = await fetch("/api/saas/products", {
+      const res = await authedFetch("/api/saas/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -90,7 +91,7 @@ export default function ProductsContent() {
 
   async function handleDelete(id: string) {
     if (!confirm("Delete this product?")) return;
-    const res = await fetch(`/api/saas/products/${id}`, { method: "DELETE" });
+    const res = await authedFetch(`/api/saas/products/${id}`, { method: "DELETE" });
     if (!res.ok) {
       const d = await res.json();
       alert(d.error || "Failed to delete");
