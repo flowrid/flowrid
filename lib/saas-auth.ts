@@ -11,9 +11,14 @@ const JWT_SECRET = new TextEncoder().encode(
 
 const DEMO_TENANT = "00000000-0000-0000-0000-000000000001";
 
-// Supabase project ref — cookie name is sb-<ref>-auth-token
-const SUPABASE_PROJECT_REF = "cdwbbfzfjakkdwnqfffw";
-const SUPABASE_AUTH_COOKIE = `sb-${SUPABASE_PROJECT_REF}-auth-token`;
+// 从 SUPABASE_URL 提取 project ref，用于匹配 Supabase auth cookie
+// Cookie 格式：sb-<project-ref>-auth-token
+function getSupabaseAuthCookieName(): string {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const match = url.match(/https?:\/\/([^.]+)\./);
+  const ref = match ? match[1] : "cdwbbfzfjakkdwnqfffw";
+  return `sb-${ref}-auth-token`;
+}
 
 function demoOperator(): OperatorJwtPayload {
   return { userId: "demo-001", email: "demo@flowrid.com", tenantId: DEMO_TENANT, role: "admin" };
@@ -35,8 +40,9 @@ async function verifySupabaseSession(
   try {
     // 从 cookie header 中提取 Supabase auth token
     const cookieHeader = (request as Request).headers.get("cookie") || "";
+    const cookieName = getSupabaseAuthCookieName();
     const match = cookieHeader.match(
-      new RegExp(`${SUPABASE_AUTH_COOKIE.replace(/-/g, "\\-")}=([^;]+)`)
+      new RegExp(`${cookieName.replace(/-/g, "\\-")}=([^;]+)`)
     );
     if (!match) return null;
 
