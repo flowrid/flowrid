@@ -33,10 +33,22 @@ export default function LoginForm() {
       return role === "3pl" ? "/saas/dashboard" : "/account";
     }
 
+    // 3PL 用户需要桥接 flowrid_token cookie 才能访问 /saas/*
+    async function bridgeIf3PL(session: any) {
+      const role = session?.user?.user_metadata?.role;
+      if (role === "3pl" && session?.access_token) {
+        await fetch("/api/auth/bridge", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+      }
+    }
+
     // 首选：监听 SIGNED_IN 事件（在 _getSessionFromUrl 完成后触发）
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_IN" && session) {
         subscription.unsubscribe();
+        await bridgeIf3PL(session);
         router.push(getRedirect(session));
         router.refresh();
       }
@@ -44,10 +56,10 @@ export default function LoginForm() {
 
     // 兜底：2 秒后手动检查（以防 onAuthStateChange 因某种原因未触发）
     const fallback = setTimeout(() => {
-      supabase.auth.getSession().then(({ data }) => {
+      supabase.auth.getSession().then(async ({ data }) => {
         if (data?.session) {
           subscription.unsubscribe();
-          router.push(getRedirect(data.session));
+          await bridgeIf3PL(data.session);
           router.refresh();
         }
       });
@@ -77,7 +89,14 @@ export default function LoginForm() {
       setLoading(false);
     } else {
       const { data } = await supabase.auth.getSession();
-      const role = data?.session?.user?.user_metadata?.role;
+      const session = data?.session;
+      const role = session?.user?.user_metadata?.role;
+      if (role === "3pl" && session?.access_token) {
+        await fetch("/api/auth/bridge", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+      }
       router.push(role === "3pl" ? "/saas/dashboard" : role === "brand" ? "/account" : "/join");
       router.refresh();
     }

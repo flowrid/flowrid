@@ -48,6 +48,15 @@ export default function ThreePLJoinPage() {
         setError(updateError.message);
         setLoading(false);
       } else {
+        // 桥接：获取 SaaS flowrid_token cookie
+        const { data: newSession } = await supabase.auth.getSession();
+        const accessToken = newSession?.session?.access_token;
+        if (accessToken) {
+          await fetch("/api/auth/bridge", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${accessToken}` },
+          });
+        }
         router.push("/saas/dashboard");
         router.refresh();
       }
@@ -72,6 +81,13 @@ export default function ThreePLJoinPage() {
       setError(error.message);
       setLoading(false);
     } else if (data?.session) {
+      // 桥接：获取 SaaS flowrid_token cookie
+      if (data.session.access_token) {
+        await fetch("/api/auth/bridge", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${data.session.access_token}` },
+        });
+      }
       router.push("/saas/dashboard");
       router.refresh();
     } else {
