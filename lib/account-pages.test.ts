@@ -26,7 +26,7 @@ describe("brand account migrated operation pages", () => {
       const source = readAccountPage(route);
 
       expect(source, route).toContain('"use client"');
-      expect(source, route).toContain(`export { default } from "${sourcePath}"`);
+      expect(source, route).toContain(`import Page from "${sourcePath}"`);
     }
   });
 

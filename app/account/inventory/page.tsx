@@ -1,2 +1,5 @@
 "use client";
-export { default } from "@/app/saas/inventory/page";
+import Page from "@/app/saas/inventory/page";
+export default function AccountInventoryPage() {
+  return <Page />;
+}
