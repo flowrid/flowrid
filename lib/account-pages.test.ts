@@ -25,6 +25,7 @@ describe("brand account migrated operation pages", () => {
     for (const [route, sourcePath] of SAAS_SYNC_ACCOUNT_PAGES) {
       const source = readAccountPage(route);
 
+      expect(source, route).toContain('"use client"');
       expect(source, route).toContain(`export { default } from "${sourcePath}"`);
     }
   });
