@@ -1,32 +1,40 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const ROOT = process.cwd();
 
-const SAAS_SYNC_ACCOUNT_PAGES = [
-  ["orders", "@/app/saas/orders/page"],
-  ["products", "@/app/saas/products/page"],
-  ["inventory", "@/app/saas/inventory/page"],
-  ["receiving", "@/app/saas/receiving/page"],
-  ["returns", "@/app/saas/returns/page"],
-  ["shipping", "@/app/saas/shipping/page"],
-  ["analytics", "@/app/saas/analytics/page"],
-  ["reports", "@/app/saas/reports/page"],
-  ["billing", "@/app/saas/billing/page"],
+const SAAS_SYNC_ROUTES = [
+  "orders",
+  "products",
+  "inventory",
+  "receiving",
+  "returns",
+  "shipping",
+  "analytics",
+  "reports",
+  "billing",
 ] as const;
+
+function readProjectFile(path: string) {
+  return readFileSync(join(ROOT, ...path.split("/")), "utf8");
+}
 
 function readAccountPage(route: string) {
   return readFileSync(join(ROOT, "app", "account", ...route.split("/"), "page.tsx"), "utf8");
 }
 
-describe("brand account migrated operation pages", () => {
-  it("syncs the approved brand account pages from the working SaaS system", () => {
-    for (const [route, sourcePath] of SAAS_SYNC_ACCOUNT_PAGES) {
-      const source = readAccountPage(route);
+function accountPageFileExists(route: string) {
+  return existsSync(join(ROOT, "app", "account", ...route.split("/"), "page.tsx"));
+}
 
-      expect(source, route).toContain('"use client"');
-      expect(source, route).toContain(`import Page from "${sourcePath}"`);
+describe("brand account migrated operation pages", () => {
+  it("routes the approved brand account pages via Next.js rewrites instead of page files", () => {
+    const nextConfig = readProjectFile("next.config.ts");
+
+    for (const route of SAAS_SYNC_ROUTES) {
+      expect(accountPageFileExists(route), `${route} page file should not exist`).toBe(false);
+      expect(nextConfig, `next.config.ts should contain /account/${route}`).toContain(`"/account/${route}"`);
     }
   });
 
