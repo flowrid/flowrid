@@ -22,6 +22,62 @@ function allowLocalDemoRuntime(request: NextRequest | Request): boolean {
 }
 
 /**
+ * 确保 Brand 用户在 tenants 表中存在记录。
+ * Brand 用户用自身 Supabase user ID 作为 tenant_id，
+ * 需要一条对应的 tenant 行才能满足 products/orders 等表的 FK 约束。
+ */
+async function ensureTenant(
+  supabase: NonNullable<ReturnType<typeof createServiceClient>>,
+  userId: string,
+  email: string
+): Promise<boolean> {
+  try {
+    // 检查是否已有 tenant
+    const { data: existing } = await supabase
+      .from("tenants")
+      .select("id")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (existing) return true;
+
+    // 自动创建 tenant — slug 用 userId 保证唯一
+    const name = email.split("@")[0];
+    const { error } = await supabase.from("tenants").insert({
+      id: userId,
+      name,
+      slug: userId,
+      subscription_tier: "free",
+    });
+
+    if (error) {
+      // 可能并发创建导致 duplicate，再次检查
+      const { data: retry } = await supabase
+        .from("tenants")
+        .select("id")
+        .eq("id", userId)
+        .maybeSingle();
+      if (!retry) return false;
+    }
+
+    // 为新 tenant 创建默认仓库，避免 Orders/Receiving 报 "No warehouse"
+    await supabase.from("warehouses").insert({
+      tenant_id: userId,
+      name: `${name}'s Warehouse`,
+      code: "DEFAULT",
+      city: "Default",
+      state: "CA",
+      country: "US",
+      is_active: true,
+    });
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * 验证 Supabase Auth access token。
  *
  * Supabase 浏览器 session 默认在 localStorage 中，浏览器不会自动发送给 API。
@@ -47,10 +103,15 @@ async function verifySupabaseSession(
     const metadata = data.user.user_metadata || {};
     const role = metadata?.role || "brand";
 
+    // Brand 用户自动创建 tenant 记录，满足 products/orders 等表的 FK 约束
+    if (!(await ensureTenant(supabase, data.user.id, data.user.email || ""))) {
+      return null;
+    }
+
     return {
       userId: data.user.id,
       email: data.user.email || "",
-      tenantId: data.user.id, // Brand 用户用自身 ID 作为 tenant 隔离
+      tenantId: data.user.id,
       role: role as string,
     };
   } catch {
