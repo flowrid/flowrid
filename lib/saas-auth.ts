@@ -11,6 +11,16 @@ const JWT_SECRET = new TextEncoder().encode(
 
 const DEMO_TENANT = "00000000-0000-0000-0000-000000000001";
 
+function demoOperator(): OperatorJwtPayload {
+  return { userId: "demo-001", email: "demo@flowrid.com", tenantId: DEMO_TENANT, role: "admin" };
+}
+
+function allowLocalDemoRuntime(request: NextRequest | Request): boolean {
+  if (process.env.NODE_ENV === "production") return false;
+  const url = new URL((request as Request).url || "http://localhost");
+  return url.hostname === "localhost" || url.hostname === "127.0.0.1";
+}
+
 export async function verifyOperatorToken(
   request: NextRequest | Request
 ): Promise<OperatorJwtPayload | null> {
@@ -20,11 +30,13 @@ export async function verifyOperatorToken(
       cookieHeader?.value ||
       (request as Request).headers.get("cookie")?.match(/flowrid_token=([^;]+)/)?.[1];
 
-    if (!token) return null;
+    if (!token) {
+      return allowLocalDemoRuntime(request) ? demoOperator() : null;
+    }
 
     if (token === "demo-token") {
       if (process.env.NODE_ENV === "production") return null;
-      return { userId: "demo-001", email: "demo@flowrid.com", tenantId: DEMO_TENANT, role: "admin" };
+      return demoOperator();
     }
 
     if (!process.env.JWT_SECRET) {

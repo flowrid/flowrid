@@ -30,7 +30,7 @@ export default function ReturnsPage() {
   // Create form
   const [creating, setCreating] = useState(false);
   const [createMsg, setCreateMsg] = useState<string | null>(null);
-  const [orderId, setOrderId] = useState("");
+  const [orderNumber, setOrderNumber] = useState("");
   const [reason, setReason] = useState("");
   const [condition, setCondition] = useState("");
 
@@ -54,8 +54,8 @@ export default function ReturnsPage() {
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
-    if (!orderId.trim() || !reason.trim()) {
-      setCreateMsg("Order ID and reason are required");
+    if (!orderNumber.trim() || !reason.trim()) {
+      setCreateMsg("Order Number and reason are required");
       return;
     }
     setCreating(true);
@@ -64,10 +64,10 @@ export default function ReturnsPage() {
       const r = await fetch("/api/saas/returns", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ order_id: orderId.trim(), reason: reason.trim(), condition: condition || undefined }),
+        body: JSON.stringify({ order_number: orderNumber.trim(), reason: reason.trim(), condition: condition || undefined }),
       });
       if (r.ok) {
-        setOrderId(""); setReason(""); setCondition("");
+        setOrderNumber(""); setReason(""); setCondition("");
         fetchReturns();
       } else {
         const err = await r.json();
@@ -81,14 +81,22 @@ export default function ReturnsPage() {
   }
 
   async function updateStatus(id: string, newStatus: string) {
+    setCreateMsg(null);
     try {
-      await fetch(`/api/saas/returns/${id}`, {
+      const res = await fetch(`/api/saas/returns/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
       });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        setCreateMsg(err.error || `Failed to update return (${res.status})`);
+        return;
+      }
       fetchReturns();
-    } catch { }
+    } catch {
+      setCreateMsg("Network error");
+    }
   }
 
   const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -123,8 +131,8 @@ export default function ReturnsPage() {
         <form onSubmit={handleCreate} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Order ID *</label>
-              <input type="text" value={orderId} onChange={(e) => setOrderId(e.target.value)} placeholder="UUID" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Order Number *</label>
+              <input type="text" value={orderNumber} onChange={(e) => setOrderNumber(e.target.value)} placeholder="e.g. ORD-MPGV9UU8" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
               <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Reason *</label>

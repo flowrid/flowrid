@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function ProductsPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const productBasePath = pathname.startsWith("/account") ? "/account/products" : "/saas/products";
   const [products, setProducts] = useState<any[]>([]);
   const [stats, setStats] = useState({ total: 0 });
   const [loading, setLoading] = useState(true);
@@ -58,26 +60,32 @@ export default function ProductsPage() {
     if (!sku.trim() || !name.trim()) return;
     setSaving(true);
     setMessage(null);
-    const res = await fetch("/api/saas/products", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        sku: sku.trim(),
-        name: name.trim(),
-        category: category.trim() || undefined,
-        brand: brand.trim() || undefined,
-        unit_weight_lbs: weight.trim() ? parseFloat(weight) : undefined,
-      }),
-    });
-    if (res.ok) {
-      setSku(""); setName(""); setCategory(""); setBrand(""); setWeight("");
-      setMessage({ type: "success", text: "Product created" });
-      fetchProducts();
-    } else {
-      const d = await res.json();
-      setMessage({ type: "error", text: d.error || "Failed" });
+
+    try {
+      const res = await fetch("/api/saas/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sku: sku.trim(),
+          name: name.trim(),
+          category: category.trim() || undefined,
+          brand: brand.trim() || undefined,
+          unit_weight_lbs: weight.trim() ? parseFloat(weight) : undefined,
+        }),
+      });
+      if (res.ok) {
+        setSku(""); setName(""); setCategory(""); setBrand(""); setWeight("");
+        setMessage({ type: "success", text: "Product created" });
+        fetchProducts();
+      } else {
+        const d = await res.json().catch(() => ({}));
+        setMessage({ type: "error", text: d.error || "Failed to create product" });
+      }
+    } catch {
+      setMessage({ type: "error", text: "Network error" });
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   }
 
   async function handleDelete(id: string) {
@@ -197,7 +205,7 @@ export default function ProductsPage() {
             </thead>
             <tbody className="divide-y divide-black/[0.04]">
               {products.map((p: any) => (
-                <tr key={p.id} className="hover:bg-black/[0.01] transition-colors cursor-pointer" onClick={() => router.push(`/saas/products/${p.id}`)}>
+                <tr key={p.id} className="hover:bg-black/[0.01] transition-colors cursor-pointer" onClick={() => router.push(`${productBasePath}/${p.id}`)}>
                   <td className="px-5 py-3.5 text-xs font-mono text-[#86868B]">{p.sku}</td>
                   <td className="px-5 py-3.5 text-sm font-medium text-[#1D1D1F]">{p.name}</td>
                   <td className="px-5 py-3.5 text-xs text-[#86868B]">{p.category || "—"}</td>

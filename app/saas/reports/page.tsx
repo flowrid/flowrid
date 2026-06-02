@@ -11,20 +11,38 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState<any>(null);
   const [warehouses, setWarehouses] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/saas/warehouses").then((r) => r.json()).then((d) => setWarehouses(d.data || [])).catch(() => {});
+    fetch("/api/saas/warehouses")
+      .then((r) => (r.ok ? r.json() : { data: [] }))
+      .then((d) => setWarehouses(d.data || []))
+      .catch(() => setWarehouses([]));
   }, []);
 
   async function generate() {
     setLoading(true);
-    const params = new URLSearchParams({ type: reportType, range });
-    if (warehouseId) params.set("warehouse_id", warehouseId);
-    const r = await fetch(`/api/saas/reports?${params}`);
-    const d = await r.json();
-    setReport(d);
-    setLoading(false);
+    setError(null);
+    setReport(null);
+
+    try {
+      const params = new URLSearchParams({ type: reportType, range });
+      if (warehouseId) params.set("warehouse_id", warehouseId);
+      const r = await fetch(`/api/saas/reports?${params}`);
+      if (!r.ok) {
+        const d = await r.json().catch(() => ({}));
+        throw new Error(d.error || `Request failed (${r.status})`);
+      }
+      const d = await r.json();
+      setReport(d);
+    } catch (e: any) {
+      setError(e.message || "Failed to generate report");
+    } finally {
+      setLoading(false);
+    }
   }
+
+  const reportData = report?.data;
 
   return (
     <div className="p-6 md:p-8 max-w-[1280px]">
@@ -67,56 +85,58 @@ export default function ReportsPage() {
         </div>
       </div>
 
-      {report && (
+      {error && <p className="mb-6 rounded-xl bg-[#FF3B30]/5 px-4 py-3 text-sm text-[#FF3B30]">{error}</p>}
+
+      {reportData && (
         <div className="space-y-6">
           {/* KPI cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {reportType === "orders" && (
               <>
-                <KpiCard label="Total Orders" value={report.data.totalOrders} />
-                <KpiCard label="Shipped" value={report.data.byStatus?.shipped || report.data.byStatus?.delivered || 0} />
-                <KpiCard label="Pending" value={report.data.byStatus?.pending || 0} />
-                <KpiCard label="Active Days" value={report.data.byDay?.length || 0} />
+                <KpiCard label="Total Orders" value={reportData.totalOrders || 0} />
+                <KpiCard label="Shipped" value={reportData.byStatus?.shipped || reportData.byStatus?.delivered || 0} />
+                <KpiCard label="Pending" value={reportData.byStatus?.pending || 0} />
+                <KpiCard label="Active Days" value={reportData.byDay?.length || 0} />
               </>
             )}
             {reportType === "inventory" && (
               <>
-                <KpiCard label="Total SKUs" value={report.data.totalSkus} />
-                <KpiCard label="On Hand" value={report.data.totalOnHand} />
-                <KpiCard label="Utilization" value={`${report.data.utilizationRate}%`} />
-                <KpiCard label="Low Stock" value={report.data.lowStockCount} warn={report.data.lowStockCount > 0} />
+                <KpiCard label="Total SKUs" value={reportData.totalSkus || 0} />
+                <KpiCard label="On Hand" value={reportData.totalOnHand || 0} />
+                <KpiCard label="Utilization" value={`${reportData.utilizationRate || 0}%`} />
+                <KpiCard label="Low Stock" value={reportData.lowStockCount || 0} warn={(reportData.lowStockCount || 0) > 0} />
               </>
             )}
             {reportType === "picking" && (
               <>
-                <KpiCard label="Total Tasks" value={report.data.totalTasks} />
-                <KpiCard label="Completed" value={report.data.completedCount} />
-                <KpiCard label="Avg Pick Time" value={`${report.data.avgPickTimeMin}m`} />
-                <KpiCard label="Accuracy" value={`${report.data.accuracy}%`} />
+                <KpiCard label="Total Tasks" value={reportData.totalTasks || 0} />
+                <KpiCard label="Completed" value={reportData.completedCount || 0} />
+                <KpiCard label="Avg Pick Time" value={`${reportData.avgPickTimeMin || 0}m`} />
+                <KpiCard label="Accuracy" value={`${reportData.accuracy || 0}%`} />
               </>
             )}
             {reportType === "revenue" && (
               <>
-                <KpiCard label="Total Revenue" value={`$${report.data.totalRevenue?.toLocaleString() || 0}`} />
-                <KpiCard label="Transaction Types" value={report.data.byType?.length || 0} />
+                <KpiCard label="Total Revenue" value={`$${reportData.totalRevenue?.toLocaleString() || 0}`} />
+                <KpiCard label="Transaction Types" value={reportData.byType?.length || 0} />
               </>
             )}
           </div>
 
           {/* Chart / table */}
-          {report.data.byDay && (
+          {reportData.byDay && (
             <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-6">
               <h3 className="text-sm font-semibold text-[#1D1D1F] mb-4">Daily Breakdown</h3>
               <div className="flex items-end gap-1 h-32">
-                {report.data.byDay.slice(-30).map((d: any, i: number) => {
-                  const max = Math.max(...report.data.byDay.map((x: any) => x.count || x.amount || 0), 1);
+                {reportData.byDay.slice(-30).map((d: any, i: number) => {
+                  const max = Math.max(...reportData.byDay.map((x: any) => x.count || x.amount || 0), 1);
                   const val = d.count || d.amount || 0;
                   return (
                     <div key={i} className="flex-1 flex flex-col items-center gap-1">
                       <div className="w-full bg-[#ed6d00]/20 rounded-t" style={{ height: `${(val / max) * 100}%`, minHeight: val > 0 ? 2 : 0 }}>
                         <div className="w-full h-full bg-[#ed6d00] rounded-t" />
                       </div>
-                      {report.data.byDay.length <= 14 && <span className="text-[8px] text-[#86868B] rotate-90 origin-left whitespace-nowrap">{d.date?.slice(5)}</span>}
+                      {reportData.byDay.length <= 14 && <span className="text-[8px] text-[#86868B] rotate-90 origin-left whitespace-nowrap">{d.date?.slice(5)}</span>}
                     </div>
                   );
                 })}
@@ -124,13 +144,13 @@ export default function ReportsPage() {
             </div>
           )}
 
-          {report.data.byStatus && (
+          {reportData.byStatus && (
             <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-6">
               <h3 className="text-sm font-semibold text-[#1D1D1F] mb-4">By Status</h3>
               <table className="w-full">
                 <thead><tr className="text-left text-xs text-[#86868B] border-b"><th className="py-2">Status</th><th className="py-2 text-right">Count</th></tr></thead>
                 <tbody>
-                  {Object.entries(report.data.byStatus).map(([k, v]) => (
+                  {Object.entries(reportData.byStatus).map(([k, v]) => (
                     <tr key={k} className="border-b border-black/[0.02]">
                       <td className="py-2.5 text-sm capitalize">{k.replace(/_/g, " ")}</td>
                       <td className="py-2.5 text-sm text-right font-medium">{v as number}</td>

@@ -96,7 +96,8 @@ export const ProductListSchema = PaginationSchema.extend({
 
 // ─── 退货 RMA ───
 export const ReturnCreateSchema = z.object({
-  order_id: z.string().uuid(),
+  order_id: z.string().uuid().optional(),
+  order_number: z.string().min(1).max(100).optional(),
   reason: z.string().min(1).max(500),
   condition: z.enum(["resellable", "damaged", "expired", "defective"]).optional(),
   disposition: z.enum(["restock", "quarantine", "dispose", "return_to_supplier"]).optional(),
@@ -107,7 +108,10 @@ export const ReturnCreateSchema = z.object({
   })).min(1).optional(),
   refund_type: z.enum(["full", "partial", "exchange", "store_credit"]).optional(),
   notes: z.string().max(1000).optional(),
-});
+}).refine(
+  (data) => data.order_id || data.order_number,
+  { message: "order_id or order_number is required" }
+);
 
 export const ReturnUpdateSchema = z.object({
   disposition: z.enum(["restock", "quarantine", "dispose", "return_to_supplier"]).optional(),

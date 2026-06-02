@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface Order {
   id: string;
@@ -49,6 +49,8 @@ export default function OrdersPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [deleting, setDeleting] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const orderBasePath = pathname.startsWith("/account") ? "/account/orders" : "/saas/orders";
 
   async function fetchOrders() {
     try {
@@ -258,7 +260,7 @@ export default function OrdersPage() {
                 const displayStatus = (o.status || "").toLowerCase();
                 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
                 return (
-                  <tr key={o.id} className="hover:bg-black/[0.01] transition-colors cursor-pointer" onClick={() => router.push(`/saas/orders/${o.id}`)}>
+                  <tr key={o.id} className="hover:bg-black/[0.01] transition-colors cursor-pointer" onClick={() => router.push(`${orderBasePath}/${o.id}`)}>
                     <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}><input type="checkbox" checked={selectedIds.has(o.id)} onChange={() => toggleSelect(o.id)} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></td>
                     <td className="px-5 py-3.5 text-sm font-medium text-[#1D1D1F]">{o.order_number || o.id}</td>
                     <td className="px-5 py-3.5 text-sm text-[#1D1D1F]">{o.customer_name || o.clients?.name || "—"}</td>

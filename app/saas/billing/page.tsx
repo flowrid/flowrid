@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 const DT = { invoices: [], rates: [], stats: { totalRevenue: 0, invoiced: 0, outstanding: 0, invoiceCount: 0 } };
 
@@ -17,7 +16,6 @@ export default function BillingPage() {
   const [tab, setTab] = useState<"invoices" | "rates">("invoices");
   const [generating, setGenerating] = useState(false);
   const [genMsg, setGenMsg] = useState<string | null>(null);
-  const router = useRouter();
 
   async function fetchData() {
     try {
@@ -123,7 +121,7 @@ export default function BillingPage() {
           <div className="flex items-center justify-between mb-4">
             <p className="text-xs text-[#86868B]">{rates.length} active rates</p>
             <button
-              onClick={() => router.push("/saas/billing/import")}
+              onClick={() => setGenMsg("Rate import is not available in this workspace yet.")}
               className="inline-flex items-center gap-1.5 bg-[#ed6d00] text-white px-3.5 py-2 rounded-full text-xs font-semibold hover:bg-[#FF8A1F] transition-colors shadow-sm"
             >
               <span>+</span> Import Rates

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { RateQuote, ShipmentRequest } from "@/types/saas";
+import type { RateQuote } from "@/types/saas";
 
 const CARRIER_COLORS: Record<string, string> = {
   usps: "#004B87",
@@ -22,7 +22,6 @@ export default function ShippingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedQuote, setSelectedQuote] = useState<RateQuote | null>(null);
-  const [creating, setCreating] = useState(false);
   const [success, setSuccess] = useState("");
 
   // Auto-fetch rates on mount
@@ -47,31 +46,6 @@ export default function ShippingPage() {
       setError("Network error");
     } finally {
       setLoading(false);
-    }
-  }
-
-  async function createShipment(quote: RateQuote) {
-    setCreating(true);
-    setSuccess("");
-    try {
-      const res = await fetch("/api/saas/shipping/create-shipment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderId: "00000000-0000-0000-0000-000000000001",
-          carrier: quote.carrier,
-          serviceLevel: quote.serviceLevel,
-          shippingCost: quote.totalCost,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) { setError(data.error || "Failed"); return; }
-      setSuccess(`Shipment created! Tracking: ${data.trackingNumber}`);
-      setSelectedQuote(null);
-    } catch {
-      setError("Network error");
-    } finally {
-      setCreating(false);
     }
   }
 
@@ -231,18 +205,16 @@ export default function ShippingPage() {
       </div>
 
       {selectedQuote && (
-        <div className="bg-white rounded-2xl shadow-sm border border-[#ed6d00]/20 p-6 flex items-center justify-between">
-          <div>
-            <p className="text-sm font-semibold text-[#1D1D1F]">Create shipment with {selectedQuote.carrierName} {selectedQuote.serviceName}</p>
-            <p className="text-xs text-[#86868B] mt-0.5">Total: ${selectedQuote.totalCost.toFixed(2)} · {selectedQuote.estimatedDays} days · {selectedQuote.isSimulated ? "Simulated rate" : ""}</p>
-          </div>
-          <button
-            onClick={() => createShipment(selectedQuote)}
-            disabled={creating}
-            className="bg-[#ed6d00] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors shadow-sm"
-          >
-            {creating ? "Creating..." : "Create Shipment"}
-          </button>
+        <div className="bg-white rounded-2xl shadow-sm border border-[#ed6d00]/20 p-6">
+          <p className="text-sm font-semibold text-[#1D1D1F]">
+            Selected rate: {selectedQuote.carrierName} {selectedQuote.serviceName}
+          </p>
+          <p className="text-xs text-[#86868B] mt-0.5">
+            Total: ${selectedQuote.totalCost.toFixed(2)} · {selectedQuote.estimatedDays} days · {selectedQuote.isSimulated ? "Simulated rate" : ""}
+          </p>
+          <p className="mt-3 text-xs text-[#FF9500]">
+            Shipment booking is disabled until a real order is selected. Use this page to compare rates for now.
+          </p>
         </div>
       )}
     </div>

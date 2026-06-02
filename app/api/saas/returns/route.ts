@@ -60,12 +60,38 @@ async function handlePost(req: Request) {
 
   const body = (req as any).validatedBody;
 
+  let resolvedOrderId: string | undefined = body.order_id;
+
+  if (!resolvedOrderId && body.order_number) {
+    const { data: orderByNumber } = await supabase
+      .from("orders")
+      .select("id")
+      .eq("tenant_id", TENANT_ID)
+      .eq("order_number", body.order_number)
+      .maybeSingle();
+
+    if (!orderByNumber) {
+      return NextResponse.json(
+        { error: `Order not found: ${body.order_number}` },
+        { status: 404 }
+      );
+    }
+    resolvedOrderId = (orderByNumber as { id: string }).id;
+  }
+
+  if (!resolvedOrderId) {
+    return NextResponse.json(
+      { error: "order_id or order_number is required" },
+      { status: 400 }
+    );
+  }
+
   // 验证订单属于当前租户
   const { data: order } = await supabase
     .from("orders")
     .select("id")
     .eq("tenant_id", TENANT_ID)
-    .eq("id", body.order_id)
+    .eq("id", resolvedOrderId)
     .single();
 
   if (!order) return NextResponse.json({ error: "Order not found" }, { status: 404 });
@@ -74,7 +100,7 @@ async function handlePost(req: Request) {
 
   const insertData = {
     tenant_id: TENANT_ID,
-    order_id: body.order_id,
+    order_id: resolvedOrderId,
     rma_number: rmaNumber,
     reason: body.reason,
     condition: body.condition || null,
