@@ -89,7 +89,7 @@ export default function NavUser() {
     if (supabase) {
       await supabase.auth.signOut();
     }
-    setUser(null);
+    window.location.href = "/";
   }
 
   return (
