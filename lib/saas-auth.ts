@@ -11,14 +11,9 @@ const JWT_SECRET = new TextEncoder().encode(
 
 const DEMO_TENANT = "00000000-0000-0000-0000-000000000001";
 
-// 从 SUPABASE_URL 提取 project ref，用于匹配 Supabase auth cookie
-// Cookie 格式：sb-<project-ref>-auth-token
-function getSupabaseAuthCookieName(): string {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  const match = url.match(/https?:\/\/([^.]+)\./);
-  const ref = match ? match[1] : "cdwbbfzfjakkdwnqfffw";
-  return `sb-${ref}-auth-token`;
-}
+// Supabase 浏览器客户端使用 cookie storage 时的默认 key
+// 参见 lib/supabase.ts 中的 cookieStorage() 适配器
+const SUPABASE_STORAGE_KEY = "supabase.auth.token";
 
 function demoOperator(): OperatorJwtPayload {
   return { userId: "demo-001", email: "demo@flowrid.com", tenantId: DEMO_TENANT, role: "admin" };
@@ -33,30 +28,39 @@ function allowLocalDemoRuntime(request: NextRequest | Request): boolean {
 /**
  * 从请求 cookies 中提取 Supabase session 并验证
  * 用于 Brand Account 用户（通过 Supabase Auth 登录）访问 SaaS API 时回退认证
+ *
+ * 前提：createBrowserClient 使用 cookie storage 适配器
+ * 浏览器会将 Supabase session JSON 存储在 supabase.auth.token cookie 中
+ * 并自动随所有同站请求发送到服务器
  */
 async function verifySupabaseSession(
   request: NextRequest | Request
 ): Promise<OperatorJwtPayload | null> {
   try {
-    // 从 cookie header 中提取 Supabase auth token
+    // 方法1: 从 supabase.auth.token cookie 中提取 session
     const cookieHeader = (request as Request).headers.get("cookie") || "";
-    const cookieName = getSupabaseAuthCookieName();
+    const escapedKey = SUPABASE_STORAGE_KEY.replace(/\./g, "\\.");
     const match = cookieHeader.match(
-      new RegExp(`${cookieName.replace(/-/g, "\\-")}=([^;]+)`)
+      new RegExp(`(?:^|;\\s*)${escapedKey}=([^;]*)`)
     );
-    if (!match) return null;
 
-    const rawValue = match[1];
     let accessToken: string | null = null;
 
-    // Supabase cookie 值是 JSON 字符串格式的 session 对象
-    try {
-      const decoded = decodeURIComponent(rawValue);
-      const sessionData = JSON.parse(decoded);
-      accessToken = sessionData?.access_token || null;
-    } catch {
-      // 如果解析失败，尝试直接作为 token 使用
-      accessToken = rawValue;
+    if (match) {
+      try {
+        const sessionData = JSON.parse(decodeURIComponent(match[1]));
+        accessToken = sessionData?.access_token || null;
+      } catch {
+        // 解析失败，继续尝试其他方式
+      }
+    }
+
+    // 方法2: 如果 cookie 方式失败，检查 Authorization header
+    if (!accessToken) {
+      const authHeader = (request as Request).headers.get("authorization");
+      if (authHeader?.startsWith("Bearer ")) {
+        accessToken = authHeader.slice("Bearer ".length).trim();
+      }
     }
 
     if (!accessToken) return null;
