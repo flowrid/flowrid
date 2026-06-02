@@ -29,12 +29,16 @@ function accountPageFileExists(route: string) {
 }
 
 describe("brand account migrated operation pages", () => {
-  it("routes the approved brand account pages via Next.js rewrites instead of page files", () => {
-    const nextConfig = readProjectFile("next.config.ts");
-
+  it("routes the approved brand account pages via shared content components", () => {
     for (const route of SAAS_SYNC_ROUTES) {
-      expect(accountPageFileExists(route), `${route} page file should not exist`).toBe(false);
-      expect(nextConfig, `next.config.ts should contain /account/${route}`).toContain(`"/account/${route}"`);
+      const accountPageExists = accountPageFileExists(route);
+      expect(accountPageExists, `${route} page file should exist`).toBe(true);
+
+      const pageSource = readAccountPage(route);
+      expect(pageSource, `${route} page should re-export Content component`).toContain(`@/components/saas/`);
+
+      const contentComponent = readProjectFile(`components/saas/${route.charAt(0).toUpperCase() + route.slice(1)}Content.tsx`);
+      expect(contentComponent.length, `${route} Content component should not be empty`).toBeGreaterThan(100);
     }
   });
 

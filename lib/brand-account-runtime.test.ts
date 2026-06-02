@@ -18,13 +18,13 @@ describe("brand account runtime compatibility", () => {
   });
 
   it("does not send billing users to a missing SaaS import page", () => {
-    const billingPage = readProjectFile("app/saas/billing/page.tsx");
+    const billingPage = readProjectFile("components/saas/BillingContent.tsx");
 
     expect(billingPage).not.toContain('/saas/billing/import');
   });
 
   it("surfaces analytics API errors instead of rendering invalid data", () => {
-    const analyticsPage = readProjectFile("app/saas/analytics/page.tsx");
+    const analyticsPage = readProjectFile("components/saas/AnalyticsContent.tsx");
 
     expect(analyticsPage).toContain("setError");
     expect(analyticsPage).toContain("if (!res.ok)");
@@ -32,7 +32,7 @@ describe("brand account runtime compatibility", () => {
   });
 
   it("surfaces report generation errors instead of rendering invalid report data", () => {
-    const reportsPage = readProjectFile("app/saas/reports/page.tsx");
+    const reportsPage = readProjectFile("components/saas/ReportsContent.tsx");
 
     expect(reportsPage).toContain("setError");
     expect(reportsPage).toContain("if (!r.ok)");
@@ -40,7 +40,7 @@ describe("brand account runtime compatibility", () => {
   });
 
   it("keeps product creation from getting stuck on network errors", () => {
-    const productsPage = readProjectFile("app/saas/products/page.tsx");
+    const productsPage = readProjectFile("components/saas/ProductsContent.tsx");
 
     expect(productsPage).toContain("try {");
     expect(productsPage).toContain("catch");
@@ -49,14 +49,14 @@ describe("brand account runtime compatibility", () => {
   });
 
   it("shows return status update failures to the user", () => {
-    const returnsPage = readProjectFile("app/saas/returns/page.tsx");
+    const returnsPage = readProjectFile("components/saas/ReturnsContent.tsx");
 
     expect(returnsPage).toContain("if (!res.ok)");
     expect(returnsPage).toContain("setCreateMsg");
   });
 
   it("does not create shipments with a hard-coded fake order id from the brand shipping page", () => {
-    const shippingPage = readProjectFile("app/saas/shipping/page.tsx");
+    const shippingPage = readProjectFile("components/saas/ShippingContent.tsx");
 
     expect(shippingPage).not.toContain("00000000-0000-0000-0000-000000000001");
     expect(shippingPage).not.toContain("/api/saas/shipping/create-shipment");
@@ -65,7 +65,7 @@ describe("brand account runtime compatibility", () => {
   it("accepts order_number to create an RMA so brand users do not need an internal UUID", () => {
     const validation = readProjectFile("lib/validation.ts");
     const route = readProjectFile("app/api/saas/returns/route.ts");
-    const page = readProjectFile("app/saas/returns/page.tsx");
+    const page = readProjectFile("components/saas/ReturnsContent.tsx");
 
     expect(validation).toContain("order_number");
     expect(route).toContain("order_number");
