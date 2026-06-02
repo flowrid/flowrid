@@ -81,10 +81,12 @@ export default function NavUser() {
     );
   }
 
+  const accountHref = user.role === "3pl" ? "/saas/dashboard" : "/account";
+
   return (
     <div ref={menuRef} className="relative flex items-center gap-1">
       <a
-        href="/account"
+        href={accountHref}
         className="flex items-center gap-2 text-sm text-text-secondary hover:text-text transition-colors"
       >
         {user.avatar ? (
