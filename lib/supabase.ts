@@ -100,14 +100,24 @@ function cookieStorage() {
 
 // 浏览器客户端（使用 cookie 存储，确保 API 请求自动携带认证）
 let browserCache: SupabaseClient | null = null;
+let browserCacheIsSSR = false; // 追踪是否在 SSR 期间创建
 
 export function createBrowserClient(): SupabaseClient | null {
+  // SSR 期间创建的客户端在客户端水合后需要重建
+  // 因为 SSR 时 cookieStorage() 回退到内存存储（无 document 对象）
+  if (browserCacheIsSSR && typeof document !== "undefined") {
+    browserCache = null;
+    browserCacheIsSSR = false;
+  }
+
   if (browserCache) return browserCache;
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !key) return null;
+
+  browserCacheIsSSR = typeof document === "undefined";
 
   browserCache = createClient(url, key, {
     auth: {
