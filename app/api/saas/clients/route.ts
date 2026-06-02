@@ -69,8 +69,7 @@ async function handlePost(req: Request) {
     city: body.address_city || null,
     state: body.address_state || null,
     zip: body.address_zip || null,
-    country: body.address_country || "US",
-    billing_terms: body.billing_terms || "net_30",
+    billing_terms: body.billing_terms || "net30",
   };
 
   const { data, error } = await supabase
