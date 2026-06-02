@@ -261,9 +261,13 @@ export default function OrdersContent() {
                 const displayStatus = (o.status || "").toLowerCase();
                 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
                 return (
-                  <tr key={o.id} className="hover:bg-black/[0.01] transition-colors cursor-pointer" onClick={() => router.push(`${orderBasePath}/${o.id}`)}>
-                    <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}><input type="checkbox" checked={selectedIds.has(o.id)} onChange={() => toggleSelect(o.id)} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></td>
-                    <td className="px-5 py-3.5 text-sm font-medium text-[#1D1D1F]">{o.order_number || o.id}</td>
+                  <tr key={o.id} className="hover:bg-black/[0.01] transition-colors">
+                    <td className="px-5 py-3.5"><input type="checkbox" checked={selectedIds.has(o.id)} onChange={() => toggleSelect(o.id)} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></td>
+                    <td className="px-5 py-3.5 text-sm font-medium text-[#1D1D1F]">
+                      <button className="text-left hover:text-[#ed6d00] hover:underline transition-colors" onClick={() => router.push(`${orderBasePath}/${o.id}`)}>
+                        {o.order_number || o.id}
+                      </button>
+                    </td>
                     <td className="px-5 py-3.5 text-sm text-[#1D1D1F]">{o.customer_name || o.clients?.name || "—"}</td>
                     <td className="px-5 py-3.5 text-xs text-[#86868B]">{o.warehouses?.name || o.warehouses?.code || "—"}</td>
                     <td className="px-5 py-3.5"><span className="text-[11px] bg-black/[0.04] text-[#86868B] px-2 py-0.5 rounded-full">{o.source || "—"}</span></td>
