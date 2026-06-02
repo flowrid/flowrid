@@ -33,6 +33,29 @@ export default function BrandJoinPage() {
       return;
     }
 
+    // 检查是否已有 session（Google OAuth 进来的用户）
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (sessionData?.session) {
+      // 已有 session，只更新 metadata
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: {
+          first_name: form.firstName,
+          last_name: form.lastName,
+          company: form.company,
+          role: "brand",
+        },
+      });
+      if (updateError) {
+        setError(updateError.message);
+        setLoading(false);
+      } else {
+        router.push("/account");
+        router.refresh();
+      }
+      return;
+    }
+
+    // 新用户，走 signUp
     const { data, error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
