@@ -12,11 +12,10 @@ export default function LoginForm() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [mode, setMode] = useState<"password" | "magic">("password");
+  const [processingOAuth, setProcessingOAuth] = useState(false);
   const router = useRouter();
 
   // 处理 OAuth / Magic Link 回调 — 使用 onAuthStateChange 避免竞态条件
-  // Supabase 构造函数中的 _getSessionFromUrl() 是异步的，
-  // getSession() 可能在 session 设置完成前就返回 null
   useEffect(() => {
     const supabase = createBrowserClient();
     if (!supabase) return;
@@ -25,6 +24,8 @@ export default function LoginForm() {
     const hasAuthTokens = hash && (hash.includes("access_token") || hash.includes("code="));
 
     if (!hasAuthTokens) return;
+
+    setProcessingOAuth(true);
 
     // 根据用户 role 决定跳转目标；无 role 则先选角色
     function getRedirect(session: any) {
@@ -157,6 +158,15 @@ export default function LoginForm() {
 
   return (
     <div className="w-full max-w-md mx-auto">
+      {processingOAuth && (
+        <div className="text-center py-12">
+          <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-text-secondary text-sm">Signing you in...</p>
+        </div>
+      )}
+
+      {!processingOAuth && (
+      <>
       <div className="text-center mb-8">
         <Link href="/">
           <img src="/flowrid-logo.png" alt="Flowrid" className="h-8 mx-auto mb-6" />
@@ -240,6 +250,8 @@ export default function LoginForm() {
           </Link>
         </p>
       </div>
+      </>
+      )}
     </div>
   );
 }
