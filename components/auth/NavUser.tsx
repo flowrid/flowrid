@@ -83,6 +83,15 @@ export default function NavUser() {
 
   const accountHref = user.role === "3pl" ? "/saas/dashboard" : "/account";
 
+  async function handleSignOut() {
+    setOpen(false);
+    const supabase = createBrowserClient();
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
+    setUser(null);
+  }
+
   return (
     <div ref={menuRef} className="relative flex items-center gap-1">
       <a
@@ -110,13 +119,12 @@ export default function NavUser() {
 
       {open && (
         <div className="absolute right-0 top-full mt-2 w-36 bg-card border border-border rounded-xl shadow-lg py-1 z-50">
-          <a
-            href="/api/auth/signout"
-            onClick={() => setOpen(false)}
-            className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-danger transition-colors"
+          <button
+            onClick={handleSignOut}
+            className="block w-full text-left px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-danger transition-colors cursor-pointer"
           >
             Sign out
-          </a>
+          </button>
         </div>
       )}
     </div>
