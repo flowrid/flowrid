@@ -26,11 +26,18 @@ export default function LoginForm() {
 
     if (!hasAuthTokens) return;
 
+    // 根据用户 role 决定跳转目标；无 role 则先选角色
+    function getRedirect(session: any) {
+      const role = session?.user?.user_metadata?.role;
+      if (!role) return "/join";
+      return role === "3pl" ? "/saas/dashboard" : "/account";
+    }
+
     // 首选：监听 SIGNED_IN 事件（在 _getSessionFromUrl 完成后触发）
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
         subscription.unsubscribe();
-        router.push("/account");
+        router.push(getRedirect(session));
         router.refresh();
       }
     });
@@ -40,7 +47,7 @@ export default function LoginForm() {
       supabase.auth.getSession().then(({ data }) => {
         if (data?.session) {
           subscription.unsubscribe();
-          router.push("/account");
+          router.push(getRedirect(data.session));
           router.refresh();
         }
       });
@@ -69,7 +76,9 @@ export default function LoginForm() {
       setError(error.message);
       setLoading(false);
     } else {
-      router.push("/account");
+      const { data } = await supabase.auth.getSession();
+      const role = data?.session?.user?.user_metadata?.role;
+      router.push(role === "3pl" ? "/saas/dashboard" : role === "brand" ? "/account" : "/join");
       router.refresh();
     }
   }
