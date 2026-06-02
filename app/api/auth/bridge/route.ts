@@ -48,6 +48,15 @@ export async function POST(req: Request) {
         slug: data.user.id,
         subscription_tier: "free",
       });
+      // 创建 public.users 记录（dock_appointments 等表 FK 需要）
+      await supabase.from("users").insert({
+        id: data.user.id,
+        tenant_id: data.user.id,
+        email: data.user.email || "",
+        name,
+        role: "admin",
+        is_active: true,
+      });
       // 创建默认仓库
       await supabase.from("warehouses").insert({
         tenant_id: data.user.id,
@@ -56,6 +65,25 @@ export async function POST(req: Request) {
         city: "Default",
         state: "CA",
         country: "US",
+        is_active: true,
+      });
+    }
+
+    // 确保 public.users 记录存在（dock_appointments 等表 FK 需要）
+    const { data: existingUser } = await supabase
+      .from("users")
+      .select("id")
+      .eq("id", data.user.id)
+      .maybeSingle();
+
+    if (!existingUser) {
+      const userName = (data.user.email || "user").split("@")[0];
+      await supabase.from("users").insert({
+        id: data.user.id,
+        tenant_id: data.user.id,
+        email: data.user.email || "",
+        name: userName,
+        role: "admin",
         is_active: true,
       });
     }
