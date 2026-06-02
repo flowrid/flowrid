@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { createBrowserClient } from "@/lib/supabase";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -13,22 +14,42 @@ export default function LoginForm() {
   const [mode, setMode] = useState<"password" | "magic">("password");
   const router = useRouter();
 
-  // 客户端处理 OAuth 回调 — 页面加载时自动检测
+  // 处理 OAuth / Magic Link 回调 — 使用 onAuthStateChange 避免竞态条件
+  // Supabase 构造函数中的 _getSessionFromUrl() 是异步的，
+  // getSession() 可能在 session 设置完成前就返回 null
   useEffect(() => {
     const supabase = createBrowserClient();
     if (!supabase) return;
 
-    // 检查 URL 中是否有 auth 回调参数
     const hash = window.location.hash;
-    if (hash && hash.includes("access_token")) {
-      // Supabase 客户端会自动处理 hash 中的 token，刷新 session
+    const hasAuthTokens = hash && (hash.includes("access_token") || hash.includes("code="));
+
+    if (!hasAuthTokens) return;
+
+    // 首选：监听 SIGNED_IN 事件（在 _getSessionFromUrl 完成后触发）
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        subscription.unsubscribe();
+        router.push("/dashboard");
+        router.refresh();
+      }
+    });
+
+    // 兜底：2 秒后手动检查（以防 onAuthStateChange 因某种原因未触发）
+    const fallback = setTimeout(() => {
       supabase.auth.getSession().then(({ data }) => {
         if (data?.session) {
-          router.push("/");
+          subscription.unsubscribe();
+          router.push("/dashboard");
           router.refresh();
         }
       });
-    }
+    }, 2000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(fallback);
+    };
   }, [router]);
 
   async function handlePasswordLogin(e: React.FormEvent) {
@@ -48,7 +69,7 @@ export default function LoginForm() {
       setError(error.message);
       setLoading(false);
     } else {
-      router.push("/");
+      router.push("/dashboard");
       router.refresh();
     }
   }
@@ -101,7 +122,7 @@ export default function LoginForm() {
           setError(error.message);
         }
       }
-    } catch (e: any) {
+    } catch {
       setError("Google login is not available. Please use email to sign in.");
     }
   }
@@ -109,9 +130,9 @@ export default function LoginForm() {
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="text-center mb-8">
-        <a href="/">
+        <Link href="/">
           <img src="/flowrid-logo.png" alt="Flowrid" className="h-8 mx-auto mb-6" />
-        </a>
+        </Link>
         <h1 className="text-2xl font-bold text-text">Log in to Flowrid</h1>
         <p className="text-text-secondary mt-2">Welcome back.</p>
       </div>
@@ -186,9 +207,9 @@ export default function LoginForm() {
       <div className="text-center mt-6 pt-6 border-t border-border">
         <p className="text-sm text-text-secondary">
           New here?{" "}
-          <a href="/join" className="text-primary hover:underline font-medium">
+          <Link href="/join" className="text-primary hover:underline font-medium">
             Get started &rarr;
-          </a>
+          </Link>
         </p>
       </div>
     </div>
