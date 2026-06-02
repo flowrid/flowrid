@@ -161,7 +161,7 @@ export default function LoginForm() {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      {processingOAuth && (
+      {(processingOAuth || (typeof window !== "undefined" && window.location.hash.includes("access_token"))) && (
         <div className="text-center py-12">
           <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-text-secondary text-sm">Signing you in...</p>
