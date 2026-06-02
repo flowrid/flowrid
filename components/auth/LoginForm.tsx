@@ -12,7 +12,12 @@ export default function LoginForm() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [mode, setMode] = useState<"password" | "magic">("password");
-  const [processingOAuth, setProcessingOAuth] = useState(false);
+  // 初始化时立即检测 OAuth hash，避免首帧渲染登录表单闪跳
+  const [processingOAuth, setProcessingOAuth] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const hash = window.location.hash;
+    return !!(hash && (hash.includes("access_token") || hash.includes("code=")));
+  });
   const router = useRouter();
 
   // 处理 OAuth / Magic Link 回调 — 使用 onAuthStateChange 避免竞态条件
@@ -24,8 +29,6 @@ export default function LoginForm() {
     const hasAuthTokens = hash && (hash.includes("access_token") || hash.includes("code="));
 
     if (!hasAuthTokens) return;
-
-    setProcessingOAuth(true);
 
     // 根据用户 role 决定跳转目标；无 role 则先选角色
     function getRedirect(session: any) {
