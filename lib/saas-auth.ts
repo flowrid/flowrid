@@ -11,6 +11,10 @@ const JWT_SECRET = new TextEncoder().encode(
 
 const DEMO_TENANT = "00000000-0000-0000-0000-000000000001";
 
+// Supabase project ref — cookie name is sb-<ref>-auth-token
+const SUPABASE_PROJECT_REF = "cdwbbfzfjakkdwnqfffw";
+const SUPABASE_AUTH_COOKIE = `sb-${SUPABASE_PROJECT_REF}-auth-token`;
+
 function demoOperator(): OperatorJwtPayload {
   return { userId: "demo-001", email: "demo@flowrid.com", tenantId: DEMO_TENANT, role: "admin" };
 }
@@ -19,6 +23,57 @@ function allowLocalDemoRuntime(request: NextRequest | Request): boolean {
   if (process.env.NODE_ENV === "production") return false;
   const url = new URL((request as Request).url || "http://localhost");
   return url.hostname === "localhost" || url.hostname === "127.0.0.1";
+}
+
+/**
+ * 从请求 cookies 中提取 Supabase session 并验证
+ * 用于 Brand Account 用户（通过 Supabase Auth 登录）访问 SaaS API 时回退认证
+ */
+async function verifySupabaseSession(
+  request: NextRequest | Request
+): Promise<OperatorJwtPayload | null> {
+  try {
+    // 从 cookie header 中提取 Supabase auth token
+    const cookieHeader = (request as Request).headers.get("cookie") || "";
+    const match = cookieHeader.match(
+      new RegExp(`${SUPABASE_AUTH_COOKIE.replace(/-/g, "\\-")}=([^;]+)`)
+    );
+    if (!match) return null;
+
+    const rawValue = match[1];
+    let accessToken: string | null = null;
+
+    // Supabase cookie 值是 JSON 字符串格式的 session 对象
+    try {
+      const decoded = decodeURIComponent(rawValue);
+      const sessionData = JSON.parse(decoded);
+      accessToken = sessionData?.access_token || null;
+    } catch {
+      // 如果解析失败，尝试直接作为 token 使用
+      accessToken = rawValue;
+    }
+
+    if (!accessToken) return null;
+
+    // 使用 service_role client 验证 Supabase JWT
+    const supabase = createServiceClient();
+    if (!supabase) return null;
+
+    const { data, error } = await supabase.auth.getUser(accessToken);
+    if (error || !data?.user) return null;
+
+    const metadata = data.user.user_metadata || {};
+    const role = metadata?.role || "brand";
+
+    return {
+      userId: data.user.id,
+      email: data.user.email || "",
+      tenantId: data.user.id, // Brand 用户用自身 ID 作为 tenant 隔离
+      role: role as string,
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function verifyOperatorToken(
@@ -31,6 +86,10 @@ export async function verifyOperatorToken(
       (request as Request).headers.get("cookie")?.match(/flowrid_token=([^;]+)/)?.[1];
 
     if (!token) {
+      // 没有 flowrid_token，尝试 Supabase Auth 回退（Brand Account 用户）
+      const supabaseUser = await verifySupabaseSession(request);
+      if (supabaseUser) return supabaseUser;
+
       return allowLocalDemoRuntime(request) ? demoOperator() : null;
     }
 
@@ -61,6 +120,13 @@ export async function verifyOperatorToken(
       role: (payload.role as string) ?? undefined,
     };
   } catch {
+    // JWT 验证失败，尝试 Supabase Auth 回退
+    try {
+      const supabaseUser = await verifySupabaseSession(request);
+      if (supabaseUser) return supabaseUser;
+    } catch {
+      // 忽略回退失败
+    }
     return null;
   }
 }
