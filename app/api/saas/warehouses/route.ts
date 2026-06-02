@@ -57,7 +57,6 @@ async function handlePost(req: Request) {
     state: body.address_state || body.state || null,
     zip: body.address_zip || body.zip || null,
     country: body.address_country || body.country || "US",
-    timezone: body.timezone || "America/Chicago",
     sq_footage: body.sq_footage || null,
     is_active: body.is_active !== undefined ? body.is_active : true,
   };

@@ -105,7 +105,6 @@ async function handlePost(req: Request) {
       barcode,
       max_weight_lbs: body.max_weight_lbs || null,
       max_volume_cuft: body.max_volume_cuft || null,
-      capacity: body.capacity || null,
     })
     .select("*")
     .single();
