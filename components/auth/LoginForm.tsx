@@ -30,7 +30,7 @@ export default function LoginForm() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
         subscription.unsubscribe();
-        router.push("/dashboard");
+        router.push("/account");
         router.refresh();
       }
     });
@@ -40,7 +40,7 @@ export default function LoginForm() {
       supabase.auth.getSession().then(({ data }) => {
         if (data?.session) {
           subscription.unsubscribe();
-          router.push("/dashboard");
+          router.push("/account");
           router.refresh();
         }
       });
@@ -69,7 +69,7 @@ export default function LoginForm() {
       setError(error.message);
       setLoading(false);
     } else {
-      router.push("/dashboard");
+      router.push("/account");
       router.refresh();
     }
   }

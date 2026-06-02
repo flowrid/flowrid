@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { createBrowserClient } from "@/lib/supabase";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -49,7 +50,7 @@ export default function BrandJoinPage() {
       setError(error.message);
       setLoading(false);
     } else if (data?.session) {
-      router.push("/");
+      router.push("/account");
       router.refresh();
     } else {
       setLoading(false);
@@ -61,9 +62,9 @@ export default function BrandJoinPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-md mx-auto">
         <div className="text-center mb-8">
-          <a href="/">
+          <Link href="/">
             <img src="/flowrid-logo.png" alt="Flowrid" className="h-8 mx-auto mb-6" />
-          </a>
+          </Link>
           <h1 className="text-2xl font-bold text-text">Create your brand account</h1>
           <p className="text-text-secondary mt-2">Set up your profile to get matched with top 3PLs.</p>
         </div>
@@ -100,7 +101,7 @@ export default function BrandJoinPage() {
         </p>
         <div className="text-center mt-6 pt-6 border-t border-border">
           <p className="text-sm text-text-secondary">
-            Already have an account? <a href="/login" className="text-primary hover:underline font-medium">Log in</a>
+            Already have an account? <Link href="/login" className="text-primary hover:underline font-medium">Log in</Link>
           </p>
         </div>
       </div>
