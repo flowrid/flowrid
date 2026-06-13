@@ -71,7 +71,7 @@ export default function HeroSearch() {
                     className="w-full h-full object-cover"
                     loading="eager"
                   />
-                  <div className="absolute bottom-[5%] md:bottom-[15%] left-0 right-0 text-white text-xs font-semibold text-center">
+                  <div className="absolute left-0 right-0 text-white text-xs md:text-sm font-semibold text-center bottom-[5%] md:bottom-[15%]">
                     {img.alt}
                   </div>
                 </div>
