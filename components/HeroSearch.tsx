@@ -64,16 +64,14 @@ export default function HeroSearch() {
           <div className="flex-1 w-full max-w-[560px]">
             <div className="grid grid-cols-2 gap-2">
               {HERO_IMAGES.map((img) => (
-                <div key={img.alt}>
-                  <div className="overflow-hidden rounded-t-xl">
-                    <img
-                      src={img.src}
-                      alt={img.alt}
-                      className="w-full h-full object-cover"
-                      loading="eager"
-                    />
-                  </div>
-                  <div className="bg-primary text-white text-xs font-semibold text-center py-2 rounded-b-xl">
+                <div key={img.alt} className="relative overflow-hidden rounded-xl">
+                  <img
+                    src={img.src}
+                    alt={img.alt}
+                    className="w-full h-full object-cover"
+                    loading="eager"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 text-white text-xs font-semibold text-center py-2">
                     {img.alt}
                   </div>
                 </div>
