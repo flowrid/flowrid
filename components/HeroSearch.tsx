@@ -38,8 +38,7 @@ export default function HeroSearch() {
         <span className="text-primary">you&apos;re choosing certainty</span>
       </h1>
       <p className="mt-4 text-lg text-text-secondary max-w-xl mx-auto">
-        Compare top fulfillment centers by state, product category, and platform.
-        Get matched in seconds.
+        Ensure your business stability by comparing real 3PL performance, operational consistency, and fulfillment fit.
       </p>
 
       <form

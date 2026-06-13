@@ -21,14 +21,14 @@ export const metadata: Metadata = {
     template: "%s | Flowrid",
   },
   description:
-    "Compare top third-party logistics (3PL) providers in the US. Search by state, category, and platform. AI-powered matching for Shopify, TikTok, and Amazon sellers.",
+    "Ensure your business stability by comparing real 3PL performance, operational consistency, and fulfillment fit. AI-powered matching for Shopify, TikTok, and Amazon sellers.",
   keywords: ["3PL", "fulfillment", "logistics", "warehouse", "ecommerce", "Shopify", "TikTok", "Amazon", "RFQ", "warehouse comparison"],
   other: {
     "google-site-verification": "zS1-Muod3xXvewJwS1MW2s9HEAvT5PWDVXTtSHFBgZ8",
   },
   openGraph: {
     title: "Flowrid — You're not just choosing a 3PL, you're choosing certainty",
-    description: "Compare top third-party logistics (3PL) providers in the US.",
+    description: "Ensure your business stability by comparing real 3PL performance, operational consistency, and fulfillment fit.",
     url: "https://www.flowrid.com",
     siteName: "Flowrid",
     type: "website",
