@@ -82,7 +82,10 @@ export default function HeroSearch() {
       </section>
 
       {/* ──── 第二屏：搜索栏 ──── */}
-      <section className="max-w-3xl mx-auto px-4 pb-16">
+      <section className="max-w-3xl mx-auto px-4 pb-16 mt-[30px]">
+        <p className="text-center text-text-secondary text-sm mb-6">
+          Compare top fulfillment centers by state, product category, and platform. Get matched in seconds.
+        </p>
         <form
           onSubmit={handleSearch}
           className="flex flex-col sm:flex-row gap-3"
