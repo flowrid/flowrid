@@ -71,12 +71,6 @@ export default function RootLayout({
                 Compare
               </a>
               <NavUser />
-              <a
-                href="/rfq"
-                className="bg-primary text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors"
-              >
-                Get Quote
-              </a>
             </div>
           </nav>
         </header>
@@ -94,9 +88,6 @@ export default function RootLayout({
                 </a>
                 <a href="/compare" className="hover:text-text transition-colors">
                   Compare
-                </a>
-                <a href="/rfq" className="hover:text-text transition-colors">
-                  Get Quote
                 </a>
               </div>
             </div>
