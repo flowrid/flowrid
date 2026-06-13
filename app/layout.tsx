@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Flowrid — Find the Best 3PL for Your E-commerce Brand",
+    default: "Flowrid — You're not just choosing a 3PL, you're choosing certainty",
     template: "%s | Flowrid",
   },
   description:
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     "google-site-verification": "zS1-Muod3xXvewJwS1MW2s9HEAvT5PWDVXTtSHFBgZ8",
   },
   openGraph: {
-    title: "Flowrid — Find the Best 3PL for Your E-commerce Brand",
+    title: "Flowrid — You're not just choosing a 3PL, you're choosing certainty",
     description: "Compare top third-party logistics (3PL) providers in the US.",
     url: "https://www.flowrid.com",
     siteName: "Flowrid",

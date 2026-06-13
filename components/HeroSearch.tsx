@@ -34,8 +34,8 @@ export default function HeroSearch() {
   return (
     <section className="text-center py-16 md:py-24 px-4 max-w-3xl mx-auto">
       <h1 className="text-3xl md:text-5xl font-bold text-text leading-tight">
-        Find the Best 3PL for{" "}
-        <span className="text-primary">Your E-commerce Brand</span>
+        You&apos;re not just choosing a 3PL—{" "}
+        <span className="text-primary">you&apos;re choosing certainty</span>
       </h1>
       <p className="mt-4 text-lg text-text-secondary max-w-xl mx-auto">
         Compare top fulfillment centers by state, product category, and platform.
