@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 const HERO_IMAGES = [
-  { src: "/images/hero/Perfect 3PL Match.png", alt: "Perfect 3PL Match" },
-  { src: "/images/hero/Full-Network Comparison.png", alt: "Full-Network Comparison" },
-  { src: "/images/hero/Warehouse Fit.png", alt: "Warehouse Fit" },
-  { src: "/images/hero/Guaranteed Logistics Stabillty.png", alt: "Guaranteed Logistics Stability" },
+  { src: "/images/hero/Perfect 3PL Match.webp", alt: "Perfect 3PL Match" },
+  { src: "/images/hero/Full-Network Comparison.webp", alt: "Full-Network Comparison" },
+  { src: "/images/hero/Warehouse Fit.webp", alt: "Warehouse Fit" },
+  { src: "/images/hero/Guaranteed Logistics Stabillty.webp", alt: "Guaranteed Logistics Stability" },
 ];
 
 /**
