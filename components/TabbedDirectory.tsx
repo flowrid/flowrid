@@ -8,30 +8,41 @@ interface TabItem {
   label: string;
 }
 
-interface DirectoryTab {
-  label: string;
+interface DirectoryEntry {
+  key: string;
+  display: string;
   href: string;
-  displayName: string;
 }
 
 interface Props {
   tabs: TabItem[];
-  categories: { key: string; display: string; href: string }[];
-  states: { key: string; display: string; href: string }[];
+  categories: DirectoryEntry[];
+  states: DirectoryEntry[];
+  international: DirectoryEntry[];
+  platforms: DirectoryEntry[];
 }
 
-export default function TabbedDirectory({ tabs, categories, states }: Props) {
+export default function TabbedDirectory({ tabs, categories, states, international, platforms }: Props) {
   const [active, setActive] = useState(tabs[0]?.key || "");
+
+  const dataMap: Record<string, DirectoryEntry[]> = {
+    category: categories,
+    state: states,
+    international,
+    platform: platforms,
+  };
+
+  const entries = dataMap[active] || [];
 
   return (
     <section className="max-w-[1460px] mx-auto px-4 py-8">
       {/* Tab 菜单 */}
-      <div className="flex justify-center gap-1 mb-8 bg-gray-100 rounded-full p-1 w-fit mx-auto">
+      <div className="flex justify-center gap-1 mb-8 bg-gray-100 rounded-full p-1 w-fit mx-auto flex-wrap">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActive(tab.key)}
-            className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+            className={`px-5 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
               active === tab.key
                 ? "bg-white text-text shadow-sm"
                 : "text-text-secondary hover:text-text"
@@ -42,35 +53,18 @@ export default function TabbedDirectory({ tabs, categories, states }: Props) {
         ))}
       </div>
 
-      {/* Category 内容 */}
-      {active === "category" && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {categories.map((cat) => (
-            <Link
-              key={cat.key}
-              href={cat.href}
-              className="border border-border rounded-xl p-4 bg-card hover:shadow-md hover:border-primary transition-all text-center"
-            >
-              <span className="text-sm font-medium">{cat.display}</span>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {/* State 内容 */}
-      {active === "state" && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          {states.map((s) => (
-            <Link
-              key={s.key}
-              href={s.href}
-              className="border border-border rounded-lg p-3 bg-card hover:shadow-sm hover:border-primary transition-all text-center text-sm"
-            >
-              {s.display}
-            </Link>
-          ))}
-        </div>
-      )}
+      {/* 内容区 — 统一网格 */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {entries.map((entry) => (
+          <Link
+            key={entry.key}
+            href={entry.href}
+            className="border border-border rounded-xl p-4 bg-card hover:shadow-md hover:border-primary transition-all text-center"
+          >
+            <span className="text-sm font-medium">{entry.display}</span>
+          </Link>
+        ))}
+      </div>
     </section>
   );
 }

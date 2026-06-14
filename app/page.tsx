@@ -29,8 +29,27 @@ export default async function Home() {
     ...new Set(providers.flatMap((p) => p.categories || [])),
   ].sort();
 
-  // 提取唯一 States
-  const states = [...new Set(providers.map((p) => p.state).filter(Boolean))].sort();
+  // 提取唯一 States / Countries
+  const allStates = [...new Set(providers.map((p) => p.state).filter(Boolean))].sort();
+
+  // 分离 US States 和 International
+  const US_STATES = new Set([
+    "alabama","alaska","arizona","arkansas","california","colorado","connecticut","delaware",
+    "florida","georgia","hawaii","idaho","illinois","indiana","iowa","kansas","kentucky",
+    "louisiana","maine","maryland","massachusetts","michigan","minnesota","mississippi",
+    "missouri","montana","nebraska","nevada","new-hampshire","new-jersey","new-mexico",
+    "new-york","north-carolina","north-dakota","ohio","oklahoma","oregon","pennsylvania",
+    "rhode-island","south-carolina","south-dakota","tennessee","texas","utah","vermont",
+    "virginia","washington","west-virginia","wisconsin","wyoming",
+  ]);
+
+  const usStates = allStates.filter((s) => US_STATES.has(s.toLowerCase()));
+  const international = allStates.filter((s) => !US_STATES.has(s.toLowerCase()));
+
+  // 提取唯一 Platforms
+  const platforms = [
+    ...new Set(providers.flatMap((p) => p.platforms || [])),
+  ].sort();
 
   // 精选推荐：评分排序取前 6
   const featured = providers
@@ -93,21 +112,33 @@ export default async function Home() {
         </section>
       )}
 
-      {/* 第四屏：Tab 目录（Category / State） */}
+      {/* 第四屏：Tab 目录 */}
       <TabbedDirectory
         tabs={[
           { key: "category", label: "By Category" },
           { key: "state", label: "By State" },
+          { key: "international", label: "International" },
+          { key: "platform", label: "By Platform" },
         ]}
         categories={categories.map((cat) => ({
           key: cat,
           display: categoryLabels[cat] || cat.charAt(0).toUpperCase() + cat.slice(1),
           href: `/3pl?category=${cat}`,
         }))}
-        states={states.map((s) => ({
+        states={usStates.map((s) => ({
           key: s,
           display: stateLabels[s] || s.charAt(0).toUpperCase() + s.slice(1),
           href: `/3pl/${s}`,
+        }))}
+        international={international.map((s) => ({
+          key: s,
+          display: stateLabels[s] || s.charAt(0).toUpperCase() + s.slice(1),
+          href: `/3pl/${s}`,
+        }))}
+        platforms={platforms.map((p) => ({
+          key: p,
+          display: p.charAt(0).toUpperCase() + p.slice(1),
+          href: `/3pl?platform=${p}`,
         }))}
       />
 
