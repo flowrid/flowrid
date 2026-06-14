@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { websiteSchema, organizationSchema } from "@/lib/jsonld";
@@ -65,7 +65,7 @@ export default function RootLayout({
             </a>
             <div className="flex items-center gap-4 text-sm text-text-secondary">
               <a href="/3pl" className="hover:text-text transition-colors">
-                Directory
+                3PL Directory
               </a>
               <a href="/compare" className="hover:text-text transition-colors">
                 Compare
