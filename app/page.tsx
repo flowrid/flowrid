@@ -1,5 +1,6 @@
 ﻿import HeroSearch from "@/components/HeroSearch";
 import ThreePLCard from "@/components/3PLCard";
+import TabbedDirectory from "@/components/TabbedDirectory";
 import { createServerClient } from "@/lib/supabase";
 import { rankThreePLs } from "@/lib/scoring";
 import Link from "next/link";
@@ -92,47 +93,23 @@ export default async function Home() {
         </section>
       )}
 
-      {/* Dynamic Category Entry Points */}
-      {categories.length > 0 && (
-        <section className="max-w-[1460px] mx-auto px-4 py-8">
-          <h2 className="text-xl font-bold text-text text-center mb-8">
-            Find 3PLs by Category
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {categories.map((cat) => (
-              <Link
-                key={cat}
-                href={`/3pl?category=${cat}`}
-                className="border border-border rounded-xl p-4 bg-card hover:shadow-md hover:border-primary transition-all text-center"
-              >
-                <span className="text-sm font-medium">
-                  {categoryLabels[cat] || cat.charAt(0).toUpperCase() + cat.slice(1)}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Dynamic State Entry Points */}
-      {states.length > 0 && (
-        <section className="max-w-[1460px] mx-auto px-4 py-8">
-          <h2 className="text-xl font-bold text-text text-center mb-8">
-            Find 3PLs by State
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            {states.map((s) => (
-              <Link
-                key={s}
-                href={`/3pl/${s}`}
-                className="border border-border rounded-lg p-3 bg-card hover:shadow-sm hover:border-primary transition-all text-center text-sm"
-              >
-                {stateLabels[s] || s.charAt(0).toUpperCase() + s.slice(1)}
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
+      {/* 第四屏：Tab 目录（Category / State） */}
+      <TabbedDirectory
+        tabs={[
+          { key: "category", label: "By Category" },
+          { key: "state", label: "By State" },
+        ]}
+        categories={categories.map((cat) => ({
+          key: cat,
+          display: categoryLabels[cat] || cat.charAt(0).toUpperCase() + cat.slice(1),
+          href: `/3pl?category=${cat}`,
+        }))}
+        states={states.map((s) => ({
+          key: s,
+          display: stateLabels[s] || s.charAt(0).toUpperCase() + s.slice(1),
+          href: `/3pl/${s}`,
+        }))}
+      />
 
     </div>
   );
