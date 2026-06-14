@@ -64,8 +64,8 @@ export default async function Page({
     <div className="max-w-[1460px] mx-auto px-4 py-8 pb-20">
       <DirectorySearch />
 
-      <h1 className="text-2xl font-bold text-text mb-2">{title}</h1>
-      <p className="text-text-secondary mb-6">
+      <h1 className="text-2xl font-bold text-text mb-2 text-center">{title}</h1>
+      <p className="text-text-secondary mb-6 text-center">
         {totalCount.toLocaleString()} fulfillment centers found
         {threePLs && threePLs.length >= 2 && (
           <span className="ml-2 text-xs">
