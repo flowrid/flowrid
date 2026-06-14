@@ -84,7 +84,7 @@ export default function RootLayout({
               </div>
               <div className="flex gap-6">
                 <a href="/3pl" className="hover:text-text transition-colors">
-                  Directory
+                  3PL Directory
                 </a>
                 <a href="/compare" className="hover:text-text transition-colors">
                   Compare
