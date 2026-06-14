@@ -74,10 +74,10 @@ export default async function Home() {
       {featured.length > 0 && (
         <section className="max-w-[1460px] mx-auto px-4 py-12">
           <h2 className="text-xl font-bold text-text text-center mb-2">
-            Top-Rated 3PL Providers
+            Find the perfect logistics partner for your business, with maximum efficiency
           </h2>
           <p className="text-text-secondary text-center text-sm mb-8">
-            Highest rated fulfillment centers on Flowrid
+            Flowrid selects and provides the most comprehensive, multi-dimensional information to meet your needs, identifying the best-fit 3PL partner from our global network.
           </p>
           <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
             {featured.map((item) => (
