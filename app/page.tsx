@@ -134,21 +134,6 @@ export default async function Home() {
         </section>
       )}
 
-      {/* CTA */}
-      <section className="text-center py-12 px-4">
-        <h2 className="text-2xl font-bold text-text">
-          Ready to Find Your Perfect 3PL?
-        </h2>
-        <p className="mt-2 text-text-secondary">
-          Get matched with top fulfillment centers in under 60 seconds.
-        </p>
-        <a
-          href="/rfq"
-          className="inline-block mt-6 bg-primary text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-dark transition-colors text-lg"
-        >
-          Get Matched Free
-        </a>
-      </section>
     </div>
   );
 }
