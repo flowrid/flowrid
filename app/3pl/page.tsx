@@ -1,5 +1,6 @@
 import { createServerClient } from "@/lib/supabase";
 import DirectoryResults from "@/components/DirectoryResults";
+import DirectorySearch from "@/components/DirectorySearch";
 import MobileCTA from "@/components/mobile/MobileCTA";
 import type { ThreePL } from "@/types/3pl";
 
@@ -61,6 +62,8 @@ export default async function Page({
 
   return (
     <div className="max-w-[1460px] mx-auto px-4 py-8 pb-20">
+      <DirectorySearch />
+
       <h1 className="text-2xl font-bold text-text mb-2">{title}</h1>
       <p className="text-text-secondary mb-6">
         {totalCount.toLocaleString()} fulfillment centers found
