@@ -31,14 +31,14 @@ export default async function Home() {
   // 提取唯一 States
   const states = [...new Set(providers.map((p) => p.state).filter(Boolean))].sort();
 
-  // 精选推荐：评分排序取前 3
+  // 精选推荐：评分排序取前 6
   const featured = providers
     .map((p) => ({
       ...p,
       score: (p.rating || 0),
     }))
     .sort((a, b) => b.score - a.score)
-    .slice(0, 3);
+    .slice(0, 6);
 
   // Category 显示名映射
   const categoryLabels: Record<string, string> = {
@@ -79,10 +79,15 @@ export default async function Home() {
           <p className="text-text-secondary text-center text-sm mb-8">
             Highest rated fulfillment centers on Flowrid
           </p>
-          <div className="grid gap-4 grid-cols-2 lg:grid-cols-6">
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
             {featured.map((item) => (
               <ThreePLCard key={item.id} data={item} />
             ))}
+          </div>
+          <div className="text-center mt-6">
+            <a href="/3pl" className="text-text-secondary hover:text-primary transition-colors text-sm font-medium">
+              More 3PL Providers &rarr;
+            </a>
           </div>
         </section>
       )}
