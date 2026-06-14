@@ -1,5 +1,7 @@
 "use client";
 
+import DirectorySearch from "@/components/DirectorySearch";
+
 const HERO_IMAGES = [
   { src: "/images/hero/Perfect 3PL Match.webp", alt: "Perfect 3PL Match" },
   { src: "/images/hero/Full-Network Comparison.webp", alt: "Full-Network Comparison" },
@@ -13,7 +15,8 @@ const HERO_IMAGES = [
  */
 export default function HeroSearch() {
   return (
-    <section className="max-w-[1460px] mx-auto px-4 py-16 md:py-24">
+    <>
+      <section className="max-w-[1460px] mx-auto px-4 py-16 md:py-24">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
           {/* 左侧：文案 + 按钮 */}
           <div className="flex-1 text-center lg:text-left">
@@ -52,5 +55,10 @@ export default function HeroSearch() {
           </div>
         </div>
       </section>
+
+      <div className="mt-[30px]">
+        <DirectorySearch />
+      </div>
+    </>
   );
 }
