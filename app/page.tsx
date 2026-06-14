@@ -142,6 +142,24 @@ export default async function Home() {
         }))}
       />
 
+      {/* 第五屏：Flowrid Workspace */}
+      <section className="max-w-[1460px] mx-auto px-4 py-12">
+        <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+          <div className="flex-1 max-w-[560px]">
+            <img
+              src="/images/flowrid-workspace.png"
+              alt="Flowrid Workspace"
+              className="w-full rounded-xl shadow-lg"
+            />
+          </div>
+          <div className="flex-1 text-center lg:text-left">
+            <h2 className="text-2xl md:text-3xl font-bold text-text leading-tight">
+              Bridge the operational management between brands and 3PL
+            </h2>
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }
