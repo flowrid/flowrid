@@ -80,8 +80,11 @@ export default function RootLayout({
                 <p>Find & compare the best 3PL providers for your brand.</p>
               </div>
               <div className="flex gap-6">
-                <a href="/3pl" className="hover:text-text transition-colors">
-                  3PL Directory
+                <a href="/privacy-policy" className="hover:text-text transition-colors">
+                  Privacy Policy
+                </a>
+                <a href="/terms-of-service" className="hover:text-text transition-colors">
+                  Terms of Service
                 </a>
               </div>
             </div>
