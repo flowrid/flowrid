@@ -76,7 +76,7 @@ export default function RootLayout({
           <div className="max-w-[1460px] mx-auto px-4 py-8 text-sm text-text-secondary">
             <div className="flex flex-wrap gap-6 justify-between">
               <div>
-                <img src="/images/flowrid-logo-footer.png" alt="Flowrid" className="h-6 w-auto mb-[30px]" />
+                <img src="/images/flowrid-logo-footer.png?v=2" alt="Flowrid" className="h-6 w-auto mb-[30px]" />
                 <p>Find & compare the best 3PL providers for your brand.</p>
               </div>
               <div className="flex gap-6">
