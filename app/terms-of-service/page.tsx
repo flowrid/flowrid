@@ -50,7 +50,6 @@ export default function TermsPage() {
       <h2 className="text-xl font-semibold mt-8 mb-3">Your Comments and Concerns</h2>
       <p className="mb-3">This website is operated by Flowrid. All feedback, comments, requests for technical support, and other communications relating to the Website should be directed to team@flowrid.com.</p>
 
-      <p className="text-text-secondary text-sm mt-12">Last updated: June 14, 2026</p>
     </div>
   );
 }

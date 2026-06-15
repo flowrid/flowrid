@@ -57,7 +57,6 @@ export default function PrivacyPolicyPage() {
       <h2 className="text-xl font-semibold mt-8 mb-3">Contact Information</h2>
       <p className="mb-3">To ask questions or comment about this privacy policy and our privacy practices, contact us at team@flowrid.com or through our contact page.</p>
 
-      <p className="text-text-secondary text-sm mt-12">Last updated: June 14, 2026</p>
     </div>
   );
 }
