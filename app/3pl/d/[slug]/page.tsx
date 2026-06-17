@@ -6,10 +6,8 @@ import {
   generateFAQItems,
 } from "@/lib/detail-content";
 import { geocodeCity } from "@/lib/geocode";
-import dynamicImport from "next/dynamic";
 import HeroSection from "@/components/detail/HeroSection";
-
-const TabNavigation = dynamicImport(() => import("@/components/detail/TabNavigation"), { ssr: false });
+import TabNavigation from "@/components/detail/TabNavigation";
 import OverviewSection from "@/components/detail/OverviewSection";
 import ReviewsSection from "@/components/detail/ReviewsSection";
 import LocationsSection from "@/components/detail/LocationsSection";
@@ -141,6 +139,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
             })
           ),
         }}
+        suppressHydrationWarning
       />
 
       {/* 返回链接 */}
