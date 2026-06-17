@@ -51,25 +51,10 @@ const TABS = [
   { id: "faq", label: "FAQ" },
 ];
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const supabase = createServerClient();
-  if (!supabase) return { title: "3PL Details | Flowrid" };
-
-  const { data } = await supabase
-    .from("pl_providers")
-    .select("*")
-    .eq("slug", slug)
-    .single();
-
-  if (!data) return { title: "3PL Not Found | Flowrid" };
-
-  const p = data as ThreePL;
-  return {
-    title: `${p.name} — ${formatState(p.state)} 3PL Review | Flowrid`,
-    description: `${p.name} is a ${p.state} 3PL specializing in ${p.categories?.join(", ")}. ${p.shipping_speed} shipping. Integrates with ${p.platforms?.join(", ")}.`,
-  };
-}
+export const metadata: Metadata = {
+  title: "3PL Provider Details | Flowrid",
+  description: "View detailed information, reviews, and capabilities of this 3PL provider.",
+};
 
 export default async function ThreePLDetailPage({ params }: Props) {
   const { slug } = await params;
@@ -123,25 +108,6 @@ export default async function ThreePLDetailPage({ params }: Props) {
 
   return (
     <>
-      {/* JSON-LD 结构化数据 */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            localBusinessSchema({
-              name: p.name,
-              description: p.description || "",
-              city: p.city || "",
-              state: p.state || "",
-              rating: p.rating || 0,
-              reviewCount: p.review_count || 0,
-              url: `https://www.flowrid.com/3pl/d/${p.slug}`,
-            })
-          ),
-        }}
-        suppressHydrationWarning
-      />
-
       {/* 返回链接 */}
       <div className="max-w-[1460px] mx-auto px-4 pt-4">
         <Link
