@@ -6,10 +6,10 @@ import {
   generateFAQItems,
 } from "@/lib/detail-content";
 import { geocodeCity } from "@/lib/geocode";
-import nextDynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
 import HeroSection from "@/components/detail/HeroSection";
 
-const TabNavigation = nextDynamic(() => import("@/components/detail/TabNavigation"), { ssr: false });
+const TabNavigation = dynamicImport(() => import("@/components/detail/TabNavigation"), { ssr: false });
 import OverviewSection from "@/components/detail/OverviewSection";
 import ReviewsSection from "@/components/detail/ReviewsSection";
 import LocationsSection from "@/components/detail/LocationsSection";
