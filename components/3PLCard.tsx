@@ -2,6 +2,7 @@
 
 import { ThreePLCardData } from "@/types/3pl";
 import { useState } from "react";
+import Link from "next/link";
 import { PLATFORM_ICONS } from "@/lib/platform-icons";
 
 function formatStateName(state: string): string {
@@ -174,7 +175,7 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
         </div>
 
         {/* View Details — 方形按钮，文字可分行 */}
-        <a
+        <Link
           href={`/3pl/d/${data.slug}`}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
@@ -211,7 +212,7 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
         >
           <span>View</span>
           <span>Details</span>
-        </a>
+        </Link>
       </div>
     </div>
   );
