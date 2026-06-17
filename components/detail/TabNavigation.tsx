@@ -12,9 +12,16 @@ interface TabNavigationProps {
 }
 
 export default function TabNavigation({ tabs }: TabNavigationProps) {
-  const [activeTab, setActiveTab] = useState(tabs[0]?.id || "");
+  const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState("");
+
+  useEffect(() => {
+    setMounted(true);
+    setActiveTab(tabs[0]?.id || "");
+  }, [tabs]);
 
   const handleScroll = useCallback(() => {
+    if (!mounted) return;
     const offsets = tabs.map((tab) => {
       const el = document.getElementById(tab.id);
       if (!el) return { id: tab.id, top: Infinity };
@@ -32,13 +39,14 @@ export default function TabNavigation({ tabs }: TabNavigationProps) {
     }
 
     setActiveTab(current);
-  }, [tabs]);
+  }, [tabs, mounted]);
 
   useEffect(() => {
+    if (!mounted) return;
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
+  }, [handleScroll, mounted]);
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -48,6 +56,9 @@ export default function TabNavigation({ tabs }: TabNavigationProps) {
       setActiveTab(id);
     }
   };
+
+  // 水合前不渲染任何内容，避免服务端/客户端不一致
+  if (!mounted) return null;
 
   return (
     <nav className="sticky top-[72px] z-40 bg-white/95 backdrop-blur border-b border-border -mx-4 px-2 md:-mx-0 md:px-0">
