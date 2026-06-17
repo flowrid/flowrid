@@ -11,18 +11,23 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const supabase = createBrowserClient();
-    if (!supabase) {
-      setLoading(false);
-      return;
-    }
-    supabase.auth.getSession().then(({ data }) => {
+
+    const loadDashboardUser = async () => {
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
+
+      const { data } = await supabase.auth.getSession();
       if (data?.session?.user) {
         const meta = data.session.user.user_metadata;
         setRole((meta?.role as string) || null);
         setEmail(data.session.user.email || null);
       }
       setLoading(false);
-    });
+    };
+
+    void loadDashboardUser();
   }, []);
 
   if (loading) {
@@ -101,6 +106,24 @@ export default function DashboardPage() {
               </span>
             </Link>
 
+            <Link
+              href="/account/integrations"
+              className="block bg-card border border-border rounded-2xl p-8 hover:border-primary/40 hover:shadow-lg transition-all mb-4"
+            >
+              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.5 6.75H18A2.25 2.25 0 0120.25 9v9A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V9A2.25 2.25 0 016 6.75h4.5m3 0V5.25A1.5 1.5 0 0012 3.75v0a1.5 1.5 0 00-1.5 1.5v1.5m3 0h-3m-1.5 6h6m-6 3h3" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-semibold text-text mb-2">Connect your store</h2>
+              <p className="text-text-secondary mb-6">
+                Connect Shopify so Flowrid can use real order volume, SKUs, and shipping zones to improve 3PL matching and RFQ accuracy.
+              </p>
+              <span className="text-primary font-medium text-sm">
+                Set up store integrations &rarr;
+              </span>
+            </Link>
+
             <div className="grid grid-cols-3 gap-4 mb-12">
               {[
                 { label: "3PL Providers", value: "2,818" },
@@ -139,8 +162,8 @@ export default function DashboardPage() {
             ) : (
               [
                 { step: 1, title: "Search by state, category, or platform", desc: "Browse 2,800+ 3PLs filtered to your exact needs." },
-                { step: 2, title: "Compare pricing, speed, and integrations", desc: "Check the box on any card to compare providers side by side." },
-                { step: 3, title: "Submit an RFQ to get matched", desc: "Tell us your requirements and receive proposals from the best-fit 3PLs." },
+                { step: 2, title: "Connect your store or add shipping signals", desc: "Use order volume, SKU mix, and shipping zones to improve provider matching." },
+                { step: 3, title: "Submit an RFQ with better context", desc: "Tell us your requirements and receive proposals from the best-fit 3PLs." },
               ].map((item) => (
                 <div key={item.step} className="flex gap-4">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
