@@ -19,7 +19,7 @@ export default function AccountSidebar() {
       <aside className="hidden w-64 shrink-0 flex-col border-r border-black/5 bg-white/70 backdrop-blur-xl md:flex">
         <div className="px-5 pb-8 pt-10">
           <Link href="/account" className="inline-block" aria-label="Flowrid account overview">
-            <img src="/flowrid-logo.png" alt="Flowrid" className="h-8 w-auto" />
+            <img src="/3pl-os-logo.png" alt="Flowrid" className="h-8 w-auto" />
           </Link>
           <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#86868B]">
             Brand Account
