@@ -85,7 +85,7 @@ export const BRAND_ACCOUNT_MENU_GROUPS: BrandAccountMenuGroup[] = [
         label: "Reports",
         description: "Generate brand-side operational reports.",
         href: "/account/reports",
-        icon: "/icons/analytics.png",
+        icon: "/icons/reports.png",
         accent: "neutral",
       },
       {
@@ -104,7 +104,7 @@ export const BRAND_ACCOUNT_MENU_GROUPS: BrandAccountMenuGroup[] = [
         label: "Store Integrations",
         description: "Connect Shopify and ecommerce data sources for better matching.",
         href: "/account/integrations",
-        icon: "/icons/settings.png",
+        icon: "/icons/store-integrations.png",
         accent: "success",
       },
       {
@@ -130,21 +130,21 @@ export const BRAND_ACCOUNT_MENU_GROUPS: BrandAccountMenuGroup[] = [
         label: "Compare Providers",
         description: "Open the provider comparison workspace.",
         href: "/account/compare",
-        icon: "/icons/analytics.png",
+        icon: "/icons/compare-providers.png",
         accent: "warning",
       },
       {
         label: "My RFQs",
         description: "Track requests for quotation and matched 3PL proposals.",
         href: "/account/rfqs",
-        icon: "/icons/orders.png",
+        icon: "/icons/my-rfqs.png",
         accent: "primary",
       },
       {
         label: "Saved 3PL",
         description: "Review your shortlisted fulfillment providers.",
         href: "/account/saved",
-        icon: "/icons/dashboard.png",
+        icon: "/icons/saved-3pl.png",
         accent: "neutral",
       },
       {
