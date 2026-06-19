@@ -107,7 +107,8 @@ export default function HeroSection({
         </div>
 
         {/* 徽章 */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <img src="/flowrid-verified.png" alt="Flowrid Verified" className="w-5 h-5 shrink-0" />
           {badges.map((b) => (
             <span key={b.label} className={`px-3 py-1 rounded-full text-xs font-medium ${b.color}`}>
               {b.label}
