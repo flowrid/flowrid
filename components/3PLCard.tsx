@@ -128,7 +128,7 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
         {data.platforms && data.platforms.length > 0 && (
           <div className="flex flex-wrap items-center" style={{ gap: "1.5%" }}>
             {data.platforms.map((p) => {
-              const key = p.toLowerCase().trim();
+              const key = p.toLowerCase().trim().replace(/\s+/g, "");
               const icon = PLATFORM_ICONS[key];
               if (!icon) return null;
               return (

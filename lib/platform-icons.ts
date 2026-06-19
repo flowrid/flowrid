@@ -14,4 +14,11 @@ export const PLATFORM_ICONS: Record<string, string> = {
   bigcommerce: "/platforms/bigcommerce.png",
   woocommerce: "/platforms/woocommerce.png",
   magento: "/platforms/magento.png",
+  bestbuy: "/platforms/bestbuy.png",
+  costco: "/platforms/costco.png",
+  homedepot: "/platforms/homedepot.png",
+  newegg: "/platforms/newegg.png",
+  squarespace: "/platforms/squarespace.png",
+  targetplus: "/platforms/targetplus.png",
+  wix: "/platforms/wix.png",
 };

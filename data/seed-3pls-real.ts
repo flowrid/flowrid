@@ -54,7 +54,7 @@ const SEED_DATA: Omit<ThreePLSeed, "slug" | "categories" | "platforms" | "integr
   { name: "Komar Distribution Services", description: "Over 100 years of apparel brand ownership. 3PL specializing in apparel with robotics and heavy automation. 2.9M sq ft, FTZ-designated facilities.", state: "california", city: "Perris", website: "https://komardistribution.com" },
   { name: "Selery Fulfillment", description: "Mission-driven 3PL with 99.96% order accuracy and same-day fulfillment. Endorsed by Mark Cuban. 6 US warehouses, 795,000 sq ft.", state: "california", city: "Ontario", website: "https://seleryfulfillment.com" },
   { name: "Smart Warehousing", description: "Proprietary AI-powered SWIMS WMS. 18 facilities nationwide with cold chain, FDA-registered facilities. 11.9M sq ft total.", state: "california", city: "Los Angeles", website: "https://smartwarehousing.com" },
-  { name: "ShipCalm", description: "Tech-forward omnichannel 3PL with AI-driven software. Certified for dangerous goods and HAZMAT. Also supports medical products and call center operations.", state: "california", city: "Carlsbad", website: "https://shipcalm.com" },
+  { name: "ShipCalm", description: "Tech-forward omnichannel 3PL with AI-driven software. Integrates with Best Buy, Target Plus, and major retail platforms. Certified for dangerous goods and HAZMAT. Also supports medical products and call center operations.", state: "california", city: "Carlsbad", website: "https://shipcalm.com" },
   { name: "Mobix Logistics", description: "Spun out of a furniture brand. Enterprise big & bulky and furniture fulfillment with ocean freight department and drayage from nearby ports.", state: "california", city: "Delano", website: "https://mobix.co" },
   { name: "ShipMonk", description: "Global fulfillment network with 12 warehouses in US, Canada, UK, Mexico, Czechia. Eight-time Inc. 5000 honoree with proprietary technology platform.", state: "california", city: "San Bernardino", website: "https://shipmonk.com" },
   { name: "ShipLogix", description: "Tech-forward 3PL with proprietary shipping platform offering enterprise-level rates. Specializes in low SKU count, high-volume brands.", state: "california", city: "Chatsworth", website: "https://shiplogix.io" },
@@ -78,7 +78,7 @@ const SEED_DATA: Omit<ThreePLSeed, "slug" | "categories" | "platforms" | "integr
   { name: "Eagle Support Services", description: "FBA prep, kitting, bundling, and storage specialist. Punches above their weight with hands-on service from College Station, TX.", state: "texas", city: "College Station", website: "https://eaglesupportservices.com" },
   { name: "LVK Logistics", description: "The 3PL arm of ShipHero WMS. Built for high-volume enterprise DTC brands with competitive shipping rates from network volume.", state: "texas", city: "Fort Worth", website: "https://lvk.com" },
   { name: "Our Service Works", description: "Female-founded and operated for 35+ years. Temperature/humidity-controlled facility for supplements, cosmetics, and food & beverage.", state: "texas", city: "Carrollton", website: "https://ourserviceworks.com" },
-  { name: "Thrive 3PL", description: "Ecommerce fulfillment for fast-growing multi-channel brands. Integrates with Amazon, Walmart, Shopify, WooCommerce, eBay, Faire, and Etsy.", state: "texas", city: "Houston", website: "https://thrive3pl.com" },
+  { name: "Thrive 3PL", description: "Ecommerce fulfillment for fast-growing multi-channel brands. Integrates with Amazon, Walmart, Shopify, WooCommerce, eBay, Costco, Faire, and Etsy.", state: "texas", city: "Houston", website: "https://thrive3pl.com" },
 
   // ── Georgia ──
   { name: "All Points", description: "Family-owned since 1995. Omnichannel fulfillment, kitting, and retailer compliance. Uses Deposco WMS and Retail Ready. 300,000 sq ft.", state: "georgia", city: "Atlanta", website: "https://allpointsatl.com" },
@@ -302,6 +302,13 @@ function inferPlatforms(desc: string): string[] {
   if (lower.includes("etsy")) platforms.push("Etsy");
   if (lower.includes("tiktok")) platforms.push("TikTok");
   if (lower.includes("magento")) platforms.push("Magento");
+  if (lower.includes("costco")) platforms.push("Costco");
+  if (lower.includes("best buy")) platforms.push("Best Buy");
+  if (lower.includes("home depot")) platforms.push("Home Depot");
+  if (lower.includes("newegg")) platforms.push("Newegg");
+  if (lower.includes("squarespace")) platforms.push("SquareSpace");
+  if (lower.includes("target plus")) platforms.push("Target Plus");
+  if (lower.includes("wix")) platforms.push("Wix");
   if (lower.includes("b2b") || lower.includes("retail") || lower.includes("wholesale")) platforms.push("B2B");
   if (platforms.length === 0) platforms.push("Shopify", "Amazon", "WooCommerce");
   return [...new Set(platforms)];
