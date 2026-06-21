@@ -18,7 +18,6 @@ import TechnologySection from "@/components/detail/TechnologySection";
 import AwardsSection from "@/components/detail/AwardsSection";
 import AtAGlanceSection from "@/components/detail/AtAGlanceSection";
 import DetailFAQ from "@/components/detail/DetailFAQ";
-import BottomCTA from "@/components/detail/BottomCTA";
 import ProfileSidebar from "@/components/detail/ProfileSidebar";
 import type { Metadata } from "next";
 import type { ThreePL } from "@/types/3pl";
@@ -255,7 +254,6 @@ export default async function ThreePLDetailPage({ params }: Props) {
 
       {/* Bottom CTA */}
       <div className="max-w-[1460px] mx-auto px-4 pb-16">
-        <BottomCTA slug={p.slug} />
       </div>
     </>
   );
