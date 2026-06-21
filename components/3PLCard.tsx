@@ -13,7 +13,7 @@ function formatStateName(state: string): string {
     .join(" ");
 }
 
-function getCardTagline(data: ThreePLCardData): string {
+function getCardTagline(data: ThreePLCardData): { label: string; hasColdChain: boolean } {
   const cats = data.categories || [];
   const wh = estimateWarehouses(data.state, data.order_capacity || 0);
   const base = `${wh} WH`;
@@ -41,13 +41,11 @@ function getCardTagline(data: ThreePLCardData): string {
     label = `Fulfillment · ${base}`;
   }
 
-  // 冷链追加
+  // 冷链追加 — 用图标代替文字
   const coldCats = ["food", "food-beverage", "grocery", "frozen", "pharma", "supplements"];
-  if (cats.some((c: string) => coldCats.includes(c))) {
-    label += " · Cold Chain";
-  }
+  const hasColdChain = cats.some((c: string) => coldCats.includes(c));
 
-  return label;
+  return { label, hasColdChain };
 }
 
 interface ThreePLCardProps {
@@ -68,6 +66,7 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
   const [hovered, setHovered] = useState(false);
   const [pressed, setPressed] = useState(false);
   const isActive = hovered || pressed;
+  const tagline = getCardTagline(data);
 
   return (
     <div
@@ -192,14 +191,17 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
 
       {/* ═══ 板块三：定位介绍 + View Details ═══ */}
       <div className="flex items-center justify-between" style={{ marginTop: "3%" }}>
-        {/* 定位标签 — 品类专精或地域标签 */}
-        <div className="flex items-center" style={{ gap: "3%" }}>
+        {/* 定位标签 — 品类专精 */}
+        <div className="flex items-center gap-1">
           <span
-            className="text-primary/80 leading-none whitespace-nowrap"
+            className="text-black leading-none whitespace-nowrap"
             style={{ fontSize: "clamp(0.6rem, 6cqw, 1.6rem)" }}
           >
-            {getCardTagline(data)}
+            {tagline.label}
           </span>
+          {tagline.hasColdChain && (
+            <img src="/images/cold-chain.png" alt="Cold Chain" className="w-4 h-4 shrink-0" />
+          )}
         </div>
 
         {/* View Details — 方形按钮，文字可分行 */}
