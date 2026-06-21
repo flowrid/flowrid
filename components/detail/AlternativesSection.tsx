@@ -81,7 +81,7 @@ export default function AlternativesSection({
           {/* 卡片容器 */}
           <div
             ref={scrollRef}
-            className="flex gap-3 pb-6 pt-3 overflow-x-auto"
+            className="flex gap-3 pb-6 pt-3 pl-1 overflow-x-auto"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {alternatives.map((alt) => (
