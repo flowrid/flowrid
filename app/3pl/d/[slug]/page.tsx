@@ -20,6 +20,7 @@ import AwardsSection from "@/components/detail/AwardsSection";
 import AtAGlanceSection from "@/components/detail/AtAGlanceSection";
 import DetailFAQ from "@/components/detail/DetailFAQ";
 import BottomCTA from "@/components/detail/BottomCTA";
+import ProfileSidebar from "@/components/detail/ProfileSidebar";
 import type { Metadata } from "next";
 import type { ThreePL } from "@/types/3pl";
 import Link from "next/link";
@@ -143,9 +144,13 @@ export default async function ThreePLDetailPage({ params }: Props) {
 
       {/* 各 Section */}
       <div className="max-w-[1460px] mx-auto px-4">
-        <div className="space-y-14 py-10">
-          {/* Overview */}
-          <section id="overview">
+        <div className="flex flex-col lg:flex-row gap-8 py-10">
+          {/* 左侧主内容 */}
+          <div className="flex-1 min-w-0 space-y-14">
+
+
+            {/* Overview */}
+            <section id="overview">
             <OverviewSection
               name={p.name}
               overviewText={overviewText}
@@ -245,6 +250,14 @@ export default async function ThreePLDetailPage({ params }: Props) {
           {/* FAQ */}
           <DetailFAQ threePL={p} />
         </div>
+
+        {/* 右侧边栏 — Profile at a Glance */}
+        <div className="lg:w-[340px] shrink-0">
+          <div className="sticky top-[140px]">
+            <ProfileSidebar threePL={p} />
+          </div>
+        </div>
+      </div>
       </div>
 
       {/* Bottom CTA */}
