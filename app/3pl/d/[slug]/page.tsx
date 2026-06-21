@@ -142,6 +142,11 @@ export default async function ThreePLDetailPage({ params }: Props) {
       {/* Tab Navigation */}
       <TabNavigation tabs={TABS} />
 
+      {/* 移动端边栏 — Tab 上方显示 */}
+      <div className="lg:hidden max-w-[1460px] mx-auto px-4 pt-6">
+        <ProfileSidebar threePL={p} />
+      </div>
+
       {/* 各 Section */}
       <div className="max-w-[1460px] mx-auto px-4">
         <div className="flex flex-col lg:flex-row gap-8 py-10">
@@ -253,7 +258,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
 
         {/* 右侧边栏 — Profile at a Glance */}
         <div className="lg:w-[340px] shrink-0">
-          <div className="sticky top-[140px]">
+          <div style={{ position: "sticky", top: "140px" }}>
             <ProfileSidebar threePL={p} />
           </div>
         </div>
