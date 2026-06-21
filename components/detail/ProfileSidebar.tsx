@@ -1,4 +1,4 @@
-import { estimateFounded, estimateSqFt, estimateWarehouses, inferStorageEnvironments, formatCapacity, costLevelIcons } from "@/lib/detail-content";
+import { estimateFounded, estimateSqFt, estimateWarehouses, inferStorageEnvironments, formatCapacity } from "@/lib/detail-content";
 import { formatState } from "@/lib/detail-content";
 import type { ThreePL } from "@/types/3pl";
 
@@ -12,8 +12,6 @@ export default function ProfileSidebar({ threePL: p }: ProfileSidebarProps) {
   const warehouses = estimateWarehouses(p.state, p.order_capacity || 0);
   const sqFt = estimateSqFt(p.order_capacity || 0, p.categories || []);
   const environments = inferStorageEnvironments(p as any);
-  const platforms = p.platforms || [];
-  const integrations = p.integrations || [];
 
   return (
     <aside className="bg-card border border-border rounded-2xl p-5 md:p-6 space-y-5">
@@ -32,9 +30,6 @@ export default function ProfileSidebar({ threePL: p }: ProfileSidebarProps) {
         <StatBox label="Total Sq Ft" value={formatSqFt(sqFt)} />
         <StatBox label="Order Capacity" value={`${formatCapacity(p.order_capacity || 0)}/mo`} />
         <StatBox label="SKU Capacity" value={formatCapacity(p.sku_capacity || 0)} />
-        <StatBox label="Shipping" value={p.shipping_speed || "Contact"} />
-        <StatBox label="Cost Level" value={costLevelIcons(p.cost_level || "$")} />
-        <StatBox label="Rating" value={`${p.rating || 0}/100`} />
       </div>
 
       {/* 存储环境 */}
@@ -53,41 +48,8 @@ export default function ProfileSidebar({ threePL: p }: ProfileSidebarProps) {
         </div>
       )}
 
-      {/* 电商平台 */}
-      {platforms.length > 0 && (
-        <div>
-          <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">
-            Platform Integrations
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {platforms.slice(0, 6).map((pl) => (
-              <span key={pl} className="px-2.5 py-1 bg-gray-100 rounded-lg text-xs text-text capitalize">
-                {pl}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Technology */}
-      {integrations.length > 0 && (
-        <div>
-          <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">
-            Technology Partners
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {integrations.slice(0, 6).map((t) => (
-              <span key={t} className="px-2.5 py-1 bg-gray-100 rounded-lg text-xs text-text capitalize">
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Website */}
-      {p.website && (
-        <a
+      {p.website && (        <a
           href={p.website}
           target="_blank"
           rel="noopener"

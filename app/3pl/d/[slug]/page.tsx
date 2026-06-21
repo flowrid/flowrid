@@ -258,7 +258,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
 
         {/* 右侧边栏 — Profile at a Glance */}
         <div className="lg:w-[340px] shrink-0">
-          <div style={{ position: "sticky", top: "140px" }}>
+          <div>
             <ProfileSidebar threePL={p} />
           </div>
         </div>
