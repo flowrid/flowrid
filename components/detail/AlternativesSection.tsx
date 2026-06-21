@@ -1,3 +1,6 @@
+"use client";
+
+import { useRef, useState, useEffect } from "react";
 import ThreePLCard from "@/components/3PLCard";
 import { formatState } from "@/lib/detail-content";
 import Link from "next/link";
@@ -17,6 +20,30 @@ export default function AlternativesSection({
   alternatives,
 }: AlternativesSectionProps) {
   const stateFormatted = formatState(state);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  function checkScroll() {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
+  }
+
+  useEffect(() => {
+    checkScroll();
+    const el = scrollRef.current;
+    if (el) el.addEventListener("scroll", checkScroll, { passive: true });
+    return () => { if (el) el.removeEventListener("scroll", checkScroll); };
+  }, [alternatives]);
+
+  function scroll(dir: "left" | "right") {
+    const el = scrollRef.current;
+    if (!el) return;
+    const amount = el.clientWidth * 0.7;
+    el.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
+  }
 
   return (
     <section>
@@ -33,26 +60,53 @@ export default function AlternativesSection({
           <p className="text-text-secondary mb-2">
             No alternatives found in {stateFormatted}.
           </p>
-          <Link
-            href={`/3pl/${state}`}
-            className="text-primary hover:underline text-sm"
-          >
+          <Link href={`/3pl/${state}`} className="text-primary hover:underline text-sm">
             Browse all 3PLs in {stateFormatted} &rarr;
           </Link>
         </div>
       ) : (
-        <div className="flex overflow-x-auto gap-3 pb-6 pt-3 md:grid md:grid-cols-3 lg:grid-cols-6 md:gap-4 md:overflow-visible" style={{scrollbarWidth:"none", msOverflowStyle:"none"}}>
-          {alternatives.map((alt) => (
-            <div key={alt.id} className="w-[72vw] md:w-auto shrink-0 px-0.5">
-              <ThreePLCard
-                key={alt.id}
-                data={{
-                  ...alt,
-                  score: Math.round(alt.rating || 0),
-                }}
-              />
-            </div>
-          ))}
+        <div className="relative group">
+          {/* 左箭头 */}
+          {canScrollLeft && (
+            <button
+              onClick={() => scroll("left")}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/90 rounded-full shadow-lg border border-border flex items-center justify-center hover:bg-white transition-colors"
+            >
+              <svg className="w-5 h-5 text-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
+
+          {/* 卡片容器 */}
+          <div
+            ref={scrollRef}
+            className="flex gap-3 pb-6 pt-3 overflow-x-auto"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {alternatives.map((alt) => (
+              <div key={alt.id} className="w-[50vw] md:w-[280px] shrink-0">
+                <ThreePLCard
+                  data={{
+                    ...alt,
+                    score: Math.round(alt.rating || 0),
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* 右箭头 */}
+          {canScrollRight && (
+            <button
+              onClick={() => scroll("right")}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/90 rounded-full shadow-lg border border-border flex items-center justify-center hover:bg-white transition-colors"
+            >
+              <svg className="w-5 h-5 text-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
         </div>
       )}
     </section>
