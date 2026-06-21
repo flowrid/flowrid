@@ -85,7 +85,7 @@ export default function AlternativesSection({
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {alternatives.map((alt) => (
-              <div key={alt.id} className="w-[50vw] md:w-[280px] shrink-0">
+              <div key={alt.id} className="w-[50vw] md:w-[220px] shrink-0">
                 <ThreePLCard
                   data={{
                     ...alt,
