@@ -60,28 +60,6 @@ export default function LocationsSection({
 
         {/* 地点列表 */}
         <div className="space-y-4">
-          <div className="bg-card border border-border rounded-xl p-5">
-            <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div>
-                <p className="font-semibold text-text">
-                  {city ? `${city}, ${stateFormatted}` : stateFormatted}
-                </p>
-                <p className="text-sm text-text-secondary mt-0.5">
-                  Primary Fulfillment Center
-                </p>
-                <p className="text-xs text-text-secondary mt-1">
-                  Contact {name} for exact warehouse address and tour
-                  availability.
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* 位置标签链接 */}
           <div className="flex flex-wrap gap-2">
             <Link
