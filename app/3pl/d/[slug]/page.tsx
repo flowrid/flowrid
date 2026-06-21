@@ -9,7 +9,6 @@ import { geocodeCity } from "@/lib/geocode";
 import HeroSection from "@/components/detail/HeroSection";
 import TabNavigation from "@/components/detail/TabNavigation";
 import OverviewSection from "@/components/detail/OverviewSection";
-import ReviewsSection from "@/components/detail/ReviewsSection";
 import LocationsSection from "@/components/detail/LocationsSection";
 import SpecialtiesSection from "@/components/detail/SpecialtiesSection";
 import AlternativesSection from "@/components/detail/AlternativesSection";
@@ -40,7 +39,6 @@ function formatState(s: string): string {
 
 const TABS = [
   { id: "overview", label: "Overview" },
-  { id: "reviews", label: "Reviews" },
   { id: "locations", label: "Locations" },
   { id: "specialties", label: "Specialties" },
   { id: "alternatives", label: "Alternatives" },
@@ -160,16 +158,6 @@ export default async function ThreePLDetailPage({ params }: Props) {
               name={p.name}
               overviewText={overviewText}
               secondaryText={secondaryText}
-            />
-          </section>
-
-          {/* Reviews */}
-          <section id="reviews">
-            <ReviewsSection
-              name={p.name}
-              rating={p.rating || 0}
-              reviewCount={p.review_count || 0}
-              slug={p.slug}
             />
           </section>
 
