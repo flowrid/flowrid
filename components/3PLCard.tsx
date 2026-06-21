@@ -200,7 +200,7 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
             {tagline.label}
           </span>
           {tagline.hasColdChain && (
-            <img src="/images/cold-chain.png" alt="Cold Chain" className="w-4 h-4 shrink-0" />
+            <img src="/images/cold-chain.png" alt="Cold Chain" className="w-3 h-3 shrink-0" />
           )}
         </div>
 
