@@ -3,6 +3,7 @@
 import { ThreePLCardData } from "@/types/3pl";
 import { useState } from "react";
 import Link from "next/link";
+import { estimateWarehouses } from "@/lib/detail-content";
 import { PLATFORM_ICONS } from "@/lib/platform-icons";
 
 function formatStateName(state: string): string {
@@ -10,6 +11,43 @@ function formatStateName(state: string): string {
     .split("-")
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
+}
+
+function getCardTagline(data: ThreePLCardData): string {
+  const cats = data.categories || [];
+  const wh = estimateWarehouses(data.state, data.order_capacity || 0);
+  const base = `${wh} WH`;
+
+  // 品类标签
+  const catMap: Record<string, string> = {
+    apparel: "Apparel", electronics: "Electronics", beauty: "Beauty",
+    jewelry: "Jewelry", home: "Home Décor", toys: "Toys",
+    food: "Food & Beverage", sports: "Sports", automotive: "Auto",
+    "food-beverage": "Food & Bev", "home-garden": "Home & Garden",
+    "pet-supplies": "Pet Supplies", health: "Health",
+    books: "Books", pharma: "Pharma",
+  };
+
+  let label: string;
+  if (cats.length >= 5) {
+    label = `Full-Service · ${base}`;
+  } else if (cats.length >= 2) {
+    label = `Multi-Cat · ${base}`;
+  } else if (cats.length === 1) {
+    const c = cats[0];
+    const name = catMap[c] || c.charAt(0).toUpperCase() + c.slice(1);
+    label = `${name} · ${base}`;
+  } else {
+    label = `Fulfillment · ${base}`;
+  }
+
+  // 冷链追加
+  const coldCats = ["food", "food-beverage", "grocery", "frozen", "pharma", "supplements"];
+  if (cats.some((c: string) => coldCats.includes(c))) {
+    label += " · Cold Chain";
+  }
+
+  return label;
 }
 
 interface ThreePLCardProps {
@@ -152,25 +190,15 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
         </p>
       </div>
 
-      {/* ═══ 板块三：Speed + View Details ═══ */}
+      {/* ═══ 板块三：定位介绍 + View Details ═══ */}
       <div className="flex items-center justify-between" style={{ marginTop: "3%" }}>
-        {/* Speed — 值文字放大 20%，单行 */}
+        {/* 定位标签 — 品类专精或地域标签 */}
         <div className="flex items-center" style={{ gap: "3%" }}>
           <span
-            className="font-semibold text-primary leading-none"
-            style={{ fontSize: "clamp(0.65rem, 7cqw, 2.2rem)" }}
+            className="text-primary/80 leading-none whitespace-nowrap"
+            style={{ fontSize: "clamp(0.6rem, 6cqw, 1.6rem)" }}
           >
-            Speed
-          </span>
-          <div
-            className="bg-[#86868B]/30 shrink-0"
-            style={{ width: "1px", height: "max(12px, 5%)" }}
-          />
-          <span
-            className="text-black/80 leading-none whitespace-nowrap"
-            style={{ fontSize: "clamp(0.6rem, 6.24cqw, 1.92rem)" }}
-          >
-            {data.shipping_speed || "—"}
+            {getCardTagline(data)}
           </span>
         </div>
 
