@@ -251,10 +251,6 @@ export default async function ThreePLDetailPage({ params }: Props) {
         </div>
       </div>
       </div>
-
-      {/* Bottom CTA */}
-      <div className="max-w-[1460px] mx-auto px-4 pb-16">
-      </div>
     </>
   );
 }
