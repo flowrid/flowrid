@@ -47,17 +47,6 @@ export default function ProfileSidebar({ threePL: p }: ProfileSidebarProps) {
           </div>
         </div>
       )}
-
-      {/* Website */}
-      {p.website && (        <a
-          href={p.website}
-          target="_blank"
-          rel="noopener"
-          className="block w-full text-center bg-primary text-white py-2.5 rounded-xl font-semibold text-sm hover:bg-primary-dark transition-colors"
-        >
-          Visit Website
-        </a>
-      )}
     </aside>
   );
 }
