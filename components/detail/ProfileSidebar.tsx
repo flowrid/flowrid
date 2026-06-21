@@ -58,14 +58,6 @@ export default function ProfileSidebar({ threePL: p }: ProfileSidebarProps) {
           Visit Website
         </a>
       )}
-
-      {/* CTA */}
-      <a
-        href={`/rfq?pl=${p.slug}`}
-        className="block w-full text-center border border-primary text-primary py-2.5 rounded-xl font-semibold text-sm hover:bg-primary/5 transition-colors"
-      >
-        Get Matched Free
-      </a>
     </aside>
   );
 }
