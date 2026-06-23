@@ -12,8 +12,6 @@ import OverviewSection from "@/components/detail/OverviewSection";
 import LocationsSection from "@/components/detail/LocationsSection";
 import SpecialtiesSection from "@/components/detail/SpecialtiesSection";
 import AlternativesSection from "@/components/detail/AlternativesSection";
-import TeamSection from "@/components/detail/TeamSection";
-import CustomersSection from "@/components/detail/CustomersSection";
 import TechnologySection from "@/components/detail/TechnologySection";
 import DetailFAQ from "@/components/detail/DetailFAQ";
 import ProfileSidebar from "@/components/detail/ProfileSidebar";
@@ -39,8 +37,6 @@ const TABS = [
   { id: "locations", label: "Locations" },
   { id: "specialties", label: "Specialties" },
   { id: "alternatives", label: "Alternatives" },
-  { id: "team", label: "Team" },
-  { id: "customers", label: "Customers" },
   { id: "technology", label: "Integrations" },
   { id: "faq", label: "FAQ" },
 ];
@@ -185,19 +181,6 @@ export default async function ThreePLDetailPage({ params }: Props) {
               currentName={p.name}
               state={p.state}
               alternatives={(alternatives as ThreePL[]) || []}
-            />
-          </section>
-
-          {/* Team */}
-          <section id="team">
-            <TeamSection name={p.name} />
-          </section>
-
-          {/* Customers */}
-          <section id="customers">
-            <CustomersSection
-              name={p.name}
-              categories={p.categories || []}
             />
           </section>
 
