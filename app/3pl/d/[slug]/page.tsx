@@ -15,7 +15,6 @@ import AlternativesSection from "@/components/detail/AlternativesSection";
 import TeamSection from "@/components/detail/TeamSection";
 import CustomersSection from "@/components/detail/CustomersSection";
 import TechnologySection from "@/components/detail/TechnologySection";
-import AwardsSection from "@/components/detail/AwardsSection";
 import DetailFAQ from "@/components/detail/DetailFAQ";
 import ProfileSidebar from "@/components/detail/ProfileSidebar";
 import type { Metadata } from "next";
@@ -43,7 +42,6 @@ const TABS = [
   { id: "team", label: "Team" },
   { id: "customers", label: "Customers" },
   { id: "technology", label: "Integrations" },
-  { id: "awards", label: "Awards" },
   { id: "faq", label: "FAQ" },
 ];
 
@@ -209,15 +207,6 @@ export default async function ThreePLDetailPage({ params }: Props) {
               name={p.name}
               platforms={p.platforms || []}
               integrations={p.integrations || []}
-            />
-          </section>
-
-          {/* Awards */}
-          <section id="awards">
-            <AwardsSection
-              name={p.name}
-              rating={p.rating || 0}
-              state={p.state}
             />
           </section>
 
