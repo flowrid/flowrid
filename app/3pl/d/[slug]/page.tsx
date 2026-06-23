@@ -42,7 +42,7 @@ const TABS = [
   { id: "alternatives", label: "Alternatives" },
   { id: "team", label: "Team" },
   { id: "customers", label: "Customers" },
-  { id: "technology", label: "Technology" },
+  { id: "technology", label: "Integrations" },
   { id: "awards", label: "Awards" },
   { id: "faq", label: "FAQ" },
 ];

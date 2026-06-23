@@ -44,9 +44,9 @@ export default function TechnologySection({ name, platforms, integrations }: Tec
 
   return (
     <section>
-      <h2 className="text-xl md:text-2xl font-bold text-text mb-1">{name} Technology</h2>
+      <h2 className="text-xl md:text-2xl font-bold text-text mb-1">Platform Integrations</h2>
       <p className="text-text-secondary text-sm mb-4">
-        {name} integrates with a wide range of eCommerce platforms and tools to streamline your fulfillment:
+        {name} integrates with these eCommerce platforms and marketplaces:
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
