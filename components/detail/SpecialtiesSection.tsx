@@ -1,6 +1,58 @@
 import { formatName, formatState } from "@/lib/detail-content";
 import Link from "next/link";
 
+const NICHE_ICONS: Record<string, string> = {
+  apparel: "Apparel",
+  shoes: "Shoes",
+  automotive: "Automotive",
+  "baby-care": "Baby Care",
+  baby: "Baby Care",
+  beauty: "Beauty & Personal Care",
+  cosmetics: "Beauty & Personal Care",
+  "personal-care": "Beauty & Personal Care",
+  books: "Books & Publishing",
+  publishing: "Books & Publishing",
+  electronics: "Electronics",
+  food: "Food & Beverage",
+  "food-beverage": "Food & Beverage",
+  grocery: "Food & Beverage",
+  health: "Health & Pharma",
+  pharma: "Health & Pharma",
+  supplements: "Health & Pharma",
+  home: "Home & Garden",
+  "home-garden": "Home & Garden",
+  furniture: "Home & Garden",
+  jewelry: "Jewelry & Accessories",
+  accessories: "Jewelry & Accessories",
+  lighting: "Lighting",
+  luggage: "Luggage & Travel",
+  "travel-gear": "Luggage & Travel",
+  office: "Office & Stationery",
+  stationery: "Office & Stationery",
+  "pet-supplies": "Pet Supplies",
+  pets: "Pet Supplies",
+  sports: "Sports & Outdoors",
+  toys: "Toys & Games",
+  games: "Toys & Games",
+  "arts-crafts": "Arts & Crafts",
+  crafts: "Arts & Crafts",
+  "collectibles": "Arts & Crafts",
+};
+
+function getNicheIcon(category: string): { icon: string; label: string } | null {
+  const key = category.toLowerCase().replace(/[^a-z-]/g, "");
+  let match: string | null = null;
+  if (NICHE_ICONS[category]) match = NICHE_ICONS[category];
+  else if (NICHE_ICONS[key]) match = NICHE_ICONS[key];
+  else {
+    for (const [k, v] of Object.entries(NICHE_ICONS)) {
+      if (category.includes(k) || k.includes(category)) { match = v; break; }
+    }
+  }
+  if (!match) return null;
+  return { icon: match, label: match };
+}
+
 interface SpecialtiesSectionProps {
   name: string;
   state: string;
@@ -28,15 +80,25 @@ export default function SpecialtiesSection({
             Product categories and industries {name} specializes in.
           </p>
           <div className="flex flex-wrap gap-2">
-            {categories.map((c) => (
-              <Link
-                key={c}
-                href={`/3pl/${state}/${c}`}
-                className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-text-secondary hover:text-text transition-colors"
-              >
-                {formatName(c)}
-              </Link>
-            ))}
+            {categories.map((c) => {
+              const info = getNicheIcon(c);
+              return (
+                <Link
+                  key={c}
+                  href={`/3pl/${state}/${c}`}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-text-secondary hover:text-text transition-colors"
+                >
+                  {info && (
+                    <img
+                      src={`/images/niches/${info.icon}.png`}
+                      alt=""
+                      className="w-4 h-4 shrink-0"
+                    />
+                  )}
+                  {info ? info.label : formatName(c)}
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}
