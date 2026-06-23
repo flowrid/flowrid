@@ -30,6 +30,10 @@ export default function ProfileSidebar({ threePL: p }: ProfileSidebarProps) {
         <StatBox label="Total Sq Ft" value={formatSqFt(sqFt)} />
         <StatBox label="Order Capacity" value={`${formatCapacity(p.order_capacity || 0)}/mo`} />
         <StatBox label="SKU Capacity" value={formatCapacity(p.sku_capacity || 0)} />
+        <StatBox label="Shipping Speed" value={p.shipping_speed || "Contact"} />
+        <StatBox label="Categories" value={`${(p.categories || []).length} types`} />
+        <StatBox label="Platforms" value={`${(p.platforms || []).length} integrated`} />
+        <StatBox label="Tech Partners" value={`${(p.integrations || []).length} systems`} />
       </div>
 
       {/* 存储环境 */}

@@ -16,7 +16,6 @@ import TeamSection from "@/components/detail/TeamSection";
 import CustomersSection from "@/components/detail/CustomersSection";
 import TechnologySection from "@/components/detail/TechnologySection";
 import AwardsSection from "@/components/detail/AwardsSection";
-import AtAGlanceSection from "@/components/detail/AtAGlanceSection";
 import DetailFAQ from "@/components/detail/DetailFAQ";
 import ProfileSidebar from "@/components/detail/ProfileSidebar";
 import type { Metadata } from "next";
@@ -45,7 +44,6 @@ const TABS = [
   { id: "customers", label: "Customers" },
   { id: "technology", label: "Technology" },
   { id: "awards", label: "Awards" },
-  { id: "at-a-glance", label: "At a Glance" },
   { id: "faq", label: "FAQ" },
 ];
 
@@ -220,22 +218,6 @@ export default async function ThreePLDetailPage({ params }: Props) {
               name={p.name}
               rating={p.rating || 0}
               state={p.state}
-            />
-          </section>
-
-          {/* At a Glance */}
-          <section id="at-a-glance">
-            <AtAGlanceSection
-              name={p.name}
-              state={p.state}
-              city={p.city || ""}
-              shippingSpeed={p.shipping_speed || ""}
-              costLevel={p.cost_level || "$"}
-              orderCapacity={p.order_capacity || 0}
-              skuCapacity={p.sku_capacity || 0}
-              categories={p.categories || []}
-              platforms={p.platforms || []}
-              integrations={p.integrations || []}
             />
           </section>
 
