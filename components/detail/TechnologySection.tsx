@@ -28,8 +28,8 @@ const TECH_DESCRIPTIONS: Record<string, string> = {
 };
 
 export default function TechnologySection({ name, platforms, integrations }: TechnologySectionProps) {
-  const allTech = [...(platforms || []), ...(integrations || [])];
-  const unique = [...new Set(allTech)];
+  const allTech = [...(platforms || [])];
+  const unique = [...new Set(allTech.map(p => p.toLowerCase().trim()))];
 
   if (unique.length === 0) {
     return (
