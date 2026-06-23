@@ -92,7 +92,7 @@ export default function SpecialtiesSection({
                     <img
                       src={`/images/niches/${info.icon}.png`}
                       alt=""
-                      className="w-4 h-4 shrink-0"
+                      className="h-4 w-auto shrink-0"
                     />
                   )}
                   {info ? info.label : formatName(c)}
