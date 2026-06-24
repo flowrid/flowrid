@@ -1,4 +1,4 @@
-﻿import HeroSearch from "@/components/HeroSearch";
+import HeroSearch from "@/components/HeroSearch";
 import ThreePLCard from "@/components/3PLCard";
 import TabbedDirectory from "@/components/TabbedDirectory";
 import { createServerClient } from "@/lib/supabase";
@@ -62,31 +62,16 @@ export default async function Home() {
     .sort((a, b) => b.score - a.score)
     .slice(0, 6);
 
-  // Category 显示名映射
-  const categoryLabels: Record<string, string> = {
-    apparel: "Apparel",
-    electronics: "Electronics",
-    jewelry: "Jewelry",
-    beauty: "Beauty & Cosmetics",
-    home: "Home & Garden",
-    toys: "Toys & Hobbies",
-    sports: "Sports & Outdoors",
-    food: "Food & Beverage",
-  };
+  // Category 显示名 — 从翻译文件读取
+  function catDisplay(cat: string): string {
+    const key = cat.toLowerCase().replace(/[^a-z-]/g, "");
+    return (t as any)(`detail.categories.${key}`) || cat.charAt(0).toUpperCase() + cat.slice(1);
+  }
 
-  // State 显示名映射
-  const stateLabels: Record<string, string> = {
-    california: "California",
-    texas: "Texas",
-    florida: "Florida",
-    "new-york": "New York",
-    "new-jersey": "New Jersey",
-    georgia: "Georgia",
-    illinois: "Illinois",
-    nevada: "Nevada",
-    washington: "Washington",
-    oregon: "Oregon",
-  };
+  // State 显示名 — 从翻译文件读取
+  function stateDisplay(s: string): string {
+    return (t as any)(`detail.states.${s}`) || s.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  }
 
   return (
     <div>
@@ -124,17 +109,17 @@ export default async function Home() {
         ]}
         categories={categories.map((cat) => ({
           key: cat,
-          display: categoryLabels[cat] || cat.charAt(0).toUpperCase() + cat.slice(1),
+          display: catDisplay(cat),
           href: `/3pl?category=${cat}`,
         }))}
         states={usStates.map((s) => ({
           key: s,
-          display: stateLabels[s] || s.charAt(0).toUpperCase() + s.slice(1),
+          display: stateDisplay(s),
           href: `/3pl/${s}`,
         }))}
         international={international.map((s) => ({
           key: s,
-          display: stateLabels[s] || s.charAt(0).toUpperCase() + s.slice(1),
+          display: stateDisplay(s),
           href: `/3pl/${s}`,
         }))}
         platforms={platforms.map((p) => ({
