@@ -3,8 +3,10 @@ import { createServiceClient } from "@/lib/supabase";
 
 /**
  * GET /api/auth/me
- * 根据 Authorization header 中的 Supabase access_token 查询用户角色。
- * 优先查 public.users 表，fallback 到 user_metadata。
+ * Resolve user role from multiple sources (most reliable first):
+ * 1. public.users table
+ * 2. auth.users raw_user_meta_data (via admin API — survives OAuth refresh)
+ * 3. session user_metadata (may be overwritten by Google OAuth)
  */
 export async function GET(req: Request) {
   try {
@@ -19,7 +21,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "DB unavailable" }, { status: 503 });
     }
 
-    // 验证 token 获取用户 ID
+    // Validate token
     const { data: authData, error: authError } = await supabase.auth.getUser(token);
     if (authError || !authData?.user) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
@@ -27,20 +29,52 @@ export async function GET(req: Request) {
 
     const userId = authData.user.id;
 
-    // 查 public.users 表获取角色
+    // Source 1: public.users table
     const { data: dbUser } = await supabase
       .from("users")
       .select("role, name, email")
       .eq("id", userId)
       .maybeSingle();
 
-    // fallback 到 user_metadata
-    const metaRole = authData.user.user_metadata?.role;
+    if (dbUser?.role) {
+      return NextResponse.json({
+        role: dbUser.role,
+        name: dbUser.name || null,
+        email: dbUser.email || authData.user.email || null,
+        source: "public.users",
+      });
+    }
+
+    // Source 2: auth.users raw_user_meta_data (persists across OAuth refreshes)
+    const { data: adminUser, error: adminError } = await supabase.auth.admin.getUserById(userId);
+    const rawMetaRole = (adminUser?.user?.raw_user_meta_data as any)?.role;
+
+    if (rawMetaRole) {
+      // Backfill public.users for next time
+      await supabase.from("users").upsert({
+        id: userId,
+        email: authData.user.email || "",
+        name: (adminUser?.user?.raw_user_meta_data as any)?.first_name || authData.user.email?.split("@")[0] || "",
+        role: rawMetaRole,
+        is_active: true,
+      }, { onConflict: "id" });
+
+      return NextResponse.json({
+        role: rawMetaRole,
+        name: (adminUser?.user?.raw_user_meta_data as any)?.first_name || null,
+        email: authData.user.email || null,
+        source: "raw_user_meta_data",
+      });
+    }
+
+    // Source 3: session user_metadata (least reliable)
+    const metaRole = authData.user.user_metadata?.role as string | undefined;
 
     return NextResponse.json({
-      role: dbUser?.role || metaRole || null,
-      name: dbUser?.name || authData.user.user_metadata?.first_name || null,
-      email: dbUser?.email || authData.user.email || null,
+      role: metaRole || null,
+      name: authData.user.user_metadata?.first_name || null,
+      email: authData.user.email || null,
+      source: metaRole ? "user_metadata" : "none",
     });
   } catch (e) {
     console.error("/api/auth/me error:", e);
