@@ -63,16 +63,29 @@ export default async function Home() {
     eng: "england", sct: "scotland", wls: "wales",
   };
 
+  // 已知有效的短代码（ISO国家代码等）
+  const KNOWN_SHORT_CODES = new Set(["us", "uk", "ca", "au", "de", "fr", "es", "it",
+    "nl", "be", "cn", "jp", "kr", "br", "in", "mx", "pl", "se", "ch", "at", "pt",
+    "nz", "sg", "dk", "no", "fi", "ie", "cz", "gr", "hu", "ro", "bg", "ae"]);
+
   function isValidLocation(s: string): boolean {
     if (!s || s.length < 2 || s.length > 40) return false;
-    // 排除纯数字或数字开头的
-    if (/^\d/.test(s)) return false;
-    // 排除含门牌号的地址（数字+连字符+数字 如 "5625-61-ave"）
-    if (/\d+-\d+/.test(s)) return false;
-    // 排除邮编片段（如 "PL6 7PP"）
-    if (/^[A-Z]{1,2}\d+\s*\d/.test(s)) return false;
+    // 排除含数字的（邮编、门牌号如 46970, 11th-floor, unit-1-xxx）
+    if (/\d/.test(s)) return false;
+    // 排除含 # 符号的地址
+    if (s.includes("#")) return false;
     // 排除过长路径（超过4段）
     if (s.split("-").length > 4) return false;
+    // 排除2-3字符的缩写（如 "hu", "he", "d", "an"），只保留已知的
+    if (s.length <= 3 && !KNOWN_SHORT_CODES.has(s.toLowerCase())) return false;
+    // 排除已知非地点的地址关键词
+    const junkWords = ["unit", "floor", "street", "road", "lane", "drive", "avenue",
+      "business", "industrial", "trading", "centre", "center", "park", "estate",
+      "building", "suite", "office", "warehouse", "depot", "port", "airport",
+      "behind", "ground", "upper", "lower", "junction", "exchange", "villa",
+      "sitio", "narvarte", "ricardo", "jongno"];
+    const lower = s.toLowerCase();
+    if (junkWords.some((w) => lower.includes(w))) return false;
     return true;
   }
 
