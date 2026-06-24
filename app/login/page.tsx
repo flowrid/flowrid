@@ -7,11 +7,11 @@ import LoginForm from "@/components/auth/LoginForm";
 
 export default function LoginPage() {
   const [showForm, setShowForm] = useState(false);
+  const [status, setStatus] = useState("");
   const router = useRouter();
   const processingRef = useRef(false);
 
   useEffect(() => {
-    // 防止 React Strict Mode 双重挂载导致重复处理
     if (processingRef.current) return;
 
     const search = window.location.search;
@@ -25,10 +25,11 @@ export default function LoginPage() {
     }
 
     processingRef.current = true;
+    setStatus("检测到授权回调，正在交换 session…");
 
     const supabase = createBrowserClient();
     if (!supabase) {
-      setShowForm(true);
+      setStatus("认证服务不可用，请重试");
       processingRef.current = false;
       return;
     }
@@ -60,34 +61,42 @@ export default function LoginPage() {
       resolved = true;
       subscription?.unsubscribe();
       clearTimeout(fallback);
+      setStatus("登录成功，正在跳转…");
       await bridgeIf3PL(session);
       window.history.replaceState({}, "", "/login");
       router.push(getRedirect(session));
       router.refresh();
     }
 
-    // 注册 onAuthStateChange（自动检测完成后触发 SIGNED_IN）
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("[LoginPage] onAuthStateChange:", event, session?.user?.email);
       if (event === "SIGNED_IN" && session) {
         await handleSession(session);
       }
     });
 
-    // 主动处理：从 query string 提取 code 并交换 session
     const urlParams = new URLSearchParams(search);
     const code = urlParams.get("code");
 
     if (code) {
-      // 手动交换 PKCE code（比依赖 detectSessionInUrl 更可靠）
+      console.log("[LoginPage] Exchanging PKCE code…");
+      // 诊断：检查 sessionStorage 中是否有 PKCE verifier
+      const storageKeys = [];
+      for (let i = 0; i < sessionStorage.length; i++) {
+        storageKeys.push(sessionStorage.key(i));
+      }
+      console.log("[LoginPage] sessionStorage keys:", storageKeys);
+      setStatus("交换授权码中…");
       supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
+        console.log("[LoginPage] exchangeCodeForSession result:", { hasSession: !!data?.session, error: error?.message });
         if (error) {
-          console.error("PKCE exchange failed:", error.message);
+          console.error("[LoginPage] PKCE exchange failed:", error.message);
+          setStatus(`授权失败: ${error.message}`);
           if (!resolved) {
             resolved = true;
             subscription.unsubscribe();
             processingRef.current = false;
-            window.history.replaceState({}, "", "/login");
-            setShowForm(true);
+            setTimeout(() => setShowForm(true), 3000);
           }
           return;
         }
@@ -96,24 +105,35 @@ export default function LoginPage() {
         }
       });
     } else {
-      // 非 PKCE 流程（hash token）：尝试 getSession
-      supabase.auth.getSession().then(async ({ data }) => {
+      console.log("[LoginPage] No code in URL, trying getSession…");
+      setStatus("恢复会话中…");
+      supabase.auth.getSession().then(async ({ data, error }) => {
+        console.log("[LoginPage] getSession result:", { hasSession: !!data?.session, error: error?.message });
         if (data?.session && !resolved) {
           await handleSession(data.session);
+        } else if (!resolved) {
+          setStatus("未检测到会话，请重新登录");
+          resolved = true;
+          subscription.unsubscribe();
+          processingRef.current = false;
+          setTimeout(() => setShowForm(true), 3000);
         }
       });
     }
 
-    // 兜底：8 秒后仍未解析则回退到登录表单
     const fallback = setTimeout(() => {
       if (!resolved) {
+        console.log("[LoginPage] Fallback timeout");
         resolved = true;
         subscription.unsubscribe();
         processingRef.current = false;
-        window.history.replaceState({}, "", "/login");
-        setShowForm(true);
+        setStatus("登录超时，请重试");
+        setTimeout(() => {
+          window.history.replaceState({}, "", "/login");
+          setShowForm(true);
+        }, 2000);
       }
-    }, 8000);
+    }, 10000);
 
     return () => {
       subscription.unsubscribe();
@@ -128,7 +148,7 @@ export default function LoginPage() {
       ) : (
         <div className="text-center py-12">
           <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-text-secondary text-sm">Signing you in…</p>
+          <p className="text-text-secondary text-sm">{status || "Signing you in…"}</p>
         </div>
       )}
     </div>
