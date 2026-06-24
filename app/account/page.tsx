@@ -167,9 +167,9 @@ export default function AccountPage() {
           <Link
             key={link.key}
             href={link.href}
-            className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-border bg-card text-sm text-text-secondary hover:text-text hover:border-primary/40 hover:bg-gray-50 transition-all"
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-border bg-card text-sm text-text hover:text-primary hover:border-primary/40 hover:bg-gray-50 transition-all"
           >
-            <img src={link.icon} alt="" className="w-4 h-4 opacity-50" />
+            <img src={link.icon} alt="" className="w-4 h-4" />
             <span className="truncate">{t(`account.${link.key}`)}</span>
           </Link>
         ))}
