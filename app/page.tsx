@@ -48,52 +48,81 @@ export default async function Home() {
 
   const usStates = allStates.filter((s) => US_STATES.has(s.toLowerCase()));
 
-  // 清理国际数据：过滤脏数据 + 归一化省份缩写
-  const PROVINCE_NORMALIZE: Record<string, string> = {
-    // 加拿大省份缩写
-    on: "ontario", qc: "quebec", bc: "british-columbia", ab: "alberta",
-    nb: "new-brunswick", mb: "manitoba", ns: "nova-scotia",
-    sk: "saskatchewan", pe: "prince-edward-island", nl: "newfoundland-and-labrador",
-    // 澳大利亚州缩写
-    nsw: "new-south-wales", vic: "victoria", qld: "queensland",
-    sa: "south-australia", wa: "western-australia",
-    // 德国州代码
-    nrw: "north-rhine-westphalia", nds: "lower-saxony",
-    // 英国地区代码
-    eng: "england", sct: "scotland", wls: "wales",
+  // 白名单：只有确认为国家/地区的才进入"按国家"板块
+  const COUNTRY_WHITELIST: Record<string, string> = {
+    // 亚洲
+    china: "china", "guangdong-province": "china", "shenzhen-city": "china",
+    "shang-hai-shi": "china", "jiang-su-sheng": "china", "ha-noi": "china",
+    japan: "japan", "jongno-gu-seoul": "south-korea", "south-korea": "south-korea",
+    india: "india", haryana: "india",
+    singapore: "singapore", indonesia: "indonesia", jakarta: "indonesia",
+    banten: "indonesia", selangor: "malaysia", malaysia: "malaysia",
+    vietnam: "vietnam", thailand: "thailand", philippines: "philippines",
+    taiwan: "taiwan", "hong-kong": "hong-kong",
+    // 欧洲
+    "united-kingdom": "united-kingdom", england: "united-kingdom",
+    scotland: "united-kingdom", wales: "united-kingdom",
+    germany: "germany", "north-rhine-westphalia": "germany",
+    "lower-saxony": "germany", bavaria: "germany",
+    france: "france", "provence-alpes-côte-dazur": "france",
+    "auvergne-rhône-alpes": "france",
+    spain: "spain", italy: "italy", veneto: "italy",
+    netherlands: "netherlands", belgium: "belgium",
+    "région-wallonne": "belgium", vlaanderen: "belgium",
+    poland: "poland", "województwo-śląskie": "poland",
+    sweden: "sweden", "stockholms-län": "sweden",
+    switzerland: "switzerland", austria: "austria",
+    niederosterreich: "austria",
+    portugal: "portugal", denmark: "denmark", norway: "norway",
+    oslo: "norway", finland: "finland", ireland: "ireland",
+    czech: "czech-republic", "czech-republic": "czech-republic",
+    prague: "czech-republic", greece: "greece",
+    hungary: "hungary", romania: "romania", bulgaria: "bulgaria",
+    plovdiv: "bulgaria",
+    // 北美
+    canada: "canada", ontario: "canada", quebec: "canada",
+    "british-columbia": "canada", alberta: "canada",
+    "new-brunswick": "canada", manitoba: "canada",
+    "nova-scotia": "canada", saskatchewan: "canada",
+    "prince-edward-island": "canada", "newfoundland-and-labrador": "canada",
+    mexico: "mexico", "ciudad-de-méxico": "mexico",
+    "narvarte-poniente-ciudad-de-méxico": "mexico",
+    "ricardo-flores-magón-veracruz": "mexico",
+    // 南美
+    brazil: "brazil", argentina: "argentina",
+    "cdad.-autónoma-de-buenos-aires": "argentina",
+    chile: "chile", "región-metropolitana": "chile",
+    colombia: "colombia", peru: "peru",
+    uruguay: "uruguay", "departamento-de-montevideo": "uruguay",
+    panama: "panama", "provincia-de-colón": "panama",
+    // 大洋洲
+    australia: "australia", "new-south-wales": "australia",
+    victoria: "australia", queensland: "australia",
+    "south-australia": "australia", "western-australia": "australia",
+    "new-zealand": "new-zealand", auckland: "new-zealand",
+    "auckland-region": "new-zealand",
+    // 中东/非洲
+    uae: "united-arab-emirates", "united-arab-emirates": "united-arab-emirates",
+    dubai: "united-arab-emirates", "jabal-ali-south-dubai": "united-arab-emirates",
+    "behind-dubai-duty-free-dubai": "united-arab-emirates",
+    "saudi-arabia": "saudi-arabia", turkey: "turkey",
+    israel: "israel", "south-africa": "south-africa",
+    egypt: "egypt", nigeria: "nigeria", kenya: "kenya",
+    // 其他
+    europe: "europe", "middle-east": "middle-east", apac: "asia-pacific",
   };
 
-  // 已知有效的短代码（ISO国家代码等）
-  const KNOWN_SHORT_CODES = new Set(["us", "uk", "ca", "au", "de", "fr", "es", "it",
-    "nl", "be", "cn", "jp", "kr", "br", "in", "mx", "pl", "se", "ch", "at", "pt",
-    "nz", "sg", "dk", "no", "fi", "ie", "cz", "gr", "hu", "ro", "bg", "ae"]);
-
-  function isValidLocation(s: string): boolean {
-    if (!s || s.length < 2 || s.length > 40) return false;
-    // 排除含数字的（邮编、门牌号如 46970, 11th-floor, unit-1-xxx）
-    if (/\d/.test(s)) return false;
-    // 排除含 # 符号的地址
-    if (s.includes("#")) return false;
-    // 排除过长路径（超过4段）
-    if (s.split("-").length > 4) return false;
-    // 排除2-3字符的缩写（如 "hu", "he", "d", "an"），只保留已知的
-    if (s.length <= 3 && !KNOWN_SHORT_CODES.has(s.toLowerCase())) return false;
-    // 排除已知非地点的地址关键词
-    const junkWords = ["unit", "floor", "street", "road", "lane", "drive", "avenue",
-      "business", "industrial", "trading", "centre", "center", "park", "estate",
-      "building", "suite", "office", "warehouse", "depot", "port", "airport",
-      "behind", "ground", "upper", "lower", "junction", "exchange", "villa",
-      "sitio", "narvarte", "ricardo", "jongno"];
-    const lower = s.toLowerCase();
-    if (junkWords.some((w) => lower.includes(w))) return false;
-    return true;
+  function toCountrySlug(s: string): string | null {
+    const lower = s.toLowerCase().trim();
+    return COUNTRY_WHITELIST[lower] || null;
   }
 
-  const international = allStates
-    .filter((s) => !US_STATES.has(s.toLowerCase()))
-    .map((s) => PROVINCE_NORMALIZE[s.toLowerCase()] || s)
-    .filter(isValidLocation);
-  const uniqueInternational = [...new Set(international)].sort();
+  // 国际：只保留白名单中的国家
+  const internationalRaw = allStates.filter((s) => !US_STATES.has(s.toLowerCase()));
+  const internationalMapped = internationalRaw
+    .map((s) => toCountrySlug(s))
+    .filter((s): s is string => s !== null);
+  const uniqueInternational = [...new Set(internationalMapped)].sort();
 
   // 提取唯一 Platforms
   const platforms = [
