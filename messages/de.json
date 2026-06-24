@@ -217,7 +217,14 @@
       "freightForwarding": "Spedition",
       "dtfFulfillment": "DTF-Fulfillment",
       "printOnDemand": "Print-on-Demand",
-      "dropshipping": "Dropshipping"
+      "dropshipping": "Dropshipping",
+      "customizationEmbroidery": "Individualisierung - Stickerei",
+      "logisticsDomestic": "Inlandslogistik (FTL & LTL)",
+      "logisticsEndToEndImport": "End-to-End Importlogistik",
+      "logisticsPortDrayage": "Hafentransport",
+      "productAuditingQA": "Produktaudit & Qualitätssicherung",
+      "ticketingAndPacking": "Etikettierung und Verpackung",
+      "baggingAndSealing": "Verpacken und Versiegeln"
     },
     "ratingLabels": {
       "excellent": "Hervorragend",

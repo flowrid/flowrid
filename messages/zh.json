@@ -217,7 +217,14 @@
       "freightForwarding": "货运代理",
       "dtfFulfillment": "DTF 直印履约",
       "printOnDemand": "按需打印",
-      "dropshipping": "代发货"
+      "dropshipping": "代发货",
+      "customizationEmbroidery": "定制刺绣",
+      "logisticsDomestic": "国内物流 (FTL & LTL)",
+      "logisticsEndToEndImport": "端到端进口物流",
+      "logisticsPortDrayage": "港口拖运",
+      "productAuditingQA": "产品审核与质检",
+      "ticketingAndPacking": "挂牌与包装",
+      "baggingAndSealing": "装袋与封口"
     },
     "ratingLabels": {
       "excellent": "优秀",

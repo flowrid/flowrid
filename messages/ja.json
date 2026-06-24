@@ -234,7 +234,14 @@
       "freightForwarding": "貨物輸送",
       "dtfFulfillment": "DTFフルフィルメント",
       "printOnDemand": "プリントオンデマンド",
-      "dropshipping": "ドロップシッピング"
+      "dropshipping": "ドロップシッピング",
+      "customizationEmbroidery": "カスタマイズ - 刺繍",
+      "logisticsDomestic": "国内物流 (FTL & LTL)",
+      "logisticsEndToEndImport": "エンドツーエンド輸入物流",
+      "logisticsPortDrayage": "港湾輸送",
+      "productAuditingQA": "製品監査と品質保証",
+      "ticketingAndPacking": "タグ付けと梱包",
+      "baggingAndSealing": "袋詰めと封止"
     },
     "ratingLabels": {
       "excellent": "非常に良い",

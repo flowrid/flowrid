@@ -217,7 +217,14 @@
       "freightForwarding": "Transport de fret",
       "dtfFulfillment": "Fulfillment DTF",
       "printOnDemand": "Impression à la demande",
-      "dropshipping": "Dropshipping"
+      "dropshipping": "Dropshipping",
+      "customizationEmbroidery": "Personnalisation - Broderie",
+      "logisticsDomestic": "Logistique Nationale (FTL & LTL)",
+      "logisticsEndToEndImport": "Logistique d'Importation de Bout en Bout",
+      "logisticsPortDrayage": "Transport Portuaire",
+      "productAuditingQA": "Audit Produit & Contrôle Qualité",
+      "ticketingAndPacking": "Étiquetage et Emballage",
+      "baggingAndSealing": "Ensachage et Scellage"
     },
     "ratingLabels": {
       "excellent": "Excellent",

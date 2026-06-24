@@ -217,7 +217,14 @@
       "freightForwarding": "Freight Forwarding",
       "dtfFulfillment": "DTF Fulfillment",
       "printOnDemand": "Print on Demand",
-      "dropshipping": "Dropshipping"
+      "dropshipping": "Dropshipping",
+      "customizationEmbroidery": "Customization - Embroidery",
+      "logisticsDomestic": "Logistics - Domestic (FTL & LTL)",
+      "logisticsEndToEndImport": "Logistics - End To End Import",
+      "logisticsPortDrayage": "Logistics - Port Drayage",
+      "productAuditingQA": "Product Auditing & QA",
+      "ticketingAndPacking": "Ticketing and Packing",
+      "baggingAndSealing": "Bagging and Sealing"
     },
     "ratingLabels": {
       "excellent": "Excellent",

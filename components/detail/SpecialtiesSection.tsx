@@ -116,6 +116,28 @@ const VAS_TRANSLATION_KEYS: Record<string, string> = {
   "POD": "printOnDemand",
   "Dropshipping": "dropshipping",
   "Drop Ship": "dropshipping",
+  // User-reported missing services
+  "Customization - Embroidery": "customizationEmbroidery",
+  "Embroidery": "customizationEmbroidery",
+  "Logistics - Domestic (FTL & LTL)": "logisticsDomestic",
+  "Domestic FTL": "logisticsDomestic",
+  "Domestic LTL": "logisticsDomestic",
+  "FTL & LTL": "logisticsDomestic",
+  "Logistics - End To End Import": "logisticsEndToEndImport",
+  "End To End Import": "logisticsEndToEndImport",
+  "Import Logistics": "logisticsEndToEndImport",
+  "Logistics - Port Drayage": "logisticsPortDrayage",
+  "Port Drayage": "logisticsPortDrayage",
+  "Drayage": "logisticsPortDrayage",
+  "Product Auditing & QA": "productAuditingQA",
+  "Product Auditing and QA": "productAuditingQA",
+  "Auditing & QA": "productAuditingQA",
+  "QA": "productAuditingQA",
+  "Ticketing and Packing": "ticketingAndPacking",
+  "Ticketing & Packing": "ticketingAndPacking",
+  "Bagging and Sealing": "baggingAndSealing",
+  "Bagging & Sealing": "baggingAndSealing",
+  "Sealing": "baggingAndSealing",
 };
 
 function getNicheTranslationKey(category: string): string | null {
