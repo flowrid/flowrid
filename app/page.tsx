@@ -48,22 +48,48 @@ export default async function Home() {
 
   const usStates = allStates.filter((s) => US_STATES.has(s.toLowerCase()));
 
-  // 白名单：只有确认为国家/地区的才进入"按国家"板块
-  const COUNTRY_WHITELIST: Record<string, string> = {
-    // 亚洲
+  // 第一步：缩写/代码归一化为完整名称
+  const ABBREV_NORMALIZE: Record<string, string> = {
+    // 加拿大省份
+    on: "ontario", qc: "quebec", bc: "british-columbia", ab: "alberta",
+    nb: "new-brunswick", mb: "manitoba", ns: "nova-scotia",
+    sk: "saskatchewan", pe: "prince-edward-island", nl: "newfoundland-and-labrador",
+    // 澳大利亚
+    nsw: "new-south-wales", vic: "victoria", qld: "queensland",
+    sa: "south-australia", wa: "western-australia",
+    // 德国
+    nrw: "north-rhine-westphalia", nds: "lower-saxony", d: "germany",
+    he: "hesse", // Hesse
+    // 英国
+    eng: "england", sct: "scotland", wls: "wales",
+    // 其他
+    hu: "hungary", is: "iceland",
+    // 短码→未知，直接过滤
+    dl: null, hb: null, an: null, li: null, zh: null, ti: null,
+  };
+
+  // 第二步：地理位置→国家（所有非国家地名归入所属国家）
+  const GEO_TO_COUNTRY: Record<string, string> = {
+    // ===== 美国 =====
+    "united-states": "united-states", "us-east": "united-states",
+    // ===== 亚洲 =====
     china: "china", "guangdong-province": "china", "shenzhen-city": "china",
-    "shang-hai-shi": "china", "jiang-su-sheng": "china", "ha-noi": "china",
-    japan: "japan", "jongno-gu-seoul": "south-korea", "south-korea": "south-korea",
+    "shang-hai-shi": "china", "jiang-su-sheng": "china",
+    japan: "japan", "south-korea": "south-korea", "jongno-gu-seoul": "south-korea",
     india: "india", haryana: "india",
     singapore: "singapore", indonesia: "indonesia", jakarta: "indonesia",
-    banten: "indonesia", selangor: "malaysia", malaysia: "malaysia",
-    vietnam: "vietnam", thailand: "thailand", philippines: "philippines",
+    banten: "indonesia", malaysia: "malaysia", selangor: "malaysia",
+    vietnam: "vietnam", "binh-thanh-dist-ho-chi-minh": "vietnam",
+    thailand: "thailand", philippines: "philippines",
     taiwan: "taiwan", "hong-kong": "hong-kong",
-    // 欧洲
+    // ===== 欧洲 =====
     "united-kingdom": "united-kingdom", england: "united-kingdom",
     scotland: "united-kingdom", wales: "united-kingdom",
+    // 英国城市/郡
+    crawley: "united-kingdom", "cheshire-neston": "united-kingdom",
+    "leicestershire-coalville": "united-kingdom",
     germany: "germany", "north-rhine-westphalia": "germany",
-    "lower-saxony": "germany", bavaria: "germany",
+    "lower-saxony": "germany", bavaria: "germany", hesse: "germany",
     france: "france", "provence-alpes-côte-dazur": "france",
     "auvergne-rhône-alpes": "france",
     spain: "spain", italy: "italy", veneto: "italy",
@@ -75,11 +101,11 @@ export default async function Home() {
     niederosterreich: "austria",
     portugal: "portugal", denmark: "denmark", norway: "norway",
     oslo: "norway", finland: "finland", ireland: "ireland",
-    czech: "czech-republic", "czech-republic": "czech-republic",
-    prague: "czech-republic", greece: "greece",
-    hungary: "hungary", romania: "romania", bulgaria: "bulgaria",
-    plovdiv: "bulgaria",
-    // 北美
+    "czech-republic": "czech-republic", prague: "czech-republic",
+    greece: "greece", hungary: "hungary", romania: "romania",
+    bulgaria: "bulgaria", plovdiv: "bulgaria",
+    iceland: "iceland",
+    // ===== 北美 =====
     canada: "canada", ontario: "canada", quebec: "canada",
     "british-columbia": "canada", alberta: "canada",
     "new-brunswick": "canada", manitoba: "canada",
@@ -88,39 +114,47 @@ export default async function Home() {
     mexico: "mexico", "ciudad-de-méxico": "mexico",
     "narvarte-poniente-ciudad-de-méxico": "mexico",
     "ricardo-flores-magón-veracruz": "mexico",
-    // 南美
+    // ===== 南美 =====
     brazil: "brazil", argentina: "argentina",
     "cdad.-autónoma-de-buenos-aires": "argentina",
     chile: "chile", "región-metropolitana": "chile",
     colombia: "colombia", peru: "peru",
     uruguay: "uruguay", "departamento-de-montevideo": "uruguay",
     panama: "panama", "provincia-de-colón": "panama",
-    // 大洋洲
+    // ===== 大洋洲 =====
     australia: "australia", "new-south-wales": "australia",
     victoria: "australia", queensland: "australia",
     "south-australia": "australia", "western-australia": "australia",
     "new-zealand": "new-zealand", auckland: "new-zealand",
     "auckland-region": "new-zealand",
-    // 中东/非洲
-    uae: "united-arab-emirates", "united-arab-emirates": "united-arab-emirates",
-    dubai: "united-arab-emirates", "jabal-ali-south-dubai": "united-arab-emirates",
+    // ===== 中东/非洲 =====
+    "united-arab-emirates": "united-arab-emirates", dubai: "united-arab-emirates",
+    "jabal-ali-south-dubai": "united-arab-emirates",
     "behind-dubai-duty-free-dubai": "united-arab-emirates",
     "saudi-arabia": "saudi-arabia", turkey: "turkey",
     israel: "israel", "south-africa": "south-africa",
     egypt: "egypt", nigeria: "nigeria", kenya: "kenya",
-    // 其他
+    // ===== 区域 =====
     europe: "europe", "middle-east": "middle-east", apac: "asia-pacific",
   };
 
-  function toCountrySlug(s: string): string | null {
-    const lower = s.toLowerCase().trim();
-    return COUNTRY_WHITELIST[lower] || null;
-  }
-
-  // 国际：只保留白名单中的国家
+  // 处理流程：缩写归一化 → 国家映射 → 去重
   const internationalRaw = allStates.filter((s) => !US_STATES.has(s.toLowerCase()));
   const internationalMapped = internationalRaw
-    .map((s) => toCountrySlug(s))
+    .map((s) => {
+      const lower = s.toLowerCase().trim();
+      // 排除纯数字和明显地址（含数字的）
+      if (/^\d/.test(lower) || /\d/.test(lower)) return null;
+      if (lower.includes("#") || lower.includes("floor") || lower.includes("unit-")) return null;
+      // 检查缩写表（null表示明确排除）
+      if (lower in ABBREV_NORMALIZE) {
+        const normalized = ABBREV_NORMALIZE[lower];
+        if (normalized === null) return null;
+        return GEO_TO_COUNTRY[normalized] || null;
+      }
+      // 直接匹配国家映射
+      return GEO_TO_COUNTRY[lower] || null;
+    })
     .filter((s): s is string => s !== null);
   const uniqueInternational = [...new Set(internationalMapped)].sort();
 
