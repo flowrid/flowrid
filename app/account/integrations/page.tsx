@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { createBrowserClient } from "@/lib/supabase";
+import { useTranslations } from "next-intl";
 
 export default function AccountIntegrationsPage() {
-  const [shop, setShop] = useState("");
+  const t = useTranslations();  const [shop, setShop] = useState("");
   const [token, setToken] = useState("");
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -129,7 +130,7 @@ export default function AccountIntegrationsPage() {
   if (!accessToken) {
     return (
       <div className="text-center py-12">
-        <h1 className="text-2xl font-bold text-text mb-2">Store Integrations</h1>
+        <h1 className="text-2xl font-bold text-text mb-2">{t("account.integrations.title")}</h1>
         <p className="text-text-secondary mb-6">Log in to connect your ecommerce store to Flowrid.</p>
         <Link href="/login" className="inline-block bg-primary text-white px-6 py-2.5 rounded-xl font-medium text-sm hover:bg-primary-dark transition-colors">
           Log in
@@ -143,9 +144,9 @@ export default function AccountIntegrationsPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-text mb-2">Store Integrations</h1>
+        <h1 className="text-2xl font-bold text-text mb-2">{t("account.integrations.title")}</h1>
         <p className="text-text-secondary">
-          Connect your ecommerce stack so Flowrid can understand your order volume, SKU mix, and shipping zones before matching you with 3PLs.
+          {t("account.integrations.desc")}
         </p>
       </div>
 
@@ -162,14 +163,14 @@ export default function AccountIntegrationsPage() {
       <section className="bg-card border border-border rounded-2xl p-6 mb-6">
         <div className="flex items-start justify-between gap-4 mb-5">
           <div>
-            <h2 className="text-lg font-semibold text-text">Shopify</h2>
+            <h2 className="text-lg font-semibold text-text">{t("account.integrations.shopify")}</h2>
             <p className="text-sm text-text-secondary mt-1">
-              Import recent orders as matching signals. Flowrid will not expose your token in the browser after saving.
+              {t("account.integrations.shopifyDesc")}
             </p>
           </div>
           {connected && (
             <span className="inline-flex items-center gap-1.5 text-xs bg-success/10 text-success px-3 py-1 rounded-full font-medium shrink-0">
-              <span className="w-1.5 h-1.5 rounded-full bg-success" /> Connected
+              <span className="w-1.5 h-1.5 rounded-full bg-success" /> {t("account.integrations.connected")}
             </span>
           )}
         </div>
@@ -184,8 +185,8 @@ export default function AccountIntegrationsPage() {
 
         {connectedShop && (
           <div className="mb-4 text-sm text-text-secondary">
-            Connected store: <span className="font-medium text-text">{connectedShop}.myshopify.com</span>
-            {lastSync && <span className="block text-xs mt-1">Last sync: {new Date(lastSync).toLocaleString()}</span>}
+            {t("account.integrations.connectedStore", { shop: connectedShop })}
+            {lastSync && <span className="block text-xs mt-1">{t("account.integrations.lastSync", { time: new Date(lastSync).toLocaleString() })}</span>}
           </div>
         )}
 
@@ -215,14 +216,14 @@ export default function AccountIntegrationsPage() {
             disabled={status !== "idle"}
             className="px-5 py-2.5 rounded-xl text-sm font-medium border border-border text-text hover:border-primary hover:text-primary disabled:opacity-40 transition-colors"
           >
-            {status === "testing" ? "Testing..." : "Test Connection"}
+            {status === "testing" ? t("account.integrations.testing") : t("account.integrations.testConnection")}
           </button>
           <button
             onClick={() => callShopify("connect")}
             disabled={status !== "idle"}
             className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-primary text-white hover:bg-primary-dark disabled:opacity-40 transition-colors"
           >
-            {status === "connecting" ? "Connecting..." : "Save & Connect"}
+            {status === "connecting" ? t("account.integrations.connecting") : t("account.integrations.saveConnect")}
           </button>
           {connected && (
             <button
@@ -230,14 +231,14 @@ export default function AccountIntegrationsPage() {
               disabled={status !== "idle"}
               className="px-5 py-2.5 rounded-xl text-sm font-medium bg-success/10 text-success hover:bg-success/20 disabled:opacity-40 transition-colors"
             >
-              {status === "syncing" ? "Syncing..." : "Sync Now"}
+              {status === "syncing" ? t("account.integrations.syncing") : t("account.integrations.syncNow")}
             </button>
           )}
         </div>
       </section>
 
       <section className="bg-card border border-border rounded-2xl p-6">
-        <h2 className="text-lg font-semibold text-text mb-4">Other Integrations</h2>
+        <h2 className="text-lg font-semibold text-text mb-4">{t("account.integrations.otherIntegrations")}</h2>
         {[
           "Amazon Seller Central",
           "WooCommerce",
@@ -248,7 +249,7 @@ export default function AccountIntegrationsPage() {
         ].map((name) => (
           <div key={name} className="flex items-center justify-between py-3 border-b border-border last:border-0">
             <p className="text-sm text-text">{name}</p>
-            <span className="text-xs bg-background text-text-secondary px-3 py-1 rounded-full">Coming Soon</span>
+            <span className="text-xs bg-background text-text-secondary px-3 py-1 rounded-full">{t("account.integrations.comingSoon")}</span>
           </div>
         ))}
       </section>

@@ -2,6 +2,7 @@
 import ThreePLCard from "@/components/3PLCard";
 import TabbedDirectory from "@/components/TabbedDirectory";
 import { createServerClient } from "@/lib/supabase";
+import { getTranslations } from "next-intl/server";
 import { rankThreePLs } from "@/lib/scoring";
 import Link from "next/link";
 import type { ThreePL } from "@/types/3pl";
@@ -12,6 +13,7 @@ export const dynamic = "force-dynamic";
  * Flowrid 首页 — 搜索入口 + 真实数据导航 + 精选 3PL
  */
 export default async function Home() {
+  const t = await getTranslations();
   const supabase = createServerClient();
 
   // 拉取所有 3PL 数据
@@ -94,10 +96,10 @@ export default async function Home() {
       {featured.length > 0 && (
         <section className="max-w-[1460px] mx-auto px-4 py-12">
           <h2 className="text-xl font-bold text-text text-center mb-2">
-            Find the perfect logistics partner for your business, with maximum efficiency
+            {t("home.sectionHeading")}
           </h2>
           <p className="text-text-secondary text-center text-sm mb-8">
-            Flowrid selects and provides the most comprehensive, multi-dimensional information to meet your needs, identifying the best-fit 3PL partner from our global network.
+            {t("home.sectionDesc")}
           </p>
           <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
             {featured.map((item) => (
@@ -106,7 +108,7 @@ export default async function Home() {
           </div>
           <div className="text-center mt-6">
             <a href="/3pl" className="text-text-secondary hover:text-primary transition-colors text-sm font-medium">
-              More 3PL Providers &rarr;
+              {t("home.more3PL")}
             </a>
           </div>
         </section>
@@ -115,10 +117,10 @@ export default async function Home() {
       {/* 第四屏：Tab 目录 */}
       <TabbedDirectory
         tabs={[
-          { key: "category", label: "By Category" },
-          { key: "state", label: "By State" },
-          { key: "international", label: "International" },
-          { key: "platform", label: "By Platform" },
+          { key: "category", label: t("home.tabByCategory") },
+          { key: "state", label: t("home.tabByState") },
+          { key: "international", label: t("home.tabInternational") },
+          { key: "platform", label: t("home.tabByPlatform") },
         ]}
         categories={categories.map((cat) => ({
           key: cat,
@@ -154,7 +156,7 @@ export default async function Home() {
           </div>
           <div className="text-center lg:text-left">
             <h2 className="text-2xl md:text-3xl font-bold text-text leading-tight">
-              Bridge the operational management between brands and 3PL
+              {t("home.workspaceHeading")}
             </h2>
           </div>
         </div>

@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BRAND_ACCOUNT_MENU_GROUPS } from "@/lib/account-menu";
+import { useTranslations } from "next-intl";
+import { getBrandAccountMenuGroups } from "@/lib/account-menu";
 
 function isActivePath(pathname: string, href: string) {
   return href === "/account"
@@ -11,8 +12,10 @@ function isActivePath(pathname: string, href: string) {
 }
 
 export default function AccountSidebar() {
+  const t = useTranslations();
   const pathname = usePathname();
-  const primaryMobileItems = BRAND_ACCOUNT_MENU_GROUPS.flatMap((group) => group.items).slice(0, 5);
+  const menuGroups = getBrandAccountMenuGroups(t);
+  const primaryMobileItems = menuGroups.flatMap((group) => group.items).slice(0, 5);
 
   return (
     <>
@@ -22,15 +25,15 @@ export default function AccountSidebar() {
             <img src="/3pl-os-logo.png" alt="Flowrid" className="h-8 w-auto" />
           </Link>
           <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#86868B]">
-            Brand Account
+            {t("account.brandAccount")}
           </p>
           <p className="mt-2 text-sm leading-5 text-[#86868B]">
-            Manage orders, inventory, billing, integrations, and provider decisions.
+            {t("account.desc")}
           </p>
         </div>
 
         <nav className="flex-1 space-y-5 overflow-y-auto px-3 pb-4" aria-label="Brand account navigation">
-          {BRAND_ACCOUNT_MENU_GROUPS.map((group) => (
+          {menuGroups.map((group) => (
             <div key={group.label}>
               <p className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#86868B]">
                 {group.label}
@@ -72,13 +75,13 @@ export default function AccountSidebar() {
             href="/"
             className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-[#86868B] transition-all hover:bg-black/5 hover:text-[#1D1D1F]"
           >
-            <span>&larr;</span> Back to Site
+            <span>&larr;</span> {t("saas.backToSite")}
           </Link>
           <a
             href="/api/auth/signout"
             className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-[#86868B] transition-all hover:bg-[#FF3B30]/5 hover:text-[#FF3B30]"
           >
-            <span>&#x21AA;</span> Sign Out
+            <span>&#x21AA;</span> {t("account.signOut")}
           </a>
         </div>
       </aside>

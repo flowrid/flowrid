@@ -1,12 +1,14 @@
 import { estimateFounded, estimateSqFt, estimateWarehouses, inferStorageEnvironments, formatCapacity } from "@/lib/detail-content";
 import { formatState } from "@/lib/detail-content";
 import type { ThreePL } from "@/types/3pl";
+import { getTranslations } from "next-intl/server";
 
 interface ProfileSidebarProps {
   threePL: ThreePL;
 }
 
-export default function ProfileSidebar({ threePL: p }: ProfileSidebarProps) {
+export default async function ProfileSidebar({ threePL: p }: ProfileSidebarProps) {
+  const t = await getTranslations();
   const stateFormatted = formatState(p.state);
   const founded = estimateFounded(p.name);
   const warehouses = estimateWarehouses(p.state, p.order_capacity || 0);
@@ -17,7 +19,7 @@ export default function ProfileSidebar({ threePL: p }: ProfileSidebarProps) {
     <aside className="bg-card border border-border rounded-2xl p-5 md:p-6 space-y-5">
       {/* 标题 */}
       <div>
-        <h3 className="text-lg font-bold text-text">{p.name} at a Glance</h3>
+        <h3 className="text-lg font-bold text-text">{t("detail.atAGlance", { name: p.name })}</h3>
         <p className="text-sm text-text-secondary mt-1">
           {p.city ? `${p.city}, ${stateFormatted}` : stateFormatted}
         </p>
@@ -25,22 +27,22 @@ export default function ProfileSidebar({ threePL: p }: ProfileSidebarProps) {
 
       {/* 关键统计 */}
       <div className="grid grid-cols-2 gap-3">
-        <StatBox label="Founded" value={String(founded)} />
-        <StatBox label="Warehouses" value={String(warehouses)} />
-        <StatBox label="Total Sq Ft" value={formatSqFt(sqFt)} />
-        <StatBox label="Order Capacity" value={`${formatCapacity(p.order_capacity || 0)}/mo`} />
-        <StatBox label="SKU Capacity" value={formatCapacity(p.sku_capacity || 0)} />
-        <StatBox label="Shipping Speed" value={p.shipping_speed || "Contact"} />
-        <StatBox label="Categories" value={`${(p.categories || []).length} types`} />
-        <StatBox label="Platforms" value={`${(p.platforms || []).length} integrated`} />
-        <StatBox label="Tech Partners" value={`${(p.integrations || []).length} systems`} />
+        <StatBox label={t("detail.founded")} value={String(founded)} />
+        <StatBox label={t("detail.warehouses")} value={String(warehouses)} />
+        <StatBox label={t("detail.totalSqFt")} value={formatSqFt(sqFt)} />
+        <StatBox label={t("detail.orderCapacity")} value={`${formatCapacity(p.order_capacity || 0)}/mo`} />
+        <StatBox label={t("detail.skuCapacity")} value={formatCapacity(p.sku_capacity || 0)} />
+        <StatBox label={t("detail.shippingSpeed")} value={p.shipping_speed || "Contact"} />
+        <StatBox label={t("detail.categories")} value={`${(p.categories || []).length} types`} />
+        <StatBox label={t("detail.platforms")} value={`${(p.platforms || []).length} integrated`} />
+        <StatBox label={t("detail.techPartners")} value={`${(p.integrations || []).length} systems`} />
       </div>
 
       {/* 存储环境 */}
       {environments.length > 0 && (
         <div>
           <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">
-            Storage Environments
+            {t("detail.storageEnvironments")}
           </p>
           <div className="flex flex-wrap gap-1.5">
             {environments.map((env) => (

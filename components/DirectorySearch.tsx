@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 /**
  * 3PL 目录搜索栏 — 在首页和 /3pl 页共用
  */
 export default function DirectorySearch() {
+  const t = useTranslations();
   const [product, setProduct] = useState("");
   const [state, setState] = useState("");
   const [platform, setPlatform] = useState("");
@@ -32,26 +34,26 @@ export default function DirectorySearch() {
   return (
     <section className="max-w-3xl mx-auto px-4 pb-8">
       <p className="text-center text-text-secondary text-sm mb-6">
-        Compare top fulfillment centers by state, product category, and platform. Get matched in seconds.
+        {t('search.desc')}
       </p>
       <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
         <input
           type="text"
-          placeholder="Product type (e.g. apparel)"
+          placeholder={t('search.productPlaceholder')}
           value={product}
           onChange={(e) => setProduct(e.target.value)}
           className="flex-1 border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-card"
         />
         <input
           type="text"
-          placeholder="State (e.g. Texas)"
+          placeholder={t('search.statePlaceholder')}
           value={state}
           onChange={(e) => setState(e.target.value)}
           className="flex-1 border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-card"
         />
         <input
           type="text"
-          placeholder="Platform (Shopify)"
+          placeholder={t('search.platformPlaceholder')}
           value={platform}
           onChange={(e) => setPlatform(e.target.value)}
           className="flex-1 border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-card"
@@ -60,13 +62,13 @@ export default function DirectorySearch() {
           type="submit"
           className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors shrink-0"
         >
-          Search
+          {t('search.searchBtn')}
         </button>
       </form>
 
       {/* Quick Links */}
       <div className="mt-6 flex flex-wrap justify-center gap-2 text-sm text-text-secondary">
-        <span>Popular:</span>
+        <span>{t('search.popular')}</span>
         <a href="/3pl/california/apparel/shopify" className="text-primary hover:underline">
           California Apparel
         </a>

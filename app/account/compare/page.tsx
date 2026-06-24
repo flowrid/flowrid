@@ -1,8 +1,14 @@
+"use client";
+
 import BrandOperationPage from "@/components/BrandOperationPage";
+import { useTranslations } from "next-intl";
 
 export default function AccountComparePage() {
+  const t = useTranslations();
+
   return (
     <BrandOperationPage
+      ns="account.compare"
       eyebrow="Provider decisions"
       title="Compare Providers"
       description="Keep shortlisted 3PL providers in a brand-owned comparison workspace before sending RFQs or syncing operational data."

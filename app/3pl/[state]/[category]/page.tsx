@@ -1,4 +1,5 @@
 import { createServerClient } from "@/lib/supabase";
+import { getTranslations } from "next-intl/server";
 import { rankThreePLs } from "@/lib/scoring";
 import { generateSEOMetadata, generateInternalLinks } from "@/lib/seo";
 import ThreePLCard from "@/components/3PLCard";
@@ -28,13 +29,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function StateCategoryPage({ params }: Props) {
+  const t = await getTranslations();
   const { state, category } = await params;
   const supabase = createServerClient();
   if (!supabase) {
     return (
       <div className="max-w-[1460px] mx-auto px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold">Database Not Configured</h1>
-        <p className="mt-2 text-text-secondary">Please configure Supabase to view {formatName(category)} 3PLs in {formatName(state)}.</p>
+        <h1 className="text-2xl font-bold">{t("directory.dbError")}</h1>
+        <p className="mt-2 text-text-secondary">{t("directory.dbErrorMsg")}</p>
       </div>
     );
   }
@@ -47,16 +49,21 @@ export default async function StateCategoryPage({ params }: Props) {
     .limit(5000);
 
   if (!threePLs || threePLs.length === 0) {
+    const msg = t("directory.noResultsCombo");
+    const idx = msg.indexOf("submit an RFQ");
+    const beforeLink = idx > -1 ? msg.slice(0, idx) : msg;
+    const afterLink = idx > -1 ? msg.slice(idx + "submit an RFQ".length) : "";
     return (
       <div className="max-w-[1460px] mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold text-text">
-          No {formatName(category)} 3PLs Found in {formatName(state)}
+          {t("directory.noResults")}
         </h1>
         <p className="mt-2 text-text-secondary">
-          <a href="/rfq" className="text-primary hover:underline">
-            Submit an RFQ
-          </a>{" "}
-          and we&apos;ll find the right match for you.
+          {beforeLink}
+          <a href="/rfq" className="text-primary hover:underline font-medium">
+            submit an RFQ
+          </a>
+          {afterLink}
         </p>
       </div>
     );
@@ -69,17 +76,16 @@ export default async function StateCategoryPage({ params }: Props) {
   return (
     <div className="max-w-[1460px] mx-auto px-4 py-8 pb-20">
       <h1 className="text-2xl md:text-3xl font-bold text-text">
-        Best {formatName(category)} 3PLs in {formatName(state)}
+        {t("directory.bestIn", { category: formatName(category), state: formatName(state) })}
       </h1>
       <p className="mt-2 text-text-secondary">
-        Compare {category.toLowerCase()} fulfillment centers in{" "}
-        {formatName(state)}. Find the best match for your brand.
+        {t("directory.descCategory", { category: formatName(category), state: formatName(state) })}
       </p>
 
       {/* Top Matches */}
       <section className="mt-6">
         <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">
-          Top Matches
+          {t("directory.topMatch")}
         </h2>
         <div className="grid grid-cols-2 gap-3 lg:gap-5 md:grid-cols-2 lg:grid-cols-6">
           {scored.slice(0, 3).map((item) => (
@@ -92,7 +98,7 @@ export default async function StateCategoryPage({ params }: Props) {
       {scored.length > 3 && (
         <section className="mt-8">
           <h2 className="text-lg font-bold text-text mb-4">
-            All {formatName(category)} 3PLs in {formatName(state)}
+            {t("directory.allCategory", { category: formatName(category), state: formatName(state) })}
           </h2>
           <div className="grid grid-cols-2 gap-3 lg:gap-5 md:grid-cols-2 lg:grid-cols-6">
             {scored.slice(3).map((item) => (
@@ -108,7 +114,7 @@ export default async function StateCategoryPage({ params }: Props) {
       {/* Internal Links (SEO Graph) */}
       <section className="mt-8">
         <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">
-          Related Searches
+          {t("directory.relatedSearches")}
         </h2>
         <div className="flex flex-wrap gap-2">
           {links.map((link) => (
@@ -125,9 +131,9 @@ export default async function StateCategoryPage({ params }: Props) {
 
       <FAQ
         items={[
-          `How much does ${category} 3PL cost in ${formatName(state)}?`,
-          `What is the fastest ${category} fulfillment in ${formatName(state)}?`,
-          `Which ${category} 3PLs in ${formatName(state)} integrate with Shopify?`,
+          t("directory.faqCost", { category: formatName(category), state: formatName(state) }),
+          t("directory.faqFastest", { category: formatName(category), state: formatName(state) }),
+          t("directory.faqShopify", { category: formatName(category), state: formatName(state) }),
         ]}
       />
 

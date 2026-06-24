@@ -1,4 +1,5 @@
 import { starsFromScore } from "@/lib/detail-content";
+import { getTranslations } from "next-intl/server";
 
 interface ReviewsSectionProps {
   name: string;
@@ -34,27 +35,28 @@ function StarIcon({ filled, half }: { filled: boolean; half?: boolean }) {
 }
 
 /** 子评分项 */
-const SUB_RATINGS = [
-  "Order Accuracy",
-  "Fulfillment Cost",
-  "Fulfillment Speed",
-  "Scalability & Flexibility",
-  "Customer Service",
+const SUB_RATING_KEYS = [
+  "detail.orderAccuracy",
+  "detail.fulfillmentCost",
+  "detail.fulfillmentSpeed",
+  "detail.scalability",
+  "detail.customerService",
 ];
 
-export default function ReviewsSection({ name, rating, reviewCount, slug }: ReviewsSectionProps) {
+export default async function ReviewsSection({ name, rating, reviewCount, slug }: ReviewsSectionProps) {
+  const t = await getTranslations();
   const { stars, label } = starsFromScore(rating);
   const starDisplay = (rating / 20).toFixed(1); // 0-100 → 1.0-5.0
 
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl md:text-2xl font-bold text-text">{name} Reviews</h2>
+        <h2 className="text-xl md:text-2xl font-bold text-text">{t("detail.reviewsHeading", { name })}</h2>
         <a
           href={`/rfq?pl=${slug}`}
           className="text-sm text-primary hover:underline font-medium"
         >
-          Leave a Review
+          {t("detail.leaveReview")}
         </a>
       </div>
 
@@ -70,7 +72,7 @@ export default function ReviewsSection({ name, rating, reviewCount, slug }: Revi
               ))}</div>
               <p className="text-sm text-text-secondary mt-1">{label}</p>
               <p className="text-xs text-text-secondary mt-0.5">
-                Based on {reviewCount > 0 ? `${reviewCount} review${reviewCount > 1 ? "s" : ""}` : "verified data"}
+                {reviewCount > 0 ? t("detail.basedOn", { count: reviewCount }) : "verified data"}
               </p>
             </div>
           </div>
@@ -78,16 +80,16 @@ export default function ReviewsSection({ name, rating, reviewCount, slug }: Revi
 
         {/* 子评分 */}
         <div className="bg-card border border-border rounded-xl p-6">
-          <p className="text-xs text-text-secondary uppercase tracking-wide mb-3">Performance Ratings</p>
+          <p className="text-xs text-text-secondary uppercase tracking-wide mb-3">{t("detail.performanceRatings")}</p>
           <div className="space-y-2.5">
-            {SUB_RATINGS.map((item) => {
+            {SUB_RATING_KEYS.map((key) => {
               // 为每项生成略微不同的分数
-              const offset = (item.length % 5 - 2) * 0.3;
+              const offset = (key.length % 5 - 2) * 0.3;
               const subScore = Math.max(1, Math.min(5, stars + offset));
               const filledStars = Math.round(subScore);
               return (
-                <div key={item} className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">{item}</span>
+                <div key={key} className="flex items-center justify-between">
+                  <span className="text-sm text-text-secondary">{t(key)}</span>
                   <div className="flex gap-0.5">
                     {[1, 2, 3, 4, 5].map((n) => (
                       <StarIcon key={n} filled={n <= filledStars} />
@@ -103,15 +105,15 @@ export default function ReviewsSection({ name, rating, reviewCount, slug }: Revi
       {/* 评论列表 — 暂无真实评论时显示占位 */}
       {reviewCount === 0 ? (
         <div className="text-center py-8 border border-dashed border-border rounded-xl">
-          <p className="text-text-secondary mb-2">No reviews yet for {name}</p>
+          <p className="text-text-secondary mb-2">{t("detail.noReviews", { name })}</p>
           <p className="text-sm text-text-secondary mb-4">
-            Be the first to share your experience working with {name}.
+            {t("detail.beFirst", { name })}
           </p>
           <a
             href={`/rfq?pl=${slug}`}
             className="inline-block bg-primary text-white px-6 py-2.5 rounded-xl font-medium text-sm hover:bg-primary-dark transition-colors"
           >
-            Be the First to Review
+            {t("detail.beFirstReview")}
           </a>
         </div>
       ) : (

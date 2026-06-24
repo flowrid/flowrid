@@ -1,6 +1,7 @@
 import { formatState } from "@/lib/detail-content";
 import MapView from "@/components/detail/MapView";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 interface LocationsSectionProps {
   name: string;
@@ -10,24 +11,24 @@ interface LocationsSectionProps {
   lng?: number;
 }
 
-export default function LocationsSection({
+export default async function LocationsSection({
   name,
   city,
   state,
   lat,
   lng,
 }: LocationsSectionProps) {
+  const t = await getTranslations();
   const stateFormatted = formatState(state);
   const hasCoords = lat !== undefined && lng !== undefined;
 
   return (
     <section>
       <h2 className="text-xl md:text-2xl font-bold text-text mb-1">
-        {name} Locations
+        {t("detail.locationsHeading", { name })}
       </h2>
       <p className="text-text-secondary text-sm mb-4">
-        {name} has fulfillment centers strategically located to optimize
-        shipping times and costs.
+        {t("detail.locationsDesc", { name })}
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -75,7 +76,7 @@ export default function LocationsSection({
                 rel="noopener noreferrer"
                 className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-primary hover:text-primary-dark transition-colors"
               >
-                View Larger Map &rarr;
+                {t("detail.viewLargerMap")}
               </a>
             )}
           </div>

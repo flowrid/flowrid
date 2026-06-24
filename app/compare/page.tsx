@@ -1,5 +1,6 @@
 ﻿import { createServerClient } from "@/lib/supabase";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import type { ThreePL } from "@/types/3pl";
 
 export const dynamic = "force-dynamic";
@@ -15,20 +16,17 @@ export default async function ComparePage({
 }) {
   const params = await searchParams;
   const slugs = params.pls?.split(",").filter(Boolean) || [];
+  const t = await getTranslations();
 
   const supabase = createServerClient();
 
   if (!supabase || slugs.length === 0) {
     return (
       <div className="max-w-[1460px] mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold text-text">Compare 3PL Providers</h1>
+        <h1 className="text-2xl font-bold text-text">{t('compare.title')}</h1>
         <div className="mt-8 text-center py-16">
           <p className="text-text-secondary text-lg">
-            Go to the{" "}
-            <Link href="/3pl" className="text-primary hover:underline font-medium">
-              3PL Directory
-            </Link>{" "}
-            and check the boxes on the cards to select providers for comparison.
+            {t('compare.empty')}
           </p>
         </div>
       </div>
@@ -45,9 +43,9 @@ export default async function ComparePage({
   if (providers.length < 2) {
     return (
       <div className="max-w-[1460px] mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold text-text">Compare 3PL Providers</h1>
+        <h1 className="text-2xl font-bold text-text">{t('compare.title')}</h1>
         <p className="mt-8 text-center text-text-secondary">
-          Select at least 2 providers to compare.
+          {t('compare.emptyFew')}
         </p>
       </div>
     );
@@ -62,15 +60,15 @@ export default async function ComparePage({
   return (
     <div className="max-w-[1460px] mx-auto px-4 py-8 pb-20">
       <h1 className="text-2xl font-bold text-text">
-        Compare {providers.length} 3PL Providers
+        {t('compare.compareN', { n: providers.length })}
       </h1>
       <p className="mt-1 text-text-secondary">
-        Side-by-side evaluation of your selected fulfillment centers.
+        {t('compare.subtitle')}
       </p>
 
       {/* Score Comparison */}
       <section className="mt-8">
-        <h2 className="text-lg font-bold text-text mb-4">Overall Score</h2>
+        <h2 className="text-lg font-bold text-text mb-4">{t('compare.overallScore')}</h2>
         <div className="flex gap-4 flex-wrap">
           {scored.map((p) => (
             <div
@@ -100,7 +98,7 @@ export default async function ComparePage({
         <table className="w-full text-sm border border-border rounded-lg">
           <thead>
             <tr className="bg-gray-50">
-              <th className="px-4 py-3 text-left font-semibold w-32">Metric</th>
+              <th className="px-4 py-3 text-left font-semibold w-32">{t('compare.metric')}</th>
               {scored.map((p) => (
                 <th key={p.id} className="px-4 py-3 text-left font-semibold">
                   {p.name}
@@ -109,32 +107,32 @@ export default async function ComparePage({
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            <CompareRow label="Location" values={scored.map((p) => p.city ? `${p.city}, ${formatState(p.state)}` : formatState(p.state))} />
-            <CompareRow label="Rating" values={scored.map((p) => `${p.rating}/100 (${p.review_count} reviews)`)} />
-            <CompareRow label="Shipping" values={scored.map((p) => p.shipping_speed)} />
-            <CompareRow label="Cost Level" values={scored.map((p) => p.cost_level)} />
+            <CompareRow label={t('compare.tableHeaders.location')} values={scored.map((p) => p.city ? `${p.city}, ${formatState(p.state)}` : formatState(p.state))} />
+            <CompareRow label={t('compare.tableHeaders.rating')} values={scored.map((p) => `${p.rating}/100 (${p.review_count} reviews)`)} />
+            <CompareRow label={t('compare.tableHeaders.shipping')} values={scored.map((p) => p.shipping_speed)} />
+            <CompareRow label={t('compare.tableHeaders.costLevel')} values={scored.map((p) => p.cost_level)} />
             <CompareRow
-              label="Categories"
+              label={t('compare.tableHeaders.categories')}
               values={scored.map((p) => (p.categories || []).map(formatName).join(", "))}
             />
             <CompareRow
-              label="Platforms"
+              label={t('compare.tableHeaders.platforms')}
               values={scored.map((p) => (p.platforms || []).join(", "))}
             />
             <CompareRow
-              label="Capacity"
+              label={t('compare.tableHeaders.capacity')}
               values={scored.map((p) => `${(p.order_capacity || 0).toLocaleString()} orders/mo`)}
             />
-            <CompareRow label="Description" values={scored.map((p) => p.description || "-")} />
+            <CompareRow label={t('compare.tableHeaders.description')} values={scored.map((p) => p.description || "-")} />
             <tr className="bg-gray-50">
-              <td className="px-4 py-3 font-semibold">Action</td>
+              <td className="px-4 py-3 font-semibold">{t('compare.action')}</td>
               {scored.map((p) => (
                 <td key={p.id} className="px-4 py-3">
                   <a
                     href={`/rfq?pl=${p.slug}`}
                     className="text-primary hover:underline font-medium text-xs"
                   >
-                    Get Quote
+                    {t('card.getQuote')}
                   </a>
                 </td>
               ))}
@@ -146,24 +144,22 @@ export default async function ComparePage({
       {/* Best Pick */}
       <section className="mt-8 p-4 bg-green-50 border border-success/20 rounded-xl">
         <h2 className="text-lg font-bold text-success">
-          Our Pick: {scored[0].name}
+          {t('compare.ourPick', { name: scored[0].name })}
         </h2>
         <p className="text-sm text-text-secondary mt-1">
-          Based on overall score, {scored[0].name} is the best match among your
-          selected providers. But the right choice depends on your specific needs
-          — request quotes from all {providers.length} to compare real pricing.
+          {t('compare.ourPickDesc', { name: scored[0].name })}
         </p>
         <a
           href={`/rfq?pl=${scored[0].slug}`}
           className="inline-block mt-3 bg-success text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors"
         >
-          Get Quote from {scored[0].name}
+          {t('compare.getQuoteFrom', { name: scored[0].name })}
         </a>
       </section>
 
       <div className="mt-6 text-center">
         <Link href="/3pl" className="text-primary hover:underline text-sm">
-          &larr; Back to Directory
+          {t('compare.backToDir')}
         </Link>
       </div>
     </div>

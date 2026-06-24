@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 type Metric = {
   label: string;
@@ -13,8 +16,10 @@ type Action = {
 };
 
 type BrandOperationPageProps = {
-  title: string;
+  /** Translation namespace prefix, e.g. "account.automation" */
+  ns: string;
   eyebrow: string;
+  title: string;
   description: string;
   metrics: Metric[];
   actions: Action[];
@@ -35,8 +40,9 @@ const toneClasses = {
 } as const;
 
 export default function BrandOperationPage({
-  title,
+  ns,
   eyebrow,
+  title,
   description,
   metrics,
   actions,
@@ -44,6 +50,8 @@ export default function BrandOperationPage({
   emptyTitle,
   emptyDescription,
 }: BrandOperationPageProps) {
+  const t = useTranslations();
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -87,7 +95,7 @@ export default function BrandOperationPage({
               href="/account/integrations"
               className="rounded-full bg-[#ed6d00] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#FF8A1F]"
             >
-              Connect store
+              {t("account.automation.connectData")}
             </Link>
             <Link
               href="/account/rfqs"

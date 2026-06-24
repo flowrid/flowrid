@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import ThreePLCard from "@/components/3PLCard";
 import { createBrowserClient } from "@/lib/supabase";
@@ -24,6 +25,7 @@ export default function DirectoryResults({
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -100,11 +102,11 @@ export default function DirectoryResults({
     <>
       <div className="max-w-[1460px] mx-auto px-4 mb-3">
         <p className="text-sm text-text-secondary">
-          Showing{" "}
-          <span className="font-semibold text-text">
-            {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, totalCount)}
-          </span>{" "}
-          of <span className="font-semibold text-text">{totalCount.toLocaleString()}</span> 3PLs
+          {t("compare.pagination.showing", {
+            start: page * PAGE_SIZE + 1,
+            end: Math.min((page + 1) * PAGE_SIZE, totalCount),
+            total: totalCount.toLocaleString(),
+          })}
         </p>
       </div>
 
@@ -126,11 +128,11 @@ export default function DirectoryResults({
         <div className="max-w-[1460px] mx-auto px-4 mt-8 flex items-center justify-center gap-2">
           <button onClick={() => goToPage(0)} disabled={page === 0}
             className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-            First
+            {t("compare.pagination.first")}
           </button>
           <button onClick={() => goToPage(Math.max(0, page - 1))} disabled={page === 0}
             className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-            Prev
+            {t("compare.pagination.prev")}
           </button>
           {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
             let pageNum: number;
@@ -149,17 +151,17 @@ export default function DirectoryResults({
           })}
           <button onClick={() => goToPage(Math.min(totalPages - 1, page + 1))} disabled={page >= totalPages - 1}
             className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-            Next
+            {t("compare.pagination.next")}
           </button>
           <button onClick={() => goToPage(totalPages - 1)} disabled={page >= totalPages - 1}
             className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-            Last
+            {t("compare.pagination.last")}
           </button>
         </div>
       )}
       {totalPages > 1 && (
         <p className="text-center text-xs text-text-secondary mt-2">
-          Page {page + 1} of {totalPages}
+          {t("compare.pagination.page", { x: page + 1, y: totalPages })}
         </p>
       )}
 
@@ -169,10 +171,10 @@ export default function DirectoryResults({
           <div className="max-w-[1460px] mx-auto flex items-center justify-between">
             <div>
               <p className="text-sm text-text font-medium">
-                {count} {count === 1 ? "3PL" : "3PLs"} selected
+                {t("compare.pagination.selected", { n: count })}
               </p>
               {saved && (
-                <p className="text-xs text-success mt-0.5">Saved to your account!</p>
+                <p className="text-xs text-success mt-0.5">{t("card.saved")}</p>
               )}
             </div>
             <div className="flex items-center gap-2">
@@ -180,21 +182,21 @@ export default function DirectoryResults({
                 onClick={clearSelection}
                 className="px-4 py-2 text-sm text-text-secondary hover:text-text border border-border rounded-lg transition-colors"
               >
-                Clear
+                {t("compare.pagination.clear")}
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
                 className="px-4 py-2 text-sm font-medium border border-primary text-primary hover:bg-primary/5 rounded-lg transition-colors disabled:opacity-50"
               >
-                {saving ? "Saving..." : "Save"}
+                {saving ? t("rfq.submitting") : t("compare.pagination.save")}
               </button>
               {count >= 2 && (
                 <Link
                   href={`/compare?pls=${selectedList.map((p) => p.slug).join(",")}`}
                   className="px-6 py-2 text-sm font-semibold bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
                 >
-                  Compare Now
+                  {t("compare.pagination.compareNow")}
                 </Link>
               )}
             </div>

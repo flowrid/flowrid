@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import ThreePLCard from "@/components/3PLCard";
 import { formatState } from "@/lib/detail-content";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { ThreePL } from "@/types/3pl";
 
 interface AlternativesSectionProps {
@@ -19,6 +20,7 @@ export default function AlternativesSection({
   state,
   alternatives,
 }: AlternativesSectionProps) {
+  const t = useTranslations();
   const stateFormatted = formatState(state);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -48,20 +50,19 @@ export default function AlternativesSection({
   return (
     <section>
       <h2 className="text-xl md:text-2xl font-bold text-text mb-1">
-        {currentName} Alternatives
+        {t("detail.alternativesHeading", { name: currentName })}
       </h2>
       <p className="text-text-secondary text-sm mb-4">
-        Looking for similar 3PL providers? Here are the top alternatives based on
-        services, specializations, and fulfillment capabilities.
+        {t("detail.alternativesDesc")}
       </p>
 
       {alternatives.length === 0 ? (
         <div className="text-center py-8 border border-dashed border-border rounded-xl">
           <p className="text-text-secondary mb-2">
-            No alternatives found in {stateFormatted}.
+            {t("detail.noAlternatives", { state: stateFormatted })}
           </p>
           <Link href={`/3pl/${state}`} className="text-primary hover:underline text-sm">
-            Browse all 3PLs in {stateFormatted} &rarr;
+            {t("detail.browseAllState", { state: stateFormatted })}
           </Link>
         </div>
       ) : (

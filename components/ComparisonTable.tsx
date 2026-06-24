@@ -1,26 +1,28 @@
 import { ThreePLCardData } from "@/types/3pl";
+import { getTranslations } from "next-intl/server";
 
 /**
  * Comparison Table — 3PL 对比表格
  */
-export default function ComparisonTable({
+export default async function ComparisonTable({
   data,
 }: {
   data: ThreePLCardData[];
 }) {
+  const t = await getTranslations();
   if (!data || data.length < 2) return null;
 
   return (
     <section className="mt-8 overflow-x-auto">
-      <h2 className="text-xl font-bold text-text mb-4">Quick Comparison</h2>
+      <h2 className="text-xl font-bold text-text mb-4">{t("compare.quickComparison")}</h2>
       <table className="w-full text-sm border border-border rounded-lg overflow-hidden">
         <thead>
           <tr className="bg-gray-50 text-left">
             <th className="px-4 py-3 font-semibold">3PL</th>
-            <th className="px-4 py-3 font-semibold">Speed</th>
-            <th className="px-4 py-3 font-semibold">Cost</th>
-            <th className="px-4 py-3 font-semibold">Score</th>
-            <th className="px-4 py-3 font-semibold">Action</th>
+            <th className="px-4 py-3 font-semibold">{t("compare.speed")}</th>
+            <th className="px-4 py-3 font-semibold">{t("compare.cost")}</th>
+            <th className="px-4 py-3 font-semibold">{t("compare.score")}</th>
+            <th className="px-4 py-3 font-semibold">{t("compare.action")}</th>
           </tr>
         </thead>
         <tbody>
@@ -47,7 +49,7 @@ export default function ComparisonTable({
                   href={`/rfq?pl=${item.slug}`}
                   className="text-primary hover:underline font-medium text-xs"
                 >
-                  Get Quote
+                  {t("card.getQuote")}
                 </a>
               </td>
             </tr>

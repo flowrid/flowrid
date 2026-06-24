@@ -2,8 +2,10 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createBrowserClient } from "@/lib/supabase";
+import { useTranslations } from "next-intl";
 
 export default function NavUser() {
+  const t = useTranslations();
   const [user, setUser] = useState<{ email: string; role: string; avatar?: string } | null>(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -76,7 +78,7 @@ export default function NavUser() {
   if (!user) {
     return (
       <a href="/login" className="text-sm text-text-secondary hover:text-text transition-colors">
-        Login
+        {t('nav.login')}
       </a>
     );
   }
@@ -123,7 +125,7 @@ export default function NavUser() {
             onClick={handleSignOut}
             className="block w-full text-left px-4 py-2.5 text-sm text-text-secondary hover:bg-gray-50 hover:text-danger transition-colors cursor-pointer"
           >
-            Sign out
+            {t('nav.signOut')}
           </button>
         </div>
       )}

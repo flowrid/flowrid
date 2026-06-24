@@ -1,38 +1,57 @@
+"use client";
+
 import BrandOperationPage from "@/components/BrandOperationPage";
+import { useTranslations } from "next-intl";
 
 export default function AccountAutomationPage() {
+  const t = useTranslations();
+
   return (
     <BrandOperationPage
-      eyebrow="Growth"
-      title="Automations"
-      description="Prepare brand-side automation rules for order notifications, low-stock alerts, and RFQ readiness workflows."
+      ns="account.automation"
+      eyebrow={t("account.growth")}
+      title={t("account.automation.title")}
+      description={t("account.automation.desc")}
       metrics={[
-        { label: "Active rules", value: "0" },
-        { label: "Draft rules", value: "0" },
-        { label: "Triggers", value: "Brand-safe" },
-        { label: "Data status", value: "Not connected", tone: "warning" },
+        { label: t("account.automation.activeRules"), value: "0" },
+        { label: t("account.automation.draftRules"), value: "0" },
+        { label: t("account.automation.triggers"), value: "Brand-safe" },
+        { label: t("account.automation.dataStatus"), value: "Not connected", tone: "warning" },
       ]}
       actions={[
-        { label: "Connect data", href: "/account/integrations", primary: true },
-        { label: "View audit log", href: "/account/audit" },
+        { label: t("account.automation.connectData"), href: "/account/integrations", primary: true },
+        { label: t("account.automation.viewAudit"), href: "/account/audit" },
       ]}
-      emptyTitle="No brand automations configured"
-      emptyDescription="Once your store is connected, create brand-side rules for notifications and decision workflows without touching warehouse execution automations."
+      emptyTitle={t("account.automation.empty")}
+      emptyDescription={t("account.automation.emptyDesc")}
       sections={[
         {
           title: "Brand-safe triggers",
           description: "Automations should react to brand data events, not warehouse worker tasks.",
-          items: ["Order created", "Low stock", "Shipment delivered", "RFQ status changed"],
+          items: [
+            t("account.automation.triggersList.orderCreated"),
+            t("account.automation.triggersList.lowStock"),
+            t("account.automation.triggersList.shipmentDelivered"),
+            t("account.automation.triggersList.rfqChanged"),
+          ],
         },
         {
           title: "Suggested actions",
           description: "Keep actions focused on visibility and decision support.",
-          items: ["Send notification", "Create RFQ reminder", "Flag provider review"],
+          items: [
+            t("account.automation.actionsList.sendNotification"),
+            t("account.automation.actionsList.createReminder"),
+            t("account.automation.actionsList.flagReview"),
+          ],
         },
         {
           title: "Excluded controls",
           description: "Warehouse task automation remains in the operator SaaS system.",
-          items: ["No pick task creation", "No dock scheduling", "No picker assignments"],
+          items: [
+            t("account.automation.excludedList.noPickTask"),
+            t("account.automation.excludedList.noDockScheduling"),
+            t("account.automation.excludedList.noPickerAssignments"),
+          ],
         },
       ]}
     />

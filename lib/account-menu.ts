@@ -11,6 +11,164 @@ export type BrandAccountMenuGroup = {
   items: BrandAccountItem[];
 };
 
+type TranslationFn = (key: string, vars?: Record<string, string | number>) => string;
+
+export function getBrandAccountMenuGroups(
+  t: TranslationFn
+): BrandAccountMenuGroup[] {
+  return [
+    {
+      label: t("account.workspace"),
+      items: [
+        {
+          label: t("account.overview"),
+          description: t("account.menuItems.overview"),
+          href: "/account",
+          icon: "/icons/dashboard.png",
+          accent: "primary",
+        },
+      ],
+    },
+    {
+      label: t("account.operations"),
+      items: [
+        {
+          label: t("account.orders"),
+          description: t("account.menuItems.orders"),
+          href: "/account/orders",
+          icon: "/icons/orders.png",
+          accent: "primary",
+        },
+        {
+          label: t("account.products"),
+          description: t("account.menuItems.products"),
+          href: "/account/products",
+          icon: "/icons/products.png",
+          accent: "neutral",
+        },
+        {
+          label: t("account.inventory"),
+          description: t("account.menuItems.inventory"),
+          href: "/account/inventory",
+          icon: "/icons/inventory.png",
+          accent: "success",
+        },
+        {
+          label: t("account.inbound"),
+          description: t("account.menuItems.inbound"),
+          href: "/account/receiving",
+          icon: "/icons/receiving.png",
+          accent: "warning",
+        },
+        {
+          label: t("account.returnsLabel"),
+          description: t("account.menuItems.returns"),
+          href: "/account/returns",
+          icon: "/icons/returns.png",
+          accent: "warning",
+        },
+        {
+          label: t("account.shippingLabel"),
+          description: t("account.menuItems.shipping"),
+          href: "/account/shipping",
+          icon: "/icons/shipping.png",
+          accent: "primary",
+        },
+      ],
+    },
+    {
+      label: t("account.insights"),
+      items: [
+        {
+          label: t("account.analyticsLabel"),
+          description: t("account.menuItems.analytics"),
+          href: "/account/analytics",
+          icon: "/icons/analytics.png",
+          accent: "primary",
+        },
+        {
+          label: t("account.reportsLabel"),
+          description: t("account.menuItems.reports"),
+          href: "/account/reports",
+          icon: "/icons/reports.png",
+          accent: "neutral",
+        },
+        {
+          label: t("account.billingLabel"),
+          description: t("account.menuItems.billing"),
+          href: "/account/billing",
+          icon: "/icons/billing.png",
+          accent: "success",
+        },
+      ],
+    },
+    {
+      label: t("account.growth"),
+      items: [
+        {
+          label: t("account.integrationsLabel"),
+          description: t("account.menuItems.integrations"),
+          href: "/account/integrations",
+          icon: "/icons/store-integrations.png",
+          accent: "success",
+        },
+        {
+          label: t("account.automationLabel"),
+          description: t("account.menuItems.automations"),
+          href: "/account/automation",
+          icon: "/icons/automation.png",
+          accent: "warning",
+        },
+        {
+          label: t("account.auditLabel"),
+          description: t("account.menuItems.auditLog"),
+          href: "/account/audit",
+          icon: "/icons/audit.png",
+          accent: "neutral",
+        },
+      ],
+    },
+    {
+      label: t("account.admin"),
+      items: [
+        {
+          label: "Compare Providers",
+          description: t("account.menuItems.compareProviders"),
+          href: "/account/compare",
+          icon: "/icons/compare-providers.png",
+          accent: "warning",
+        },
+        {
+          label: t("account.rfqs.title"),
+          description: t("account.menuItems.myRFQs"),
+          href: "/account/rfqs",
+          icon: "/icons/my-rfqs.png",
+          accent: "primary",
+        },
+        {
+          label: t("account.saved.title"),
+          description: t("account.menuItems.saved3PL"),
+          href: "/account/saved",
+          icon: "/icons/saved-3pl.png",
+          accent: "neutral",
+        },
+        {
+          label: "Account Settings",
+          description: t("account.menuItems.settings"),
+          href: "/account/settings",
+          icon: "/icons/settings.png",
+          accent: "neutral",
+        },
+      ],
+    },
+  ];
+}
+
+export function getBrandAccountItems(t: TranslationFn): BrandAccountItem[] {
+  return getBrandAccountMenuGroups(t).flatMap((group) => group.items);
+}
+
+// Keep static fallback for non-React contexts
 export const BRAND_ACCOUNT_MENU_GROUPS: BrandAccountMenuGroup[] = [
   {
     label: "Workspace",

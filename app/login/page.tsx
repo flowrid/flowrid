@@ -3,9 +3,11 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@/lib/supabase";
+import { useTranslations } from "next-intl";
 import LoginForm from "@/components/auth/LoginForm";
 
 export default function LoginPage() {
+  const t = useTranslations();
   const [showForm, setShowForm] = useState(false);
   const [status, setStatus] = useState("");
   const router = useRouter();
@@ -25,11 +27,11 @@ export default function LoginPage() {
     }
 
     processingRef.current = true;
-    setStatus("Exchanging authorization code…");
+    setStatus(t('auth.status.exchanging'));
 
     const supabase = createBrowserClient();
     if (!supabase) {
-      setStatus("Authentication service unavailable. Please try again.");
+      setStatus(t('auth.status.unavailable'));
       processingRef.current = false;
       return;
     }
@@ -79,7 +81,7 @@ export default function LoginPage() {
       subscription?.unsubscribe();
       clearTimeout(fallback);
 
-      setStatus("Signing you in…");
+      setStatus(t('auth.status.signingIn'));
       const role = await resolveRole(session);
       await bridgeIf3PL(session);
       window.location.href = getRedirect(role);
@@ -95,10 +97,10 @@ export default function LoginPage() {
     const code = urlParams.get("code");
 
     if (code) {
-      setStatus("Verifying with Google…");
+      setStatus(t('auth.status.verifying'));
       supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
         if (error) {
-          setStatus("Authorization failed. Please try again.");
+          setStatus(t('auth.status.authFailed'));
           resolved = true;
           subscription.unsubscribe();
           processingRef.current = false;
@@ -110,12 +112,12 @@ export default function LoginPage() {
         }
       });
     } else {
-      setStatus("Restoring session…");
+      setStatus(t('auth.status.restoring'));
       supabase.auth.getSession().then(async ({ data, error }) => {
         if (data?.session && !resolved) {
           await handleSession(data.session);
         } else if (!resolved) {
-          setStatus("No session found. Please sign in again.");
+          setStatus(t('auth.status.noSession'));
           resolved = true;
           subscription.unsubscribe();
           processingRef.current = false;
@@ -129,7 +131,7 @@ export default function LoginPage() {
         resolved = true;
         subscription.unsubscribe();
         processingRef.current = false;
-        setStatus("Login timed out. Please try again.");
+        setStatus(t('auth.status.timeout'));
         setTimeout(() => {
           window.history.replaceState({}, "", "/login");
           setShowForm(true);
@@ -150,7 +152,7 @@ export default function LoginPage() {
       ) : (
         <div className="text-center py-12">
           <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-text-secondary text-sm">{status || "Signing you in…"}</p>
+          <p className="text-text-secondary text-sm">{status || t('auth.status.signingIn')}</p>
         </div>
       )}
     </div>

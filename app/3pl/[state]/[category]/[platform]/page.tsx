@@ -1,4 +1,5 @@
 import { createServerClient } from "@/lib/supabase";
+import { getTranslations } from "next-intl/server";
 import { rankThreePLs } from "@/lib/scoring";
 import { generateSEOMetadata, generateInternalLinks } from "@/lib/seo";
 import { generateAISummary } from "@/lib/ai";
@@ -34,15 +35,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function FullSEOPage({ params }: Props) {
+  const t = await getTranslations();
   const { state, category, platform } = await params;
   const supabase = createServerClient();
   if (!supabase) {
     return (
       <div className="max-w-[1460px] mx-auto px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold">Database Not Configured</h1>
-        <p className="mt-2 text-text-secondary">
-          Please configure Supabase to view {formatName(category)} 3PLs for {platform} in {formatName(state)}.
-        </p>
+        <h1 className="text-2xl font-bold">{t("directory.dbError")}</h1>
+        <p className="mt-2 text-text-secondary">{t("directory.dbErrorMsg")}</p>
       </div>
     );
   }
@@ -81,7 +81,7 @@ export default async function FullSEOPage({ params }: Props) {
     <div className="max-w-[1460px] mx-auto px-4 py-8 pb-20">
       {/* H1 Title */}
       <h1 className="text-2xl md:text-3xl font-bold text-text">
-        Best {platform} {formatName(category)} 3PLs in {formatName(state)}
+        {t("directory.bestPlatform", { platform, category: formatName(category), state: formatName(state) })}
       </h1>
 
       {aiContent && (
@@ -94,7 +94,7 @@ export default async function FullSEOPage({ params }: Props) {
           {/* Cost Guide */}
           <section className="mt-8 p-4 bg-card border border-border rounded-xl">
             <h2 className="text-lg font-bold text-text mb-2">
-              Cost Guide for {formatName(category)} Fulfillment in {formatName(state)}
+              {t("directory.costGuide", { category: formatName(category), state: formatName(state) })}
             </h2>
             <p className="text-sm text-text-secondary leading-relaxed">
               {aiContent.cost_guide}
@@ -104,7 +104,7 @@ export default async function FullSEOPage({ params }: Props) {
           {/* Shipping Insights */}
           <section className="mt-4 p-4 bg-card border border-border rounded-xl">
             <h2 className="text-lg font-bold text-text mb-2">
-              Shipping & Delivery from {formatName(state)}
+              {t("directory.shippingFrom", { state: formatName(state) })}
             </h2>
             <p className="text-sm text-text-secondary leading-relaxed">
               {aiContent.shipping_insights}
@@ -115,7 +115,7 @@ export default async function FullSEOPage({ params }: Props) {
           {aiContent.key_considerations.length > 0 && (
             <section className="mt-8">
               <h2 className="text-lg font-bold text-text mb-3">
-                What to Look for in a {formatName(category)} 3PL
+                {t("directory.whatToLook", { category: formatName(category) })}
               </h2>
               <ul className="space-y-2">
                 {aiContent.key_considerations.map((item, i) => (
@@ -134,7 +134,7 @@ export default async function FullSEOPage({ params }: Props) {
       {scored.length > 0 && (
         <section className="mt-8">
           <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">
-            Top Match{scored.length > 1 ? "es" : ""}
+            {t("directory.topMatch")}
           </h2>
           <div className="grid grid-cols-2 gap-3 lg:gap-5 md:grid-cols-2 lg:grid-cols-6">
             {scored.slice(0, 3).map((item) => (
@@ -148,7 +148,7 @@ export default async function FullSEOPage({ params }: Props) {
       {scored.length > 3 && (
         <section className="mt-8">
           <h2 className="text-lg font-bold text-text mb-4">
-            All {platform} {formatName(category)} 3PLs in {formatName(state)}
+            {t("directory.allPlatform", { platform, category: formatName(category), state: formatName(state) })}
           </h2>
           <div className="grid grid-cols-2 gap-3 lg:gap-5 md:grid-cols-2 lg:grid-cols-6">
             {scored.slice(3).map((item) => (
@@ -162,14 +162,18 @@ export default async function FullSEOPage({ params }: Props) {
       {scored.length === 0 && (
         <div className="text-center py-12">
           <p className="text-text-secondary text-lg">
-            We couldn&apos;t find exact matches for this combination yet.
+            {t("directory.noResultsCombo").split(". But")[0]}.
           </p>
           <p className="mt-2 text-text-secondary">
-            But we can still help —{" "}
+            {t("directory.noResultsCombo").split(". But")[1]?.replace(
+              "submit an RFQ",
+              ""
+            ) || "But we can still help —"}
+            {" "}
             <a href="/rfq" className="text-primary hover:underline font-medium">
               submit an RFQ
-            </a>{" "}
-            and we&apos;ll find the right 3PL for your needs.
+            </a>
+            {t("directory.noResultsCombo").split("submit an RFQ")[1] || ""}
           </p>
         </div>
       )}
@@ -183,7 +187,7 @@ export default async function FullSEOPage({ params }: Props) {
       {/* Internal Links (SEO Graph) */}
       <section className="mt-8">
         <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">
-          Related Searches
+          {t("directory.relatedSearches")}
         </h2>
         <div className="flex flex-wrap gap-2">
           {links.map((link) => (

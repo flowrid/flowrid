@@ -1,13 +1,17 @@
+import { getTranslations } from "next-intl/server";
+
 interface OverviewSectionProps {
   name: string;
   overviewText: string;
   secondaryText?: string;
 }
 
-export default function OverviewSection({ name, overviewText, secondaryText }: OverviewSectionProps) {
+export default async function OverviewSection({ name, overviewText, secondaryText }: OverviewSectionProps) {
+  const t = await getTranslations();
+
   return (
     <section>
-      <h2 className="text-xl md:text-2xl font-bold text-text mb-4">{name} Overview</h2>
+      <h2 className="text-xl md:text-2xl font-bold text-text mb-4">{t("detail.overviewHeading", { name })}</h2>
       <div className="grid grid-cols-1 gap-6">
         {/* 文字区 */}
         <div className="space-y-4">

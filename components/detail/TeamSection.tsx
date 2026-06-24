@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server";
+
 interface TeamSectionProps {
   name: string;
 }
@@ -6,12 +8,12 @@ interface TeamSectionProps {
 function generateTeam(name: string) {
   const firstNames = ["Michael", "Sarah", "David", "Jennifer", "Robert"];
   const lastNames = ["Chen", "Williams", "Garcia", "Johnson", "Lee"];
-  const titles = [
-    "Chief Executive Officer",
-    "VP of Operations",
-    "Director of Client Success",
-    "Head of Warehouse Operations",
-    "Chief Technology Officer",
+  const titleKeys: string[] = [
+    "detail.ceo",
+    "detail.vpOps",
+    "detail.dirClient",
+    "detail.headWarehouse",
+    "detail.cto",
   ];
 
   // 使用公司名的hash一致性生成
@@ -19,19 +21,20 @@ function generateTeam(name: string) {
 
   return firstNames.map((fn, i) => ({
     name: `${fn} ${lastNames[(hash + i) % lastNames.length]}`,
-    title: titles[i],
+    titleKey: titleKeys[i],
     color: ["#F97316", "#3B82F6", "#10B981", "#8B5CF6", "#EC4899"][i],
   }));
 }
 
-export default function TeamSection({ name }: TeamSectionProps) {
+export default async function TeamSection({ name }: TeamSectionProps) {
+  const t = await getTranslations();
   const team = generateTeam(name);
 
   return (
     <section>
-      <h2 className="text-xl md:text-2xl font-bold text-text mb-1">{name} Team</h2>
+      <h2 className="text-xl md:text-2xl font-bold text-text mb-1">{t("detail.teamHeading", { name })}</h2>
       <p className="text-text-secondary text-sm mb-4">
-        Meet the team driving {name}&apos;s success.
+        {t("detail.teamDesc", { name })}
       </p>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
@@ -51,7 +54,7 @@ export default function TeamSection({ name }: TeamSectionProps) {
             </div>
             <div className="p-3 text-center">
               <p className="font-medium text-text text-sm">{member.name}</p>
-              <p className="text-xs text-text-secondary mt-0.5">{member.title}</p>
+              <p className="text-xs text-text-secondary mt-0.5">{t(member.titleKey)}</p>
             </div>
           </div>
         ))}

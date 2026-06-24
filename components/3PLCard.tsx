@@ -2,6 +2,7 @@
 
 import { ThreePLCardData } from "@/types/3pl";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { estimateWarehouses } from "@/lib/detail-content";
 import { PLATFORM_ICONS } from "@/lib/platform-icons";
@@ -13,7 +14,7 @@ function formatStateName(state: string): string {
     .join(" ");
 }
 
-function getCardTagline(data: ThreePLCardData): { label: string; hasColdChain: boolean } {
+function getCardTagline(data: ThreePLCardData, t: ReturnType<typeof useTranslations>): { label: string; hasColdChain: boolean } {
   const cats = data.categories || [];
   const wh = estimateWarehouses(data.state, data.order_capacity || 0);
   const base = `${wh} WH`;
@@ -30,15 +31,15 @@ function getCardTagline(data: ThreePLCardData): { label: string; hasColdChain: b
 
   let label: string;
   if (cats.length >= 5) {
-    label = `Full-Service · ${base}`;
+    label = `${t("detail.fullService")} · ${base}`;
   } else if (cats.length >= 2) {
-    label = `Multi-Cat · ${base}`;
+    label = `${t("detail.multiCat")} · ${base}`;
   } else if (cats.length === 1) {
     const c = cats[0];
     const name = catMap[c] || c.charAt(0).toUpperCase() + c.slice(1);
     label = `${name} · ${base}`;
   } else {
-    label = `Fulfillment · ${base}`;
+    label = `${t("detail.fulfillment")} · ${base}`;
   }
 
   // 冷链追加 — 用图标代替文字
@@ -62,11 +63,12 @@ interface ThreePLCardProps {
  * 板块三：Speed + View Details
  */
 export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLCardProps) {
+  const t = useTranslations();
   const showCompare = typeof onToggleSelect === "function";
   const [hovered, setHovered] = useState(false);
   const [pressed, setPressed] = useState(false);
   const isActive = hovered || pressed;
-  const tagline = getCardTagline(data);
+  const tagline = getCardTagline(data, t);
 
   return (
     <div
@@ -124,7 +126,7 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
                 className="font-normal text-[#86868B] leading-none"
                 style={{ fontSize: "clamp(0.37rem, 5.04cqw, 1.29rem)" }}
               >
-                Ops Score
+              {t("card.opsScore")}
               </div>
               <div className="flex items-baseline justify-end">
                 <span
@@ -200,7 +202,7 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
             {tagline.label}
           </span>
           {tagline.hasColdChain && (
-            <img src="/images/cold-chain.png" alt="Cold Chain" className="w-3 h-3 shrink-0" />
+            <img src="/images/cold-chain.png" alt={t("card.coldChain")} className="w-3 h-3 shrink-0" />
           )}
         </div>
 
@@ -240,8 +242,7 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
             zIndex: 10,
           }}
         >
-          <span>View</span>
-          <span>Details</span>
+          <span>{t("card.viewDetails")}</span>
         </Link>
       </div>
     </div>

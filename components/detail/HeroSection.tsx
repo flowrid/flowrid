@@ -1,5 +1,6 @@
 import { formatState } from "@/lib/detail-content";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 interface HeroSectionProps {
   name: string;
@@ -15,7 +16,7 @@ interface HeroSectionProps {
   orderCapacity: number;
 }
 
-export default function HeroSection({
+export default async function HeroSection({
   name,
   slug,
   logo,
@@ -28,14 +29,15 @@ export default function HeroSection({
   website,
   orderCapacity,
 }: HeroSectionProps) {
+  const t = await getTranslations();
   const stateFormatted = formatState(state);
 
   // 徽章
   const badges: { label: string; color: string }[] = [];
-  if (rating >= 75) badges.push({ label: "Verified 3PL", color: "bg-green-100 text-green-800" });
-  if (orderCapacity >= 50000) badges.push({ label: "Enterprise 3PL", color: "bg-blue-100 text-blue-800" });
-  else if (orderCapacity >= 10000) badges.push({ label: "Midmarket 3PL", color: "bg-blue-100 text-blue-800" });
-  else badges.push({ label: "Growing 3PL", color: "bg-blue-100 text-blue-800" });
+  if (rating >= 75) badges.push({ label: t("detail.verified3PL"), color: "bg-green-100 text-green-800" });
+  if (orderCapacity >= 50000) badges.push({ label: t("detail.enterprise3PL"), color: "bg-blue-100 text-blue-800" });
+  else if (orderCapacity >= 10000) badges.push({ label: t("detail.midmarket3PL"), color: "bg-blue-100 text-blue-800" });
+  else badges.push({ label: t("detail.growing3PL"), color: "bg-blue-100 text-blue-800" });
 
   return (
     <section className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
@@ -70,7 +72,7 @@ export default function HeroSection({
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
-                  Visit Website
+                  {t("detail.visitWebsite")}
                 </a>
               )}
             </div>
@@ -98,7 +100,7 @@ export default function HeroSection({
             href={`/rfq?pl=${slug}`}
             className="inline-flex w-full md:w-auto items-center justify-center gap-2 bg-primary text-white px-6 py-3.5 rounded-xl font-semibold text-sm md:text-base hover:bg-primary-dark transition-colors"
           >
-            Get Matched With {name}
+            {t("detail.getMatched", { name })}
           </a>
         </div>
       </div>

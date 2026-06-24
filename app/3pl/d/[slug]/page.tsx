@@ -1,4 +1,5 @@
 import { createServerClient } from "@/lib/supabase";
+import { getTranslations } from "next-intl/server";
 import { localBusinessSchema } from "@/lib/jsonld";
 import {
   generateOverview,
@@ -32,28 +33,29 @@ function formatState(s: string): string {
     .join(" ");
 }
 
-const TABS = [
-  { id: "overview", label: "Overview" },
-  { id: "locations", label: "Locations" },
-  { id: "specialties", label: "Specialties" },
-  { id: "alternatives", label: "Alternatives" },
-  { id: "technology", label: "Integrations" },
-  { id: "faq", label: "FAQ" },
-];
-
 export const metadata: Metadata = {
   title: "3PL Provider Details | Flowrid",
   description: "View detailed information, reviews, and capabilities of this 3PL provider.",
 };
 
 export default async function ThreePLDetailPage({ params }: Props) {
+  const t = await getTranslations();
   const { slug } = await params;
+
+  const TABS = [
+    { id: "overview", label: t("detail.overview") },
+    { id: "locations", label: t("detail.locations") },
+    { id: "specialties", label: t("detail.specialties") },
+    { id: "alternatives", label: t("detail.alternatives") },
+    { id: "technology", label: t("detail.integrations") },
+    { id: "faq", label: t("detail.faq") },
+  ];
   const supabase = createServerClient();
 
   if (!supabase) {
     return (
       <div className="max-w-[1460px] mx-auto px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold">Database Not Configured</h1>
+        <h1 className="text-2xl font-bold">{t("directory.dbError")}</h1>
       </div>
     );
   }
@@ -67,10 +69,10 @@ export default async function ThreePLDetailPage({ params }: Props) {
   if (!data) {
     return (
       <div className="max-w-[1460px] mx-auto px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold text-text">3PL Not Found</h1>
+        <h1 className="text-2xl font-bold text-text">{t("detail.notFound")}</h1>
         <p className="mt-2 text-text-secondary">
           <Link href="/3pl" className="text-primary hover:underline">
-            Browse all 3PL providers
+            {t("detail.browseAll")}
           </Link>
         </p>
       </div>
@@ -107,7 +109,7 @@ export default async function ThreePLDetailPage({ params }: Props) {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Back to {formatState(p.state)} 3PLs
+          {t("detail.backTo", { state: formatState(p.state) })}
         </Link>
       </div>
 

@@ -1,4 +1,5 @@
 import { createServerClient } from "@/lib/supabase";
+import { getTranslations } from "next-intl/server";
 import DirectoryResults from "@/components/DirectoryResults";
 import DirectorySearch from "@/components/DirectorySearch";
 import MobileCTA from "@/components/mobile/MobileCTA";
@@ -13,15 +14,16 @@ export default async function Page({
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
+  const t = await getTranslations();
   const params = await searchParams;
   const page = Math.max(0, parseInt(params.page || "0") || 0);
   const supabase = createServerClient();
   if (!supabase) {
     return (
       <div className="max-w-[1460px] mx-auto px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold">Database Not Configured</h1>
+        <h1 className="text-2xl font-bold">{t("directory.dbError")}</h1>
         <p className="mt-2 text-text-secondary">
-          Please configure Supabase environment variables.
+          {t("directory.dbErrorMsg")}
         </p>
       </div>
     );
@@ -53,12 +55,12 @@ export default async function Page({
   const { data: threePLs } = await query;
 
   const title = params.state
-    ? `3PLs in ${formatName(params.state)}`
+    ? t("directory.providersIn", { category: formatName(params.state) })
     : params.category
-      ? `${formatName(params.category)} 3PL Providers`
+      ? t("directory.providersIn", { category: formatName(params.category) })
       : params.platform
-        ? `${params.platform} 3PL Providers`
-        : "All 3PL Providers";
+        ? t("directory.providersIn", { category: params.platform })
+        : t("directory.allProviders");
 
   return (
     <div className="max-w-[1460px] mx-auto px-4 py-8 pb-20">
@@ -66,10 +68,10 @@ export default async function Page({
 
       <h1 className="text-2xl font-bold text-text mb-2 text-center">{title}</h1>
       <p className="text-text-secondary mb-6 text-center">
-        {totalCount.toLocaleString()} fulfillment centers found
+        {t("directory.found", { count: totalCount.toLocaleString() })}
         {threePLs && threePLs.length >= 2 && (
           <span className="ml-2 text-xs">
-            — check the box on any card to compare
+            — {t("directory.checkBox")}
           </span>
         )}
       </p>
@@ -78,15 +80,11 @@ export default async function Page({
         threePLs={(threePLs as ThreePL[]) || []}
         totalCount={totalCount}
         page={page}
-        emptyTitle="No 3PLs Found"
+        emptyTitle={t("directory.noResults")}
         emptyMessage={
-          <>
-            Try adjusting your search filters or{" "}
-            <a href="/rfq" className="text-primary hover:underline">
-              submit an RFQ
-            </a>{" "}
-            to get matched.
-          </>
+          <a href="/rfq" className="text-primary hover:underline">
+            {t("directory.submitRFQ")}
+          </a>
         }
       />
 

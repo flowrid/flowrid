@@ -1,17 +1,21 @@
+import { getTranslations } from "next-intl/server";
+
 interface AwardsSectionProps {
   name: string;
   rating: number;
   state: string;
 }
 
-export default function AwardsSection({ name, rating, state }: AwardsSectionProps) {
+export default async function AwardsSection({ name, rating, state }: AwardsSectionProps) {
+  const t = await getTranslations();
+
   // 基于评分生成奖项
   const badges: { title: string; subtitle: string; icon: string; color: string }[] = [];
 
   if (rating >= 80) {
     badges.push({
-      title: "Top Rated 3PL",
-      subtitle: `${name} ranks in the top tier of 3PL providers on Flowrid.`,
+      title: t("detail.topRated"),
+      subtitle: t("detail.topRated3PLDesc", { name }),
       icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
       color: "#F59E0B",
     });
@@ -32,24 +36,24 @@ export default function AwardsSection({ name, rating, state }: AwardsSectionProp
 
   // 分类相关奖项
   badges.push({
-    title: "E-Commerce Specialist",
-    subtitle: "Certified in multi-channel eCommerce fulfillment operations.",
+    title: t("detail.ecomSpecialist"),
+    subtitle: t("detail.ecomSpecialistDesc"),
     icon: "M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z",
     color: "#10B981",
   });
 
   badges.push({
-    title: "Quality Assured",
-    subtitle: "Verified fulfillment processes and quality control standards.",
+    title: t("detail.qualityAssured"),
+    subtitle: t("detail.qualityAssuredDesc"),
     icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z",
     color: "#8B5CF6",
   });
 
   return (
     <section>
-      <h2 className="text-xl md:text-2xl font-bold text-text mb-1">{name} Awards</h2>
+      <h2 className="text-xl md:text-2xl font-bold text-text mb-1">{t("detail.awardsHeading", { name })}</h2>
       <p className="text-text-secondary text-sm mb-4">
-        Industry awards and certifications earned by {name}.
+        {t("detail.awardsDesc", { name })}
       </p>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">

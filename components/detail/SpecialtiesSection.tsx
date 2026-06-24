@@ -1,5 +1,6 @@
 import { formatName, formatState } from "@/lib/detail-content";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 const NICHE_ICONS: Record<string, string> = {
   apparel: "Apparel",
@@ -61,13 +62,14 @@ interface SpecialtiesSectionProps {
   integrations: string[];
 }
 
-export default function SpecialtiesSection({
+export default async function SpecialtiesSection({
   name,
   state,
   categories,
   platforms,
   integrations,
 }: SpecialtiesSectionProps) {
+  const t = await getTranslations();
   const stateFormatted = formatState(state);
 
   return (
@@ -75,9 +77,9 @@ export default function SpecialtiesSection({
       {/* Niches Served */}
       {categories && categories.length > 0 && (
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-text mb-2">Niches Served</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-text mb-2">{t("detail.nichesServed")}</h2>
           <p className="text-text-secondary text-sm mb-3">
-            Product categories and industries {name} specializes in.
+            {t("detail.nichesDesc", { name })}
           </p>
           <div className="flex flex-wrap gap-2">
             {categories.map((c) => {
@@ -106,9 +108,9 @@ export default function SpecialtiesSection({
       {/* Platform Integrations */}
       {platforms && platforms.length > 0 && (
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-text mb-2">Platform Integrations</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-text mb-2">{t("detail.platformIntegrations")}</h2>
           <p className="text-text-secondary text-sm mb-3">
-            eCommerce platforms and marketplaces {name} integrates with.
+            {t("detail.platformsDesc", { name })}
           </p>
           <div className="flex flex-wrap gap-2">
             {platforms.map((p) => (
@@ -127,9 +129,9 @@ export default function SpecialtiesSection({
       {/* Value Added Services */}
       {integrations && integrations.length > 0 && (
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-text mb-2">Value Added Services</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-text mb-2">{t("detail.valueAddedServices")}</h2>
           <p className="text-text-secondary text-sm mb-3">
-            Additional services {name} provides beyond core fulfillment.
+            {t("detail.vasDesc", { name })}
           </p>
           <div className="flex flex-wrap gap-2">
             {integrations.map((s) => (
@@ -146,13 +148,13 @@ export default function SpecialtiesSection({
 
       {/* Certifications */}
       <div>
-        <h2 className="text-xl md:text-2xl font-bold text-text mb-2">Certifications</h2>
+        <h2 className="text-xl md:text-2xl font-bold text-text mb-2">{t("detail.certifications")}</h2>
         <p className="text-text-secondary text-sm mb-3">
-          Industry certifications and compliance standards.
+          {t("detail.certsDesc")}
         </p>
         <div className="flex flex-wrap gap-2">
           <Link href={`/3pl/${state}`} className="px-3 py-1.5 border border-border rounded-lg text-sm text-text-secondary hover:text-text hover:border-primary/40 transition-colors">
-            {stateFormatted} 3PL
+            {t("detail.state3PL", { state: stateFormatted })}
           </Link>
           {(categories || []).slice(0, 3).map((c) => (
             <Link
@@ -160,7 +162,7 @@ export default function SpecialtiesSection({
               href={`/3pl/${state}/${c}`}
               className="px-3 py-1.5 border border-border rounded-lg text-sm text-text-secondary hover:text-text hover:border-primary/40 transition-colors"
             >
-              {formatName(c)} Specialist
+              {t("detail.categorySpecialist", { category: formatName(c) })}
             </Link>
           ))}
         </div>

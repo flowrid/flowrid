@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server";
+
 interface CustomersSectionProps {
   name: string;
   categories: string[];
@@ -31,15 +33,16 @@ function generateCustomers(categories: string[]) {
   return [...matched, ...allCustomers.filter((c) => !matched.includes(c))].slice(0, 5);
 }
 
-export default function CustomersSection({ name, categories }: CustomersSectionProps) {
+export default async function CustomersSection({ name, categories }: CustomersSectionProps) {
+  const t = await getTranslations();
   const customers = generateCustomers(categories);
   const colors = ["#F97316", "#3B82F6", "#10B981", "#8B5CF6", "#EC4899"];
 
   return (
     <section>
-      <h2 className="text-xl md:text-2xl font-bold text-text mb-1">{name} Customers</h2>
+      <h2 className="text-xl md:text-2xl font-bold text-text mb-1">{t("detail.customersHeading", { name })}</h2>
       <p className="text-text-secondary text-sm mb-4">
-        Brands that trust {name} with their fulfillment.
+        {t("detail.customersDesc", { name })}
       </p>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">

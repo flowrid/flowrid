@@ -4,8 +4,10 @@ import Link from "next/link";
 import { createBrowserClient } from "@/lib/supabase";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function BrandJoinPage() {
+  const t = useTranslations();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -86,7 +88,7 @@ export default function BrandJoinPage() {
       router.refresh();
     } else {
       setLoading(false);
-      setError("Account created! Please check your email to confirm your account, then log in.");
+      setError(t('auth.accountCreated'));
     }
   }
 
@@ -97,26 +99,26 @@ export default function BrandJoinPage() {
           <Link href="/">
             <img src="/flowrid-logo.png" alt="Flowrid" className="h-8 mx-auto mb-6" />
           </Link>
-          <h1 className="text-2xl font-bold text-text">Create your brand account</h1>
-          <p className="text-text-secondary mt-2">Set up your profile to get matched with top 3PLs.</p>
+          <h1 className="text-2xl font-bold text-text">{t('auth.brandJoinTitle')}</h1>
+          <p className="text-text-secondary mt-2">{t('auth.brandJoinDesc')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <input type="text" placeholder="First name" value={form.firstName}
+            <input type="text" placeholder={t('auth.firstName')} value={form.firstName}
               onChange={(e) => update("firstName", e.target.value)} required
               className="w-full px-4 py-3 border border-border rounded-xl bg-white text-text placeholder:text-text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
-            <input type="text" placeholder="Last name" value={form.lastName}
+            <input type="text" placeholder={t('auth.lastName')} value={form.lastName}
               onChange={(e) => update("lastName", e.target.value)} required
               className="w-full px-4 py-3 border border-border rounded-xl bg-white text-text placeholder:text-text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
           </div>
-          <input type="text" placeholder="Company name" value={form.company}
+          <input type="text" placeholder={t('auth.companyName')} value={form.company}
             onChange={(e) => update("company", e.target.value)} required
             className="w-full px-4 py-3 border border-border rounded-xl bg-white text-text placeholder:text-text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
-          <input type="email" placeholder="Email address" value={form.email}
+          <input type="email" placeholder={t('auth.email')} value={form.email}
             onChange={(e) => update("email", e.target.value)} required
             className="w-full px-4 py-3 border border-border rounded-xl bg-white text-text placeholder:text-text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
-          <input type="password" placeholder="Password (min 6 characters)" value={form.password}
+          <input type="password" placeholder={t('auth.password')} value={form.password}
             onChange={(e) => update("password", e.target.value)} required minLength={6}
             className="w-full px-4 py-3 border border-border rounded-xl bg-white text-text placeholder:text-text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
 
@@ -124,16 +126,16 @@ export default function BrandJoinPage() {
 
           <button type="submit" disabled={loading}
             className="w-full py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary-dark transition-colors disabled:opacity-60">
-            {loading ? "Creating account..." : "Create account"}
+            {loading ? t('auth.creating') : t('auth.createAccount')}
           </button>
         </form>
 
         <p className="text-xs text-text-secondary text-center mt-4">
-          By creating an account, you agree to our Terms of Service and Privacy Policy.
+          {t('auth.legalConsent')}
         </p>
         <div className="text-center mt-6 pt-6 border-t border-border">
           <p className="text-sm text-text-secondary">
-            Already have an account? <Link href="/login" className="text-primary hover:underline font-medium">Log in</Link>
+            {t('auth.alreadyHave')} <Link href="/login" className="text-primary hover:underline font-medium">{t('auth.logIn')}</Link>
           </p>
         </div>
       </div>

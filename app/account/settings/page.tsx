@@ -4,8 +4,10 @@ import { useEffect, useState, useRef } from "react";
 import { createBrowserClient } from "@/lib/supabase";
 import Autocomplete from "@/components/ui/Autocomplete";
 import { COUNTRIES, getCityOptions } from "@/lib/locations";
+import { useTranslations } from "next-intl";
 
 export default function AccountSettingsPage() {
+  const t = useTranslations();
   const supabase = createBrowserClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -73,7 +75,7 @@ export default function AccountSettingsPage() {
       data: { username, country, city, occupation, member_id: memberId },
     });
     if (error) setMessage("Error: " + error.message);
-    else setMessage("Profile updated.");
+    else setMessage(t("account.settings.profileUpdated"));
     setSaving(false);
   }
 
@@ -104,7 +106,7 @@ export default function AccountSettingsPage() {
 
     await supabase.auth.updateUser({ data: { avatar_url: publicUrl } });
     setAvatarUrl(publicUrl);
-    setMessage("Avatar updated.");
+    setMessage(t("account.settings.avatarUpdated"));
     setSaving(false);
   }
 
@@ -127,7 +129,7 @@ export default function AccountSettingsPage() {
     setMessage("");
     const { error } = await supabase!.auth.updateUser({ password: newPassword });
     if (error) setMessage("Error: " + error.message);
-    else setMessage("Password updated.");
+    else setMessage(t("account.settings.passwordUpdated"));
     setSaving(false);
     setNewPassword("");
     setCurrentPassword("");
@@ -148,8 +150,8 @@ export default function AccountSettingsPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold text-text mb-2">Account Settings</h1>
-      <p className="text-text-secondary mb-8">Manage your profile, security, and preferences.</p>
+      <h1 className="text-2xl font-bold text-text mb-2">{t("account.settings.title")}</h1>
+      <p className="text-text-secondary mb-8">{t("account.settings.desc")}</p>
 
       {message && (
         <div className={`mb-6 text-sm px-4 py-3 rounded-xl border ${message.startsWith("Error") ? "text-danger bg-danger/5 border-danger/20" : "text-success bg-success/5 border-success/20"}`}>
@@ -159,7 +161,7 @@ export default function AccountSettingsPage() {
 
       {/* ──── Avatar + Member ID ──── */}
       <div className={sectionClass}>
-        <h2 className="text-lg font-semibold text-text mb-4">Profile</h2>
+        <h2 className="text-lg font-semibold text-text mb-4">{t("account.settings.profile")}</h2>
         <div className="flex items-center gap-5 mb-6">
           <div className="relative">
             {avatarUrl ? (
@@ -172,7 +174,7 @@ export default function AccountSettingsPage() {
             <button
               onClick={() => fileInputRef.current?.click()}
               className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-xs hover:bg-primary-dark transition-colors"
-              title="Change avatar"
+              title={t("account.settings.changeAvatar")}
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -181,82 +183,82 @@ export default function AccountSettingsPage() {
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
           </div>
           <div>
-            <p className="text-sm text-text-secondary">Member ID</p>
+            <p className="text-sm text-text-secondary">{t("account.settings.memberId")}</p>
             <p className="text-lg font-mono font-bold text-text tracking-wider">{memberId}</p>
           </div>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className={labelClass}>Username</label>
+            <label className={labelClass}>{t("account.settings.username")}</label>
             <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}
-              className={inputClass} placeholder="Your display name" />
+              className={inputClass} placeholder={t("account.settings.usernamePlaceholder")} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className={labelClass}>Country / Region</label>
+              <label className={labelClass}>{t("account.settings.country")}</label>
               <Autocomplete
                 value={country}
                 onChange={setCountry}
-                placeholder="Start typing..."
+                placeholder={t("account.settings.countryPlaceholder")}
                 options={COUNTRIES}
               />
             </div>
             <div>
-              <label className={labelClass}>City</label>
+              <label className={labelClass}>{t("account.settings.city")}</label>
               <Autocomplete
                 value={city}
                 onChange={setCity}
-                placeholder="Start typing your city..."
+                placeholder={t("account.settings.cityPlaceholder")}
                 options={getCityOptions(country)}
               />
             </div>
           </div>
           <div>
-            <label className={labelClass}>Occupation / Role</label>
+            <label className={labelClass}>{t("account.settings.occupation")}</label>
             <select value={occupation} onChange={(e) => setOccupation(e.target.value)}
               className={inputClass}>
-              <option value="">Select (optional)</option>
-              <option value="Founder / CEO">Founder / CEO</option>
-              <option value="Operations Manager">Operations Manager</option>
-              <option value="Supply Chain Director">Supply Chain Director</option>
-              <option value="E-commerce Manager">E-commerce Manager</option>
-              <option value="Logistics Coordinator">Logistics Coordinator</option>
-              <option value="Warehouse Manager">Warehouse Manager</option>
-              <option value="Business Owner">Business Owner</option>
-              <option value="Consultant">Consultant</option>
-              <option value="Other">Other</option>
+              <option value="">{t("account.settings.occupationPlaceholder")}</option>
+              <option value="Founder / CEO">{t("account.settings.occupations.founder")}</option>
+              <option value="Operations Manager">{t("account.settings.occupations.opsManager")}</option>
+              <option value="Supply Chain Director">{t("account.settings.occupations.supplyChain")}</option>
+              <option value="E-commerce Manager">{t("account.settings.occupations.ecomManager")}</option>
+              <option value="Logistics Coordinator">{t("account.settings.occupations.logisticsCoordinator")}</option>
+              <option value="Warehouse Manager">{t("account.settings.occupations.warehouseManager")}</option>
+              <option value="Business Owner">{t("account.settings.occupations.businessOwner")}</option>
+              <option value="Consultant">{t("account.settings.occupations.consultant")}</option>
+              <option value="Other">{t("account.settings.occupations.other")}</option>
             </select>
           </div>
         </div>
 
         <button onClick={handleSaveProfile} disabled={saving}
           className="mt-6 px-6 py-2.5 bg-primary text-white rounded-xl font-medium text-sm hover:bg-primary-dark transition-colors disabled:opacity-60">
-          {saving ? "Saving..." : "Save Profile"}
+          {saving ? t("account.settings.saving") : t("account.settings.saveProfile")}
         </button>
       </div>
 
       {/* ──── Email ──── */}
       <div className={sectionClass}>
-        <h2 className="text-lg font-semibold text-text mb-4">Email</h2>
-        <p className="text-sm text-text-secondary mb-4">Current email: <span className="text-text font-medium">{email}</span></p>
+        <h2 className="text-lg font-semibold text-text mb-4">{t("account.settings.email")}</h2>
+        <p className="text-sm text-text-secondary mb-4">{t("account.settings.currentEmail", { email })}</p>
         <div className="flex gap-3">
           <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)}
-            className={`${inputClass} flex-1`} placeholder="New email address" />
+            className={`${inputClass} flex-1`} placeholder={t("account.settings.newEmail")} />
           <button onClick={handleChangeEmail} disabled={saving || !newEmail}
             className="px-6 py-3 bg-primary text-white rounded-xl font-medium text-sm hover:bg-primary-dark transition-colors disabled:opacity-60 shrink-0">
-            Change Email
+            {t("account.settings.changeEmail")}
           </button>
         </div>
       </div>
 
       {/* ──── Password ──── */}
       <div className={sectionClass}>
-        <h2 className="text-lg font-semibold text-text mb-4">Password</h2>
+        <h2 className="text-lg font-semibold text-text mb-4">{t("account.settings.password")}</h2>
         {!showPasswordForm ? (
           <button onClick={() => setShowPasswordForm(true)}
             className="px-4 py-2 border border-border rounded-xl text-sm text-text-secondary hover:border-primary hover:text-primary transition-colors">
-            Change Password
+            {t("account.settings.changePassword")}
           </button>
         ) : (
           <div className="space-y-3">
@@ -265,11 +267,11 @@ export default function AccountSettingsPage() {
             <div className="flex gap-3">
               <button onClick={handleChangePassword} disabled={saving || !newPassword}
                 className="px-6 py-2.5 bg-primary text-white rounded-xl font-medium text-sm hover:bg-primary-dark transition-colors disabled:opacity-60">
-                Update Password
+                {t("account.settings.updatePassword")}
               </button>
               <button onClick={() => setShowPasswordForm(false)}
                 className="px-6 py-2.5 border border-border rounded-xl text-sm text-text-secondary hover:text-text transition-colors">
-                Cancel
+                {t("account.settings.cancel")}
               </button>
             </div>
           </div>
