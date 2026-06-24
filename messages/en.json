@@ -210,7 +210,13 @@
       "temperatureControlledStorage": "Temperature-Controlled Storage",
       "batchLotTracking": "Batch/Lot Tracking",
       "serialNumberTracking": "Serial Number Tracking",
-      "ediIntegration": "EDI Integration"
+      "ediIntegration": "EDI Integration",
+      "pickAndPack": "Pick & Pack",
+      "warehousing": "Warehousing",
+      "freightForwarding": "Freight Forwarding",
+      "dtfFulfillment": "DTF Fulfillment",
+      "printOnDemand": "Print on Demand",
+      "dropshipping": "Dropshipping"
     },
     "ratingLabels": {
       "excellent": "Excellent",
@@ -466,6 +472,7 @@
     "integrationsLabel": "Integrations",
     "automationLabel": "Automation",
     "auditLabel": "Audit",
+    "compareProvidersLabel": "Compare Providers",
     "workspace": "Workspace",
     "operations": "Operations",
     "insights": "Insights",

@@ -132,7 +132,7 @@ export function getBrandAccountMenuGroups(
       label: t("account.admin"),
       items: [
         {
-          label: "Compare Providers",
+          label: t("account.compareProvidersLabel"),
           description: t("account.menuItems.compareProviders"),
           href: "/account/compare",
           icon: "/icons/compare-providers.png",
@@ -153,7 +153,7 @@ export function getBrandAccountMenuGroups(
           accent: "neutral",
         },
         {
-          label: "Account Settings",
+          label: t("account.settings.title"),
           description: t("account.menuItems.settings"),
           href: "/account/settings",
           icon: "/icons/settings.png",

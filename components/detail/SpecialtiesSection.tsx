@@ -42,27 +42,80 @@ const NICHE_TRANSLATION_KEYS: Record<string, string> = {
 };
 
 // VAS service name to translation key mapping
+// Supports direct match, trimmed match, case-insensitive, and fuzzy partial match
 const VAS_TRANSLATION_KEYS: Record<string, string> = {
   "Quality Control": "qualityControl",
+  "Quality Control Inspections": "qualityControl",
+  "QC Inspections": "qualityControl",
+  "QC": "qualityControl",
   "Kitting": "kitting",
+  "Kitting & Assembly": "kitting",
+  "Kitting and Assembly": "kitting",
+  "Assembly": "kitting",
   "Custom Packaging": "customPackaging",
+  "Custom Packaging & Branding": "customPackaging",
+  "Packaging": "customPackaging",
   "Returns Management": "returnsManagement",
+  "Returns Processing": "returnsManagement",
+  "Returns": "returnsManagement",
   "FBA Prep": "fbaPrep",
+  "FBA Preparation": "fbaPrep",
+  "Amazon FBA Prep": "fbaPrep",
+  "FBA": "fbaPrep",
   "B2B Fulfillment": "b2bFulfillment",
+  "B2B": "b2bFulfillment",
+  "Wholesale Fulfillment": "b2bFulfillment",
   "Subscription Box": "subscriptionBox",
+  "Subscription Boxes": "subscriptionBox",
+  "Subscription": "subscriptionBox",
   "Crowdfunding Fulfillment": "crowdfundingFulfillment",
+  "Crowdfunding": "crowdfundingFulfillment",
   "Cross-docking": "crossDocking",
+  "Cross Docking": "crossDocking",
+  "Crossdock": "crossDocking",
   "Labeling & Barcoding": "labelingAndBarcoding",
+  "Labeling and Barcoding": "labelingAndBarcoding",
+  "Barcoding": "labelingAndBarcoding",
+  "Labeling": "labelingAndBarcoding",
   "Photography": "photography",
+  "Product Photography": "photography",
+  "Photo": "photography",
   "Gift Wrapping": "giftWrapping",
+  "Gift Wrap": "giftWrapping",
   "Insert Marketing": "insertMarketing",
+  "Marketing Inserts": "insertMarketing",
   "Same-Day Shipping": "sameDayShipping",
+  "Same Day Shipping": "sameDayShipping",
+  "Same Day": "sameDayShipping",
   "International Shipping": "internationalShipping",
+  "International": "internationalShipping",
   "Hazmat Handling": "hazmatHandling",
+  "Hazmat": "hazmatHandling",
+  "Hazardous Materials": "hazmatHandling",
   "Temperature-Controlled Storage": "temperatureControlledStorage",
+  "Temperature Controlled Storage": "temperatureControlledStorage",
+  "Cold Storage": "temperatureControlledStorage",
+  "Cold Chain": "temperatureControlledStorage",
+  "Refrigerated Storage": "temperatureControlledStorage",
   "Batch/Lot Tracking": "batchLotTracking",
+  "Batch Lot Tracking": "batchLotTracking",
+  "Lot Tracking": "batchLotTracking",
   "Serial Number Tracking": "serialNumberTracking",
+  "Serial Tracking": "serialNumberTracking",
   "EDI Integration": "ediIntegration",
+  "EDI": "ediIntegration",
+  "Pick and Pack": "pickAndPack",
+  "Pick & Pack": "pickAndPack",
+  "Warehousing": "warehousing",
+  "Storage": "warehousing",
+  "Freight Forwarding": "freightForwarding",
+  "Freight": "freightForwarding",
+  "DTF Fulfillment": "dtfFulfillment",
+  "DTF": "dtfFulfillment",
+  "Print on Demand": "printOnDemand",
+  "POD": "printOnDemand",
+  "Dropshipping": "dropshipping",
+  "Drop Ship": "dropshipping",
 };
 
 function getNicheTranslationKey(category: string): string | null {
@@ -76,11 +129,29 @@ function getNicheTranslationKey(category: string): string | null {
 }
 
 function getVasTranslationKey(service: string): string | null {
-  if (VAS_TRANSLATION_KEYS[service]) return VAS_TRANSLATION_KEYS[service];
-  // Try case-insensitive match
+  if (!service) return null;
+  const trimmed = service.trim();
+  if (!trimmed) return null;
+
+  // Direct match (most specific first)
+  if (VAS_TRANSLATION_KEYS[trimmed]) return VAS_TRANSLATION_KEYS[trimmed];
+
+  // Case-insensitive direct match
+  const lowerTrimmed = trimmed.toLowerCase();
   for (const [k, v] of Object.entries(VAS_TRANSLATION_KEYS)) {
-    if (k.toLowerCase() === service.toLowerCase()) return v;
+    if (k.toLowerCase() === lowerTrimmed) return v;
   }
+
+  // Fuzzy: try to find any key that is contained within the service name or vice versa
+  // Match longer keys first for specificity
+  const sortedKeys = Object.keys(VAS_TRANSLATION_KEYS).sort((a, b) => b.length - a.length);
+  for (const k of sortedKeys) {
+    const lowerK = k.toLowerCase();
+    if (lowerTrimmed.includes(lowerK) || lowerK.includes(lowerTrimmed)) {
+      return VAS_TRANSLATION_KEYS[k];
+    }
+  }
+
   return null;
 }
 
