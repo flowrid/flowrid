@@ -5,14 +5,8 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { estimateWarehouses } from "@/lib/detail-content";
+import { translateState } from "@/lib/translate-data";
 import { PLATFORM_ICONS } from "@/lib/platform-icons";
-
-function formatStateName(state: string): string {
-  return state
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
-}
 
 function getCardTagline(data: ThreePLCardData, t: ReturnType<typeof useTranslations>): { label: string; hasColdChain: boolean } {
   const cats = data.categories || [];
@@ -158,7 +152,9 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
           className="text-[#86868B] leading-tight"
           style={{ marginTop: "2.4%", fontSize: "clamp(0.55rem, 6.4cqw, 1.75rem)" }}
         >
-          {data.city ? `${data.city}, ${formatStateName(data.state)}` : formatStateName(data.state)}
+          {data.city
+            ? `${data.city}, ${translateState(data.state, t as any)}`
+            : translateState(data.state, t as any)}
         </p>
       </div>
 
