@@ -119,6 +119,30 @@ const STATE_TRANSLATION_MAP: Record<string, string> = {
   switzerland: "detail.states.switzerland",
   austria: "detail.states.austria",
   portugal: "detail.states.portugal",
+  // Canadian provinces
+  ontario: "detail.states.ontario",
+  quebec: "detail.states.quebec",
+  "british-columbia": "detail.states.britishColumbia",
+  alberta: "detail.states.alberta",
+  "new-brunswick": "detail.states.newBrunswick",
+  manitoba: "detail.states.manitoba",
+  "nova-scotia": "detail.states.novaScotia",
+  saskatchewan: "detail.states.saskatchewan",
+  "prince-edward-island": "detail.states.princeEdwardIsland",
+  "newfoundland-and-labrador": "detail.states.newfoundlandAndLabrador",
+  // Australian states
+  "new-south-wales": "detail.states.newSouthWales",
+  victoria: "detail.states.victoria",
+  queensland: "detail.states.queensland",
+  "south-australia": "detail.states.southAustralia",
+  "western-australia": "detail.states.westernAustralia",
+  // German states
+  "north-rhine-westphalia": "detail.states.northRhineWestphalia",
+  "lower-saxony": "detail.states.lowerSaxony",
+  // UK regions
+  england: "detail.states.england",
+  scotland: "detail.states.scotland",
+  wales: "detail.states.wales",
 };
 
 // ── Speed slug → translation key ──

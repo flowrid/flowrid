@@ -47,7 +47,40 @@ export default async function Home() {
   ]);
 
   const usStates = allStates.filter((s) => US_STATES.has(s.toLowerCase()));
-  const international = allStates.filter((s) => !US_STATES.has(s.toLowerCase()));
+
+  // 清理国际数据：过滤脏数据 + 归一化省份缩写
+  const PROVINCE_NORMALIZE: Record<string, string> = {
+    // 加拿大省份缩写
+    on: "ontario", qc: "quebec", bc: "british-columbia", ab: "alberta",
+    nb: "new-brunswick", mb: "manitoba", ns: "nova-scotia",
+    sk: "saskatchewan", pe: "prince-edward-island", nl: "newfoundland-and-labrador",
+    // 澳大利亚州缩写
+    nsw: "new-south-wales", vic: "victoria", qld: "queensland",
+    sa: "south-australia", wa: "western-australia",
+    // 德国州代码
+    nrw: "north-rhine-westphalia", nds: "lower-saxony",
+    // 英国地区代码
+    eng: "england", sct: "scotland", wls: "wales",
+  };
+
+  function isValidLocation(s: string): boolean {
+    if (!s || s.length < 2 || s.length > 40) return false;
+    // 排除纯数字或数字开头的
+    if (/^\d/.test(s)) return false;
+    // 排除含门牌号的地址（数字+连字符+数字 如 "5625-61-ave"）
+    if (/\d+-\d+/.test(s)) return false;
+    // 排除邮编片段（如 "PL6 7PP"）
+    if (/^[A-Z]{1,2}\d+\s*\d/.test(s)) return false;
+    // 排除过长路径（超过4段）
+    if (s.split("-").length > 4) return false;
+    return true;
+  }
+
+  const international = allStates
+    .filter((s) => !US_STATES.has(s.toLowerCase()))
+    .map((s) => PROVINCE_NORMALIZE[s.toLowerCase()] || s)
+    .filter(isValidLocation);
+  const uniqueInternational = [...new Set(international)].sort();
 
   // 提取唯一 Platforms
   const platforms = [
@@ -117,7 +150,7 @@ export default async function Home() {
           display: stateDisplay(s),
           href: `/3pl/${s}`,
         }))}
-        international={international.map((s) => ({
+        international={uniqueInternational.map((s) => ({
           key: s,
           display: stateDisplay(s),
           href: `/3pl/${s}`,
