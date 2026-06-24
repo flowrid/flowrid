@@ -45,25 +45,27 @@ export async function GET(req: Request) {
       });
     }
 
-    // Source 2: auth.users raw_user_meta_data (persists across OAuth refreshes)
-    const { data: adminUser, error: adminError } = await supabase.auth.admin.getUserById(userId);
-    const rawMetaRole = (adminUser?.user?.raw_user_meta_data as any)?.role;
+    // Source 2: auth.users stored metadata via admin API (survives OAuth refresh)
+    const { data: adminUser } = await supabase.auth.admin.getUserById(userId);
+    const adminMeta = adminUser?.user?.user_metadata as Record<string, unknown> | undefined;
+    const storedRole = adminMeta?.role as string | undefined;
 
-    if (rawMetaRole) {
+    if (storedRole) {
       // Backfill public.users for next time
+      const name = (adminMeta?.first_name as string) || authData.user.email?.split("@")[0] || "";
       await supabase.from("users").upsert({
         id: userId,
         email: authData.user.email || "",
-        name: (adminUser?.user?.raw_user_meta_data as any)?.first_name || authData.user.email?.split("@")[0] || "",
-        role: rawMetaRole,
+        name,
+        role: storedRole,
         is_active: true,
       }, { onConflict: "id" });
 
       return NextResponse.json({
-        role: rawMetaRole,
-        name: (adminUser?.user?.raw_user_meta_data as any)?.first_name || null,
+        role: storedRole,
+        name: (adminMeta?.first_name as string) || null,
         email: authData.user.email || null,
-        source: "raw_user_meta_data",
+        source: "admin_api_raw_meta",
       });
     }
 
