@@ -176,6 +176,23 @@
       "good": "Bueno",
       "average": "Promedio",
       "limited": "Datos limitados"
+    },
+    "overviewTemplate": "{name} es un proveedor de logística de terceros de servicio completo con sede en {loc}. Con amplia experiencia en fulfillment de {cats}, {name} ofrece almacenamiento integral, soluciones de pick-and-pack y envío adaptadas a marcas de e-commerce en crecimiento. La empresa se integra perfectamente con {platforms}, permitiendo la sincronización de pedidos en tiempo real y la gestión de inventario. Su tiempo de procesamiento {speed} y precios {pricing} los convierten en un socio sólido para marcas que buscan escalar sus operaciones directas al consumidor.",
+    "overviewSecondaryCats": "{name} se especializa en el manejo de {cats}, con zonas de almacenamiento dedicadas y personal capacitado para cada categoría de producto.",
+    "overviewSecondaryTech": "Su stack tecnológico incluye integraciones con {techList}, permitiendo el enrutamiento automatizado de pedidos, visibilidad de inventario en tiempo real e informes completos.",
+    "overviewSecondaryVas": "Más allá del fulfillment principal, {name} ofrece servicios de valor añadido que incluyen inspecciones de control de calidad, embalaje personalizado, kitting y ensamblaje, y gestión de devoluciones, ayudando a las marcas a ofrecer una experiencia de cliente consistente y de alta calidad desde el checkout hasta la entrega.",
+    "faqItems": {
+      "qCost": "¿Cuáles son los costos y estructuras de tarifas de fulfillment de {name}?",
+      "aCost": "{name} ofrece precios {costDesc} para servicios de fulfillment en {stateName}. Los costos típicos incluyen tarifas de recepción, almacenamiento mensual (por pallet o por pie cúbico), tarifas de pick-and-pack por pedido y envío saliente. {name} proporciona cotizaciones personalizadas basadas en las dimensiones específicas de tus productos, el volumen de pedidos y cualquier servicio de valor añadido como kitting o embalaje personalizado. Contáctalos directamente para una cotización detallada adaptada a tus necesidades.",
+      "qSpeed": "¿Qué tan rápido procesa y envía pedidos {name}?",
+      "aSpeed": "{name} ofrece procesamiento de pedidos {speed} desde su centro de fulfillment en {stateName}. La mayoría de los pedidos recibidos antes de la hora límite diaria (generalmente entre las 12 y las 2 PM hora local) se envían el mismo día. El envío terrestre desde {stateName} llega a los principales centros de población de EE. UU. en un plazo de 1 a 5 días hábiles según la distancia. También hay opciones de envío exprés disponibles a través de su red de transportistas.",
+      "aSpeedWithCity": "{name} ofrece procesamiento de pedidos {speed} desde su centro de fulfillment en {stateName}, {city}. La mayoría de los pedidos recibidos antes de la hora límite diaria (generalmente entre las 12 y las 2 PM hora local) se envían el mismo día. El envío terrestre desde {stateName} llega a los principales centros de población de EE. UU. en un plazo de 1 a 5 días hábiles según la distancia. También hay opciones de envío exprés disponibles a través de su red de transportistas.",
+      "qPlatforms": "¿Con qué plataformas y herramientas de eCommerce se integra {name}?",
+      "aPlatforms": "{name} se integra con {platList}. Sus integraciones de plataforma admiten sincronización de pedidos en tiempo real, actualizaciones automáticas de inventario, notificaciones de seguimiento de envíos y gestión de pedidos multicanal, asegurando que tus productos de {catList} se mantengan sincronizados en todos los canales de venta.",
+      "qOnboard": "¿Qué tan rápido puede incorporarse un nuevo cliente con {name}?",
+      "aOnboard": "La incorporación típica con {name} toma de 1 a 3 semanas, dependiendo de la complejidad de tu catálogo de productos y los requisitos de integración. El proceso incluye la configuración de la cuenta, pruebas de integración de plataforma, recepción y ubicación de inventario, y capacitación del personal sobre cualquier requisito especial de manejo para tus productos de {catList}. La incorporación acelerada puede estar disponible para lanzamientos con plazos ajustados.",
+      "qCompare": "¿Cómo se compara {name} con otros proveedores 3PL de {stateName}?",
+      "aCompare": "{name} se diferencia por su velocidad de fulfillment {speed}, precios {costDesc} y experiencia especializada con {catList}. Su puntuación operativa de {rating} refleja un sólido rendimiento en precisión de fulfillment, velocidad y capacidades de integración. Para marcas que buscan un 3PL confiable en {stateName} con experiencia en integración con {firstPlatform}, {name} es un candidato sólido que vale la pena evaluar junto con otras alternativas."
     }
   },
   "card": {
@@ -185,7 +202,25 @@
     "bestMatch": "Mejor coincidencia",
     "getMatchedFree": "Conéctate gratis",
     "saved": "¡Guardado en tu cuenta!",
-    "coldChain": "Cadena de frío"
+    "coldChain": "Cadena de frío",
+    "categories": {
+      "apparel": "Ropa",
+      "electronics": "Electrónica",
+      "beauty": "Belleza",
+      "jewelry": "Joyería",
+      "home": "Decoración del hogar",
+      "toys": "Juguetes",
+      "food": "Alimentos y bebidas",
+      "sports": "Deportes",
+      "automotive": "Automoción",
+      "food-beverage": "Alimentos y bebidas",
+      "home-garden": "Hogar y jardín",
+      "pet-supplies": "Artículos para mascotas",
+      "health": "Salud",
+      "books": "Libros",
+      "pharma": "Farmacia"
+    },
+    "fulfillmentCenter": "Centro de fulfillment en {city}"
   },
   "compare": {
     "title": "Comparar proveedores 3PL",

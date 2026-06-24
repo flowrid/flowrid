@@ -176,6 +176,23 @@
       "good": "Good",
       "average": "Average",
       "limited": "Limited Data"
+    },
+    "overviewTemplate": "{name} is a full-service third-party logistics provider headquartered in {loc}. With deep expertise in {cats} fulfillment, {name} offers comprehensive warehousing, pick-and-pack, and shipping solutions tailored to growing e-commerce brands. The company integrates seamlessly with {platforms}, enabling real-time order syncing and inventory management. Their {speed} fulfillment turnaround and {pricing} pricing make them a strong partner for brands looking to scale their direct-to-consumer operations.",
+    "overviewSecondaryCats": "{name} specializes in handling {cats}, with dedicated storage zones and trained staff for each product category.",
+    "overviewSecondaryTech": "Their technology stack includes integrations with {techList}, allowing for automated order routing, real-time inventory visibility, and comprehensive reporting.",
+    "overviewSecondaryVas": "Beyond core fulfillment, {name} provides value-added services including quality control inspections, custom packaging, kitting and assembly, and returns management — helping brands deliver a consistent, high-quality customer experience from checkout to doorstep.",
+    "faqItems": {
+      "qCost": "What are {name}'s fulfillment costs and fee structures?",
+      "aCost": "{name} offers {costDesc} pricing for fulfillment services in {stateName}. Typical costs include receiving fees, monthly storage (per pallet or per cubic foot), pick-and-pack fees per order, and outbound shipping. {name} provides customized quotes based on your specific product dimensions, order volume, and any value-added services like kitting or custom packaging. Contact them directly for an itemized quote tailored to your needs.",
+      "qSpeed": "How fast does {name} process and ship orders?",
+      "aSpeed": "{name} offers {speed} order processing from their {stateName} fulfillment center. Most orders received before the daily cutoff time (typically 12-2 PM local) ship the same day. Ground shipping from {stateName} reaches major US population centers within 1-5 business days depending on distance. Expedited shipping options are also available through their carrier network.",
+      "aSpeedWithCity": "{name} offers {speed} order processing from their {stateName} fulfillment center in {city}. Most orders received before the daily cutoff time (typically 12-2 PM local) ship the same day. Ground shipping from {stateName} reaches major US population centers within 1-5 business days depending on distance. Expedited shipping options are also available through their carrier network.",
+      "qPlatforms": "Which eCommerce platforms and tools does {name} integrate with?",
+      "aPlatforms": "{name} integrates with {platList}. Their platform integrations support real-time order syncing, automatic inventory updates, shipment tracking push-back, and multi-channel order management — ensuring your {catList} products stay synchronized across all sales channels.",
+      "qOnboard": "How quickly can a new client onboard with {name}?",
+      "aOnboard": "Typical onboarding with {name} takes 1-3 weeks depending on your product catalog complexity and integration requirements. The process includes account setup, platform integration testing, inventory receiving and slotting, and staff training on any special handling requirements for your {catList} products. Rush onboarding may be available for time-sensitive launches.",
+      "qCompare": "How does {name} compare to other {stateName} 3PL providers?",
+      "aCompare": "{name} differentiates itself through {speed} fulfillment speed, {costDesc} pricing, and specialized experience with {catList}. Their ops score of {rating} reflects strong performance across fulfillment accuracy, speed, and integration capabilities. For brands seeking a reliable {stateName}-based 3PL with {firstPlatform} integration expertise, {name} is a strong candidate worth evaluating alongside alternatives."
     }
   },
   "card": {
@@ -185,7 +202,25 @@
     "bestMatch": "Best Match",
     "getMatchedFree": "Get Matched Free",
     "saved": "Saved to your account!",
-    "coldChain": "Cold Chain"
+    "coldChain": "Cold Chain",
+    "fulfillmentCenter": "Fulfillment center in {city}",
+    "categories": {
+      "apparel": "Apparel",
+      "electronics": "Electronics",
+      "beauty": "Beauty",
+      "jewelry": "Jewelry",
+      "home": "Home Decor",
+      "toys": "Toys",
+      "food": "Food & Beverage",
+      "sports": "Sports",
+      "automotive": "Auto",
+      "food-beverage": "Food & Bev",
+      "home-garden": "Home & Garden",
+      "pet-supplies": "Pet Supplies",
+      "health": "Health",
+      "books": "Books",
+      "pharma": "Pharma"
+    }
   },
   "compare": {
     "title": "Compare 3PL Providers",

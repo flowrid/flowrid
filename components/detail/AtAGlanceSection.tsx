@@ -61,9 +61,9 @@ export default async function AtAGlanceSection({
         <div className="bg-card border border-border rounded-xl p-5">
           <p className="text-xs text-text-secondary uppercase tracking-wide mb-2">{t("detail.storageEnvironments")}</p>
           <div className="flex flex-wrap gap-2">
-            {environments.map((env) => (
-              <span key={env} className="px-3 py-1.5 bg-gray-100 rounded-lg text-sm text-text">
-                {env}
+            {environments.map((envKey) => (
+              <span key={envKey} className="px-3 py-1.5 bg-gray-100 rounded-lg text-sm text-text">
+                {t(envKey as any)}
               </span>
             ))}
           </div>

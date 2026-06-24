@@ -19,10 +19,10 @@ function getCardTagline(data: ThreePLCardData, t: ReturnType<typeof useTranslati
   const wh = estimateWarehouses(data.state, data.order_capacity || 0);
   const base = `${wh} WH`;
 
-  // 品类标签
+  // 品类标签 — 优先翻译，回退 catMap
   const catMap: Record<string, string> = {
     apparel: "Apparel", electronics: "Electronics", beauty: "Beauty",
-    jewelry: "Jewelry", home: "Home Décor", toys: "Toys",
+    jewelry: "Jewelry", home: "Home Decor", toys: "Toys",
     food: "Food & Beverage", sports: "Sports", automotive: "Auto",
     "food-beverage": "Food & Bev", "home-garden": "Home & Garden",
     "pet-supplies": "Pet Supplies", health: "Health",
@@ -36,7 +36,7 @@ function getCardTagline(data: ThreePLCardData, t: ReturnType<typeof useTranslati
     label = `${t("detail.multiCat")} · ${base}`;
   } else if (cats.length === 1) {
     const c = cats[0];
-    const name = catMap[c] || c.charAt(0).toUpperCase() + c.slice(1);
+    const name = t(`card.categories.${c}`) || catMap[c] || c.charAt(0).toUpperCase() + c.slice(1);
     label = `${name} · ${base}`;
   } else {
     label = `${t("detail.fulfillment")} · ${base}`;
@@ -187,7 +187,7 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
           className="text-[#86868B] leading-tight whitespace-nowrap overflow-x-auto"
           style={{ marginTop: "2%", fontSize: "clamp(0.55rem, 6.4cqw, 1.75rem)", scrollbarWidth: "none" }}
         >
-          {data.description || `Fulfillment center in ${data.city}`}
+          {data.description || (data.city ? t("card.fulfillmentCenter", { city: data.city }) : "")}
         </p>
       </div>
 

@@ -176,6 +176,23 @@
       "good": "Bien",
       "average": "Moyen",
       "limited": "Données limitées"
+    },
+    "overviewTemplate": "{name} est un prestataire logistique tiers complet dont le siege social est situe a {loc}. Avec une expertise approfondie en preparation {cats}, {name} propose des solutions completes d'entreposage, de preparation et d'expedition adaptees aux marques e-commerce en croissance. L'entreprise s'integre parfaitement avec {platforms}, permettant la synchronisation des commandes en temps reel et la gestion des stocks. Leur delai de preparation {speed} et leurs tarifs {pricing} en font un partenaire solide pour les marques cherchant a developper leurs operations en direct vers le consommateur.",
+    "overviewSecondaryCats": "{name} se specialise dans la gestion de {cats}, avec des zones de stockage dediees et un personnel forme pour chaque categorie de produits.",
+    "overviewSecondaryTech": "Leur pile technologique comprend des integrations avec {techList}, permettant un routage automatise des commandes, une visibilite des stocks en temps reel et des rapports complets.",
+    "overviewSecondaryVas": "Au-dela de la preparation de base, {name} fournit des services a valeur ajoutee comprenant des inspections de controle qualite, des emballages personnalises, le kitting et l'assemblage, et la gestion des retours - aidant les marques a offrir une experience client coherente et de haute qualite, du paiement a la livraison.",
+    "faqItems": {
+      "qCost": "Quels sont les couts et la structure tarifaire de {name} ?",
+      "aCost": "{name} propose une tarification {costDesc} pour les services de preparation en {stateName}. Les couts typiques incluent les frais de reception, le stockage mensuel (par palette ou par pied cube), les frais de preparation par commande et l'expedition sortante. {name} fournit des devis personnalises bases sur les dimensions specifiques de vos produits, le volume de commandes et tout service a valeur ajoutee comme le kitting ou l'emballage personnalise. Contactez-les directement pour un devis detaille adapte a vos besoins.",
+      "qSpeed": "A quelle vitesse {name} traite-t-il et expedie-t-il les commandes ?",
+      "aSpeed": "{name} offre un traitement des commandes {speed} depuis son centre de preparation en {stateName}. La plupart des commandes recues avant l'heure limite quotidienne (generalement 12h-14h heure locale) sont expediees le jour meme. L'expedition terrestre depuis {stateName} atteint les principaux centres de population americains en 1 a 5 jours ouvrables. Des options d'expedition acceleree sont egalement disponibles via leur reseau de transporteurs.",
+      "aSpeedWithCity": "{name} offre un traitement des commandes {speed} depuis son centre de preparation en {stateName} a {city}. La plupart des commandes recues avant l'heure limite quotidienne (generalement 12h-14h heure locale) sont expediees le jour meme. L'expedition terrestre depuis {stateName} atteint les principaux centres de population americains en 1 a 5 jours ouvrables. Des options d'expedition acceleree sont egalement disponibles via leur reseau de transporteurs.",
+      "qPlatforms": "Avec quelles plateformes et outils eCommerce {name} s'integre-t-il ?",
+      "aPlatforms": "{name} s'integre avec {platList}. Leurs integrations de plateforme prennent en charge la synchronisation des commandes en temps reel, les mises a jour automatiques des stocks, le suivi des expeditions et la gestion multi-canale des commandes - garantissant que vos produits {catList} restent synchronises sur tous les canaux de vente.",
+      "qOnboard": "A quelle vitesse un nouveau client peut-il etre integre avec {name} ?",
+      "aOnboard": "L'integration typique avec {name} prend 1 a 3 semaines selon la complexite de votre catalogue de produits et les exigences d'integration. Le processus comprend la configuration du compte, les tests d'integration de plateforme, la reception et le stockage des stocks, et la formation du personnel sur les exigences speciales de manutention pour vos produits {catList}. Une integration acceleree peut etre disponible pour les lancements urgents.",
+      "qCompare": "Comment {name} se compare-t-il aux autres prestataires 3PL en {stateName} ?",
+      "aCompare": "{name} se differencie par sa vitesse de preparation {speed}, sa tarification {costDesc} et son experience specialisee avec {catList}. Son score operationnel de {rating} reflete une performance solide en matiere de precision de preparation, de vitesse et de capacites d'integration. Pour les marques recherchant un 3PL fiable base en {stateName} avec une expertise d'integration {firstPlatform}, {name} est un candidat solide a evaluer aux cotes des alternatives."
     }
   },
   "card": {
@@ -185,7 +202,25 @@
     "bestMatch": "Meilleure correspondance",
     "getMatchedFree": "Mise en relation gratuite",
     "saved": "Enregistré dans votre compte !",
-    "coldChain": "Chaîne du froid"
+    "coldChain": "Chaîne du froid",
+    "categories": {
+      "apparel": "Vêtements",
+      "electronics": "Électronique",
+      "beauty": "Beauté",
+      "jewelry": "Joaillerie",
+      "home": "Décoration",
+      "toys": "Jouets",
+      "food": "Alimentation",
+      "sports": "Sports",
+      "automotive": "Auto",
+      "food-beverage": "Alimentation et boissons",
+      "home-garden": "Maison et jardin",
+      "pet-supplies": "Accessoires pour animaux",
+      "health": "Santé",
+      "books": "Livres",
+      "pharma": "Pharmacie"
+    },
+    "fulfillmentCenter": "Centre de fulfillment à {city}"
   },
   "compare": {
     "title": "Comparer les prestataires 3PL",

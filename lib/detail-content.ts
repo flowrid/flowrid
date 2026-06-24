@@ -16,13 +16,13 @@ export function formatName(s: string): string {
     .join(" ");
 }
 
-/** 0-100 ops score → { stars: 1-5, label: string } */
-export function starsFromScore(rating: number): { stars: number; label: string } {
-  if (rating >= 90) return { stars: 5, label: "Excellent" };
-  if (rating >= 80) return { stars: 4, label: "Very Good" };
-  if (rating >= 70) return { stars: 3, label: "Good" };
-  if (rating >= 50) return { stars: 2, label: "Average" };
-  return { stars: 1, label: "Limited Data" };
+/** 0-100 ops score -> { stars: 1-5, labelKey: string } */
+export function starsFromScore(rating: number): { stars: number; labelKey: string } {
+  if (rating >= 90) return { stars: 5, labelKey: "detail.ratingLabels.excellent" };
+  if (rating >= 80) return { stars: 4, labelKey: "detail.ratingLabels.veryGood" };
+  if (rating >= 70) return { stars: 3, labelKey: "detail.ratingLabels.good" };
+  if (rating >= 50) return { stars: 2, labelKey: "detail.ratingLabels.average" };
+  return { stars: 1, labelKey: "detail.ratingLabels.limited" };
 }
 
 /** 星级文字描述 */
@@ -79,6 +79,17 @@ export function generateOverview(p: ThreePL): string {
   return `${p.name} is a full-service third-party logistics provider headquartered in ${loc}. With deep expertise in ${cats} fulfillment, ${p.name} offers comprehensive warehousing, pick-and-pack, and shipping solutions tailored to growing e-commerce brands. The company integrates seamlessly with ${platforms}, enabling real-time order syncing and inventory management. Their ${p.shipping_speed || "fast"} fulfillment turnaround and ${(p.cost_level || "$").includes("$") ? "competitive" : "premium"} pricing make them a strong partner for brands looking to scale their direct-to-consumer operations.`;
 }
 
+/** 生成 Overview 描述（i18n 版本），接受翻译函数 */
+export function generateOverviewI18n(p: ThreePL, t: (key: string, values?: Record<string, unknown>) => string): string {
+  const loc = p.city ? `${p.city}, ${formatState(p.state)}` : formatState(p.state);
+  const cats = (p.categories || []).slice(0, 4).map(formatName).join(", ") || "e-commerce products";
+  const platforms = (p.platforms || []).slice(0, 4).join(", ") || "major e-commerce platforms";
+  const speed = p.shipping_speed || "fast";
+  const pricing = (p.cost_level || "$").includes("$") ? "competitive" : "premium";
+
+  return t("detail.overviewTemplate", { name: p.name, loc, cats, platforms, speed, pricing });
+}
+
 /** 生成第二段 Overview */
 export function generateOverviewSecondary(p: ThreePL): string {
   const cats = (p.categories || []).map(formatName).join(", ");
@@ -97,7 +108,25 @@ export function generateOverviewSecondary(p: ThreePL): string {
   return parts.join(" ");
 }
 
-/** 生成 FAQ */
+/** 生成第二段 Overview（i18n 版本），接受翻译函数 */
+export function generateOverviewSecondaryI18n(p: ThreePL, t: (key: string, values?: Record<string, unknown>) => string): string {
+  const cats = (p.categories || []).map(formatName).join(", ") || "e-commerce products";
+  const techList = (p.platforms || []).concat(p.integrations || []).slice(0, 6).join(", ") || "major platforms";
+  const hasCats = !!(p.categories || []).length;
+  const hasTech = !!(p.platforms || []).length || !!(p.integrations || []).length;
+
+  let result = "";
+  if (hasCats) {
+    result += t("detail.overviewSecondaryCats", { name: p.name, cats: cats.toLowerCase() }) + " ";
+  }
+  if (hasTech) {
+    result += t("detail.overviewSecondaryTech", { name: p.name, techList }) + " ";
+  }
+  result += t("detail.overviewSecondaryVas", { name: p.name });
+  return result;
+}
+
+/** 生成 FAQ（英文原版，向后兼容） */
 export function generateFAQItems(p: ThreePL): { q: string; a: string }[] {
   const stateName = formatState(p.state);
   const catList = (p.categories || []).slice(0, 4).map(formatName).join(", ") || "e-commerce";
@@ -124,52 +153,89 @@ export function generateFAQItems(p: ThreePL): { q: string; a: string }[] {
     },
     {
       q: `How does ${p.name} compare to other ${stateName} 3PL providers?`,
-      a: `${p.name} differentiates itself through ${speed} fulfillment speed, ${costDesc} pricing, and specialized experience with ${catList.toLowerCase()}. Their ${"Ops Score".toLowerCase()} of ${Math.round(p.rating || 0)} reflects strong performance across fulfillment accuracy, speed, and integration capabilities. For brands seeking a reliable ${stateName}-based 3PL with ${platList.split(",")[0] || "e-commerce"} integration expertise, ${p.name} is a strong candidate worth evaluating alongside alternatives.`,
+      a: `${p.name} differentiates itself through ${speed} fulfillment speed, ${costDesc} pricing, and specialized experience with ${catList.toLowerCase()}. Their Ops Score of ${Math.round(p.rating || 0)} reflects strong performance across fulfillment accuracy, speed, and integration capabilities. For brands seeking a reliable ${stateName}-based 3PL with ${platList.split(",")[0] || "e-commerce"} integration expertise, ${p.name} is a strong candidate worth evaluating alongside alternatives.`,
     },
   ];
 }
 
-/** 徽章判断 */
-export function getBadges(p: ThreePL): { type: string; label: string; color: string }[] {
-  const badges: { type: string; label: string; color: string }[] = [];
+/** 生成 FAQ（i18n 版本），接受翻译函数 */
+export function generateFAQItemsI18n(p: ThreePL, t: (key: string, values?: Record<string, unknown>) => string): { q: string; a: string }[] {
+  const stateName = formatState(p.state);
+  const catList = (p.categories || []).slice(0, 4).map(formatName).join(", ") || "e-commerce";
+  const platList = (p.platforms || []).slice(0, 5).join(", ") || "major platforms";
+  const speed = p.shipping_speed || "standard";
+  const costDesc = (p.cost_level || "$").includes("$$$") ? "premium" : (p.cost_level || "$").includes("$$") ? "mid-range" : "competitive";
+  const city = p.city || "";
+  const rating = Math.round(p.rating || 0);
+  const firstPlatform = platList.split(",")[0] || "e-commerce";
+
+  return [
+    {
+      q: t("detail.faqItems.qCost", { name: p.name }),
+      a: t("detail.faqItems.aCost", { name: p.name, costDesc, stateName }),
+    },
+    {
+      q: t("detail.faqItems.qSpeed", { name: p.name }),
+      a: city
+        ? t("detail.faqItems.aSpeedWithCity", { name: p.name, speed, stateName, city })
+        : t("detail.faqItems.aSpeed", { name: p.name, speed, stateName }),
+    },
+    {
+      q: t("detail.faqItems.qPlatforms", { name: p.name }),
+      a: t("detail.faqItems.aPlatforms", { name: p.name, platList, catList: catList.toLowerCase() }),
+    },
+    {
+      q: t("detail.faqItems.qOnboard", { name: p.name }),
+      a: t("detail.faqItems.aOnboard", { name: p.name, catList: catList.toLowerCase() }),
+    },
+    {
+      q: t("detail.faqItems.qCompare", { name: p.name, stateName }),
+      a: t("detail.faqItems.aCompare", { name: p.name, speed, costDesc, catList: catList.toLowerCase(), rating, stateName, firstPlatform }),
+    },
+  ];
+}
+
+/** 徽章判断 — 返回翻译 key 而非硬编码英文 */
+export function getBadges(p: ThreePL): { type: string; labelKey: string; color: string }[] {
+  const badges: { type: string; labelKey: string; color: string }[] = [];
   const rating = p.rating || 0;
 
-  if (rating >= 90) badges.push({ type: "verified", label: "Top Rated", color: "green" });
-  else if (rating >= 75) badges.push({ type: "verified", label: "Verified 3PL", color: "green" });
+  if (rating >= 90) badges.push({ type: "verified", labelKey: "detail.topRated", color: "green" });
+  else if (rating >= 75) badges.push({ type: "verified", labelKey: "detail.verified3PL", color: "green" });
 
   const capacity = p.order_capacity || 0;
-  if (capacity >= 50000) badges.push({ type: "size", label: "Enterprise 3PL", color: "blue" });
-  else if (capacity >= 10000) badges.push({ type: "size", label: "Midmarket 3PL", color: "blue" });
-  else if (capacity > 0) badges.push({ type: "size", label: "Growing 3PL", color: "blue" });
+  if (capacity >= 50000) badges.push({ type: "size", labelKey: "detail.enterprise3PL", color: "blue" });
+  else if (capacity >= 10000) badges.push({ type: "size", labelKey: "detail.midmarket3PL", color: "blue" });
+  else if (capacity > 0) badges.push({ type: "size", labelKey: "detail.growing3PL", color: "blue" });
 
   return badges;
 }
 
-/** 根据分类和容量推断存储环境 */
+/** 根据分类和容量推断存储环境 — 返回翻译 key 后缀 */
 export function inferStorageEnvironments(p: ThreePL): string[] {
   const envs: string[] = [];
   const cats = (p.categories || []).map((c) => c.toLowerCase());
 
   if (cats.some((c) => ["food-beverage", "food", "grocery", "supplements"].includes(c))) {
-    envs.push("Temperature Controlled", "Ambient (Room Temp)");
+    envs.push("detail.environmentTypes.tempControlled", "detail.environmentTypes.ambient");
   }
   if (cats.some((c) => ["apparel", "clothing", "shoes", "fashion"].includes(c))) {
-    envs.push("Apparel & Soft Goods Storage");
+    envs.push("detail.environmentTypes.apparel");
   }
   if (cats.some((c) => ["electronics", "computers"].includes(c))) {
-    envs.push("Electronics (ESD-Safe)");
+    envs.push("detail.environmentTypes.electronics");
   }
   if (cats.some((c) => ["beauty", "cosmetics", "personal-care"].includes(c))) {
-    envs.push("Cosmetics / Beauty");
+    envs.push("detail.environmentTypes.cosmetics");
   }
   if (cats.some((c) => ["furniture", "home-garden", "appliances", "sporting-goods"].includes(c))) {
-    envs.push("Big & Bulky Storage");
+    envs.push("detail.environmentTypes.bulky");
   }
   if (cats.some((c) => ["hazmat", "chemicals", "batteries"].includes(c))) {
-    envs.push("Hazmat Certified");
+    envs.push("detail.environmentTypes.hazmat");
   }
   if (envs.length === 0) {
-    envs.push("Ambient (Room Temp)", "Standard Warehousing");
+    envs.push("detail.environmentTypes.ambient", "detail.environmentTypes.standard");
   }
 
   return [...new Set(envs)];

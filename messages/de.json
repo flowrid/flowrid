@@ -176,6 +176,23 @@
       "good": "Gut",
       "average": "Durchschnittlich",
       "limited": "Begrenzte Daten"
+    },
+    "overviewTemplate": "{name} ist ein Full-Service-Third-Party-Logistik-Anbieter mit Hauptsitz in {loc}. Mit umfassender Expertise in der {cats}-Abwicklung bietet {name} ganzheitliche Lagerhaltung, Kommissionierung und Verpackung sowie Versandlösungen, die auf wachsende E-Commerce-Marken zugeschnitten sind. Das Unternehmen integriert sich nahtlos mit {platforms} und ermöglicht so Auftragssynchronisierung und Bestandsverwaltung in Echtzeit. Die {speed} Fulfillment-Abwicklung und die {pricing} Preisgestaltung machen {name} zu einem starken Partner für Marken, die ihre Direct-to-Consumer-Ablaufe skalieren mochten.",
+    "overviewSecondaryCats": "{name} ist auf die Abwicklung von {cats} spezialisiert, mit dedizierten Lagerzonen und geschultem Personal fur jede Produktkategorie.",
+    "overviewSecondaryTech": "Der Technologie-Stack umfasst Integrationen mit {techList} und ermoglicht automatisiertes Order-Routing, Echtzeit-Bestandstransparenz und umfassende Berichterstattung.",
+    "overviewSecondaryVas": "Uber das Kern-Fulfillment hinaus bietet {name} Mehrwertdienste wie Qualitatskontrollen, individuelle Verpackungen, Kitting und Montage sowie Retourenmanagement an — und hilft Marken so, ein konsistentes, hochwertiges Kundenerlebnis von der Bestellung bis zur Haustur zu liefern.",
+    "faqItems": {
+      "qCost": "Wie hoch sind die Fulfillment-Kosten und Gebuhrenstrukturen von {name}?",
+      "aCost": "{name} bietet {costDesc} Preise fur Fulfillment-Dienstleistungen in {stateName}. Typische Kosten umfassen Wareneingangsgebuhren, monatliche Lagerung (pro Palette oder pro KubikfuSS), Kommissionierungs- und Verpackungsgebuhren pro Bestellung sowie ausgehenden Versand. {name} erstellt individuelle Angebote basierend auf Ihren spezifischen Produktabmessungen, Ihrem Bestellvolumen und etwaigen Mehrwertdiensten wie Kitting oder individueller Verpackung. Kontaktieren Sie {name} direkt fur ein detailliertes Angebot, das auf Ihre Bedurfnisse zugeschnitten ist.",
+      "qSpeed": "Wie schnell bearbeitet und versendet {name} Bestellungen?",
+      "aSpeed": "{name} bietet {speed} Auftragsbearbeitung von seinem Fulfillment-Center in {stateName}. Die meisten Bestellungen, die vor der taglichen Annahmeschlusszeit (in der Regel 12-14 Uhr Ortszeit) eingehen, werden noch am selben Tag versandt. Der Standardversand von {stateName} erreicht die groSSen US-Bevolkerungszentren je nach Entfernung innerhalb von 1-5 Werktagen. Expressversandoptionen sind ebenfalls uber das Carrier-Netzwerk verfugbar.",
+      "aSpeedWithCity": "{name} bietet {speed} Auftragsbearbeitung von seinem Fulfillment-Center in {stateName} in {city}. Die meisten Bestellungen, die vor der taglichen Annahmeschlusszeit (in der Regel 12-14 Uhr Ortszeit) eingehen, werden noch am selben Tag versandt. Der Standardversand von {stateName} erreicht die groSSen US-Bevolkerungszentren je nach Entfernung innerhalb von 1-5 Werktagen. Expressversandoptionen sind ebenfalls uber das Carrier-Netzwerk verfugbar.",
+      "qPlatforms": "Mit welchen eCommerce-Plattformen und Tools integriert sich {name}?",
+      "aPlatforms": "{name} integriert sich mit {platList}. Die Plattform-Integrationen unterstutzen Echtzeit-Auftragssynchronisierung, automatische Bestandsaktualisierungen, Ruckmeldung von Sendungsverfolgungsdaten und Multi-Channel-Bestellverwaltung — sodass Ihre {catList}-Produkte uber alle Vertriebskanale hinweg synchronisiert bleiben.",
+      "qOnboard": "Wie schnell kann sich ein neuer Kunde bei {name} einbinden lassen?",
+      "aOnboard": "Das typische Onboarding bei {name} dauert je nach Komplexitat Ihres Produktkatalogs und Ihren Integrationsanforderungen 1-3 Wochen. Der Prozess umfasst die Kontoeinrichtung, das Testen der Plattform-Integration, den Wareneingang und die Einlagerung von Inventar sowie Mitarbeiterschulungen zu etwaigen besonderen Handhabungsanforderungen fur Ihre {catList}-Produkte. Fur zeitkritische Markteinfuhrungen ist moglicherweise ein beschleunigtes Onboarding verfugbar.",
+      "qCompare": "Wie schneidet {name} im Vergleich zu anderen 3PL-Anbietern in {stateName} ab?",
+      "aCompare": "{name} differenziert sich durch {speed} Fulfillment-Geschwindigkeit, {costDesc} Preisgestaltung und spezialisierte Erfahrung mit {catList}. Der Ops Score von {rating} spiegelt eine starke Leistung in den Bereichen Fulfillment-Genauigkeit, Geschwindigkeit und Integrationsfahigkeiten wider. Fur Marken, die einen zuverlassigen 3PL mit Sitz in {stateName} und {firstPlatform}-Integrationsexpertise suchen, ist {name} ein starker Kandidat, der neben Alternativen evaluiert werden sollte."
     }
   },
   "card": {
@@ -185,7 +202,25 @@
     "bestMatch": "Beste Übereinstimmung",
     "getMatchedFree": "Kostenlos vermittelt werden",
     "saved": "In Ihrem Konto gespeichert!",
-    "coldChain": "Kühlkette"
+    "coldChain": "Kühlkette",
+    "fulfillmentCenter": "Fulfillment-Center in {city}",
+    "categories": {
+      "apparel": "Bekleidung",
+      "electronics": "Elektronik",
+      "beauty": "Beauty",
+      "jewelry": "Schmuck",
+      "home": "Wohnen",
+      "toys": "Spielzeug",
+      "food": "Lebensmittel",
+      "sports": "Sport",
+      "automotive": "Auto",
+      "food-beverage": "Lebensmittel & Getränke",
+      "home-garden": "Haus & Garten",
+      "pet-supplies": "Tierbedarf",
+      "health": "Gesundheit",
+      "books": "Bücher",
+      "pharma": "Pharma"
+    }
   },
   "compare": {
     "title": "3PL-Anbieter vergleichen",

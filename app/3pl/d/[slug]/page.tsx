@@ -4,6 +4,8 @@ import { localBusinessSchema } from "@/lib/jsonld";
 import {
   generateOverview,
   generateOverviewSecondary,
+  generateOverviewI18n,
+  generateOverviewSecondaryI18n,
   generateFAQItems,
 } from "@/lib/detail-content";
 import { geocodeCity } from "@/lib/geocode";
@@ -90,8 +92,8 @@ export default async function ThreePLDetailPage({ params }: Props) {
     .order("rating", { ascending: false })
     .limit(6);
 
-  const overviewText = generateOverview(p);
-  const secondaryText = generateOverviewSecondary(p);
+  const overviewText = generateOverviewI18n(p, t as (key: string, values?: Record<string, unknown>) => string);
+  const secondaryText = generateOverviewSecondaryI18n(p, t as (key: string, values?: Record<string, unknown>) => string);
 
   // 地理编码
   const geo = await geocodeCity(p.city || "", p.state);

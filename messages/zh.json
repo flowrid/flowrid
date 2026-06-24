@@ -176,6 +176,23 @@
       "good": "好",
       "average": "一般",
       "limited": "数据有限"
+    },
+    "overviewTemplate": "{name} 是一家总部位于 {loc} 的全方位第三方物流服务商。凭借在 {cats} 履约领域的深厚专业能力，{name} 为成长型电商品牌提供全面的仓储、拣货打包和配送解决方案。该公司与 {platforms} 无缝集成，支持实时订单同步与库存管理。其 {speed} 的履约时效和 {pricing} 的定价模式，使其成为寻求扩大 DTC 业务的品牌的理想合作伙伴。",
+    "overviewSecondaryCats": "{name} 专注于处理 {cats}，为每个产品品类配备专属仓储区域和经过培训的员工。",
+    "overviewSecondaryTech": "其技术栈集成了 {techList}，支持自动化订单路由、实时库存可视化和全面的报表功能。",
+    "overviewSecondaryVas": "除核心履约服务外，{name} 还提供增值服务，包括质检、定制包装、组装套件和退货管理——帮助品牌从下单到送达，始终如一地提供高品质的客户体验。",
+    "faqItems": {
+      "qCost": "{name} 的履约费用和收费标准是什么？",
+      "aCost": "{name} 为其在 {stateName} 的履约服务提供 {costDesc} 定价模式。典型费用包括入库接收费、月度仓储费（按托盘或立方英尺计）、按单拣货打包费以及出库运费。{name} 会根据您的具体产品尺寸、订单量以及组装套件或定制包装等增值服务需求，提供定制化报价。请直接联系他们获取针对您需求的明细报价。",
+      "qSpeed": "{name} 处理并发货订单的速度有多快？",
+      "aSpeed": "{name} 从其 {stateName} 履约中心提供 {speed} 的订单处理时效。在每日截单时间（通常为当地时间中午 12 点至下午 2 点）前收到的订单，大部分可当天发货。从 {stateName} 发出的陆运包裹可在 1-5 个工作日内送达美国主要人口中心，具体时间取决于距离。通过其承运网络也可选择加急配送。",
+      "aSpeedWithCity": "{name} 从其位于 {city} 的 {stateName} 履约中心提供 {speed} 的订单处理时效。在每日截单时间（通常为当地时间中午 12 点至下午 2 点）前收到的订单，大部分可当天发货。从 {stateName} 发出的陆运包裹可在 1-5 个工作日内送达美国主要人口中心，具体时间取决于距离。通过其承运网络也可选择加急配送。",
+      "qPlatforms": "{name} 支持与哪些电商平台和工具集成？",
+      "aPlatforms": "{name} 集成了 {platList}。其平台集成支持实时订单同步、自动库存更新、物流追踪回传以及多渠道订单管理——确保您的 {catList} 类产品在所有销售渠道保持同步。",
+      "qOnboard": "新客户在 {name} 的入驻上线周期是多久？",
+      "aOnboard": "与 {name} 的标准入驻周期为 1-3 周，具体取决于您的产品目录复杂度和集成需求。流程包括账户设置、平台集成测试、库存收货与上架，以及针对您 {catList} 类产品特殊处理要求的员工培训。对于时间紧迫的产品上线，可提供加急入驻服务。",
+      "qCompare": "{name} 与 {stateName} 其他 3PL 服务商相比如何？",
+      "aCompare": "{name} 通过 {speed} 的履约速度、{costDesc} 的定价模式以及对 {catList} 的专业经验脱颖而出。其运营评分 {rating} 反映了在履约准确率、速度和集成能力方面的强劲表现。对于寻求一家具备 {firstPlatform} 集成专业能力且值得信赖的 {stateName} 本地 3PL 的品牌来说，{name} 是一个值得与其他方案一起评估的有力候选者。"
     }
   },
   "card": {
@@ -185,7 +202,25 @@
     "bestMatch": "最佳匹配",
     "getMatchedFree": "免费获取匹配",
     "saved": "已保存到您的账户！",
-    "coldChain": "冷链"
+    "coldChain": "冷链",
+    "fulfillmentCenter": "{city} 履约中心",
+    "categories": {
+      "apparel": "服装",
+      "electronics": "电子产品",
+      "beauty": "美妆",
+      "jewelry": "珠宝首饰",
+      "home": "家居装饰",
+      "toys": "玩具",
+      "food": "食品饮料",
+      "sports": "运动户外",
+      "automotive": "汽车用品",
+      "food-beverage": "食品饮料",
+      "home-garden": "家居园艺",
+      "pet-supplies": "宠物用品",
+      "health": "健康",
+      "books": "图书",
+      "pharma": "医药"
+    }
   },
   "compare": {
     "title": "比较 3PL 服务商",

@@ -45,7 +45,7 @@ const SUB_RATING_KEYS = [
 
 export default async function ReviewsSection({ name, rating, reviewCount, slug }: ReviewsSectionProps) {
   const t = await getTranslations();
-  const { stars, label } = starsFromScore(rating);
+  const { stars, labelKey } = starsFromScore(rating);
   const starDisplay = (rating / 20).toFixed(1); // 0-100 → 1.0-5.0
 
   return (
@@ -70,7 +70,7 @@ export default async function ReviewsSection({ name, rating, reviewCount, slug }
               <div className="flex">{Array.from({ length: 5 }).map((_, i) => (
                 <StarIcon key={i} filled={i < stars} />
               ))}</div>
-              <p className="text-sm text-text-secondary mt-1">{label}</p>
+              <p className="text-sm text-text-secondary mt-1">{t(labelKey)}</p>
               <p className="text-xs text-text-secondary mt-0.5">
                 {reviewCount > 0 ? t("detail.basedOn", { count: reviewCount }) : "verified data"}
               </p>

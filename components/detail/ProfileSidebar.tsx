@@ -45,9 +45,9 @@ export default async function ProfileSidebar({ threePL: p }: ProfileSidebarProps
             {t("detail.storageEnvironments")}
           </p>
           <div className="flex flex-wrap gap-1.5">
-            {environments.map((env) => (
-              <span key={env} className="px-2.5 py-1 bg-gray-100 rounded-lg text-xs text-text">
-                {env}
+            {environments.map((envKey) => (
+              <span key={envKey} className="px-2.5 py-1 bg-gray-100 rounded-lg text-xs text-text">
+                {t(envKey as any)}
               </span>
             ))}
           </div>
