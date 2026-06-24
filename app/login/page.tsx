@@ -63,9 +63,7 @@ export default function LoginPage() {
       clearTimeout(fallback);
       setStatus("登录成功，正在跳转…");
       await bridgeIf3PL(session);
-      window.history.replaceState({}, "", "/login");
-      router.push(getRedirect(session));
-      router.refresh();
+      window.location.href = getRedirect(session);
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
