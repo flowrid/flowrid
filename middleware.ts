@@ -7,28 +7,13 @@ const JWT_SECRET = new TextEncoder().encode(
 );
 
 /**
- * Combined middleware:
- * 1. Locale detection via NEXT_LOCALE cookie (next-intl, localePrefix: 'never')
- * 2. Route protection for /saas/* (JWT-based)
+ * Middleware: route protection for /saas/* (JWT-based).
+ * Locale detection is handled natively by next-intl plugin via NEXT_LOCALE cookie.
  */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // --- Locale handling ---
-  // next-intl with localePrefix: 'never' reads locale from cookie.
-  // If no cookie is set, detect from Accept-Language and set it.
-  const localeCookie = request.cookies.get("NEXT_LOCALE")?.value;
-  if (!localeCookie) {
-    const acceptLang = request.headers.get("accept-language") || "";
-    const preferred = acceptLang.split(",")[0]?.split("-")[0] || "en";
-    const supported = ["en", "zh", "es", "de", "fr", "ja"];
-    const locale = supported.includes(preferred) ? preferred : "en";
-    const response = NextResponse.next();
-    response.cookies.set("NEXT_LOCALE", locale, { maxAge: 31536000, path: "/" });
-    return response;
-  }
-
-  // --- SaaS route protection ---
+  // Only protect /saas routes
   if (!pathname.startsWith("/saas")) return NextResponse.next();
 
   if (pathname === "/saas/login" || pathname === "/saas/register") {

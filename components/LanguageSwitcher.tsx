@@ -33,7 +33,7 @@ export default function LanguageSwitcher() {
   }, [open, handleOutside]);
 
   function switchLocale(nextLocale: string) {
-    document.cookie = `NEXT_LOCALE=${nextLocale};path=/;max-age=31536000`;
+    document.cookie = `NEXT_LOCALE=${nextLocale};path=/;max-age=31536000;SameSite=Lax`;
     window.location.reload();
   }
 
@@ -47,7 +47,7 @@ export default function LanguageSwitcher() {
         <img
           src="/images/multilingual.png"
           alt="Language"
-          className="w-5 h-5 opacity-60 hover:opacity-100 transition-opacity"
+          className="w-[22px] h-[22px] opacity-60 hover:opacity-100 transition-opacity"
         />
       </button>
 
@@ -56,10 +56,7 @@ export default function LanguageSwitcher() {
           {languages.map((lang) => (
             <button
               key={lang.code}
-              onMouseDown={(e) => {
-                e.stopPropagation();
-                switchLocale(lang.code);
-              }}
+              onClick={() => switchLocale(lang.code)}
               className={`block w-full text-left px-4 py-2.5 text-sm transition-colors cursor-pointer ${
                 locale === lang.code
                   ? "text-primary font-semibold bg-primary/5"
