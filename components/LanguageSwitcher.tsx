@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useLocale } from "next-intl";
 
 const languages = [
@@ -15,31 +14,27 @@ const languages = [
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!open) return;
-    const timer = setTimeout(() => {
-      document.addEventListener("click", handleOutside);
-    }, 0);
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener("click", handleOutside);
-    };
-  }, [open]);
-
-  function handleOutside(e: MouseEvent) {
+  const handleOutside = useCallback((e: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
       setOpen(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      document.addEventListener("mousedown", handleOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+    };
+  }, [open, handleOutside]);
 
   function switchLocale(nextLocale: string) {
-    setOpen(false);
     document.cookie = `NEXT_LOCALE=${nextLocale};path=/;max-age=31536000`;
-    router.refresh();
+    window.location.reload();
   }
 
   return (
@@ -61,7 +56,10 @@ export default function LanguageSwitcher() {
           {languages.map((lang) => (
             <button
               key={lang.code}
-              onClick={() => switchLocale(lang.code)}
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                switchLocale(lang.code);
+              }}
               className={`block w-full text-left px-4 py-2.5 text-sm transition-colors cursor-pointer ${
                 locale === lang.code
                   ? "text-primary font-semibold bg-primary/5"
