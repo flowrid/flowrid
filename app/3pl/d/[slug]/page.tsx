@@ -197,8 +197,8 @@ export default async function ThreePLDetailPage({ params }: Props) {
           <DetailFAQ threePL={p} />
         </div>
 
-        {/* 右侧边栏 — Profile at a Glance */}
-        <div className="lg:w-[340px] shrink-0">
+        {/* 右侧边栏 — Profile at a Glance（桌面端） */}
+        <div className="hidden lg:block lg:w-[340px] shrink-0">
           <div>
             <ProfileSidebar threePL={p} />
           </div>
