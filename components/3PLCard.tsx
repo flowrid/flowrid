@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { estimateWarehouses } from "@/lib/detail-content";
-import { translateState } from "@/lib/translate-data";
+import { translateState, translateCategories } from "@/lib/translate-data";
 import { PLATFORM_ICONS } from "@/lib/platform-icons";
 
 function getCardTagline(data: ThreePLCardData, t: ReturnType<typeof useTranslations>): { label: string; hasColdChain: boolean } {
@@ -183,7 +183,11 @@ export default function ThreePLCard({ data, selected, onToggleSelect }: ThreePLC
           className="text-[#86868B] leading-tight whitespace-nowrap overflow-x-auto"
           style={{ marginTop: "2%", fontSize: "clamp(0.55rem, 6.4cqw, 1.75rem)", scrollbarWidth: "none" }}
         >
-          {data.description || (data.city ? t("card.fulfillmentCenter", { city: data.city }) : "")}
+          {t("card.descriptionTemplate", {
+            name: data.name,
+            state: translateState(data.state, t as any),
+            cats: translateCategories(data.categories || [], t as any),
+          })}
         </p>
       </div>
 

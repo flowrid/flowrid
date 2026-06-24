@@ -465,6 +465,7 @@
     "saved": "アカウントに保存しました！",
     "coldChain": "コールドチェーン",
     "fulfillmentCenter": "{city}のフルフィルメントセンター",
+    "descriptionTemplate": "{name}は{state}に拠点を置く物流プロバイダーで、{cats}を専門としています。",
     "categories": {
       "apparel": "アパレル",
       "electronics": "電子機器",

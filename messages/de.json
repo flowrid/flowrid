@@ -465,6 +465,7 @@
     "saved": "In Ihrem Konto gespeichert!",
     "coldChain": "Kühlkette",
     "fulfillmentCenter": "Fulfillment-Center in {city}",
+    "descriptionTemplate": "{name} ist ein in {state} ansässiger Fulfillment-Anbieter, spezialisiert auf {cats}.",
     "categories": {
       "apparel": "Bekleidung",
       "electronics": "Elektronik",

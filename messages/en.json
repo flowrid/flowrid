@@ -465,6 +465,7 @@
     "saved": "Saved to your account!",
     "coldChain": "Cold Chain",
     "fulfillmentCenter": "Fulfillment center in {city}",
+    "descriptionTemplate": "{name} is a {state}-based fulfillment provider specializing in {cats}.",
     "categories": {
       "apparel": "Apparel",
       "electronics": "Electronics",

@@ -481,7 +481,8 @@
       "books": "Livres",
       "pharma": "Pharmacie"
     },
-    "fulfillmentCenter": "Centre de fulfillment à {city}"
+    "fulfillmentCenter": "Centre de fulfillment à {city}",
+    "descriptionTemplate": "{name} est un prestataire de fulfillment basé à {state}, spécialisé en {cats}."
   },
   "compare": {
     "title": "Comparer les prestataires 3PL",

@@ -465,6 +465,7 @@
     "saved": "已保存到您的账户！",
     "coldChain": "冷链",
     "fulfillmentCenter": "{city} 履约中心",
+    "descriptionTemplate": "{name} 是一家位于{state}的物流服务商，专注于{ cats }。",
     "categories": {
       "apparel": "服装",
       "electronics": "电子产品",
