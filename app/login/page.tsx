@@ -25,17 +25,36 @@ export default function LoginPage() {
     }
 
     processingRef.current = true;
-    setStatus("检测到授权回调，正在交换 session…");
+    setStatus("Exchanging authorization code…");
 
     const supabase = createBrowserClient();
     if (!supabase) {
-      setStatus("认证服务不可用，请重试");
+      setStatus("Authentication service unavailable. Please try again.");
       processingRef.current = false;
       return;
     }
 
-    function getRedirect(session: any) {
-      const role = session?.user?.user_metadata?.role;
+    // Resolve role: user_metadata first, then DB as fallback
+    async function resolveRole(session: any): Promise<string | null> {
+      const metaRole = session?.user?.user_metadata?.role as string | undefined;
+      if (metaRole) return metaRole;
+
+      // Google OAuth may overwrite user_metadata — check public.users table
+      try {
+        const res = await fetch("/api/auth/me", {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+        if (res.ok) {
+          const { role } = await res.json();
+          return role || null;
+        }
+      } catch {
+        // fall through
+      }
+      return null;
+    }
+
+    function getRedirect(role: string | null) {
       if (!role) return "/join";
       return role === "3pl" ? "/saas/dashboard" : "/account";
     }
@@ -49,7 +68,7 @@ export default function LoginPage() {
             headers: { Authorization: `Bearer ${session.access_token}` },
           });
         } catch {
-          // 桥接失败不阻塞登录流程
+          // Non-blocking
         }
       }
     }
@@ -61,13 +80,14 @@ export default function LoginPage() {
       resolved = true;
       subscription?.unsubscribe();
       clearTimeout(fallback);
-      setStatus("登录成功，正在跳转…");
+
+      setStatus("Signing you in…");
+      const role = await resolveRole(session);
       await bridgeIf3PL(session);
-      window.location.href = getRedirect(session);
+      window.location.href = getRedirect(role);
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("[LoginPage] onAuthStateChange:", event, session?.user?.email);
       if (event === "SIGNED_IN" && session) {
         await handleSession(session);
       }
@@ -77,25 +97,14 @@ export default function LoginPage() {
     const code = urlParams.get("code");
 
     if (code) {
-      console.log("[LoginPage] Exchanging PKCE code…");
-      // 诊断：检查 sessionStorage 中是否有 PKCE verifier
-      const storageKeys = [];
-      for (let i = 0; i < sessionStorage.length; i++) {
-        storageKeys.push(sessionStorage.key(i));
-      }
-      console.log("[LoginPage] sessionStorage keys:", storageKeys);
-      setStatus("交换授权码中…");
+      setStatus("Verifying with Google…");
       supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
-        console.log("[LoginPage] exchangeCodeForSession result:", { hasSession: !!data?.session, error: error?.message });
         if (error) {
-          console.error("[LoginPage] PKCE exchange failed:", error.message);
-          setStatus(`授权失败: ${error.message}`);
-          if (!resolved) {
-            resolved = true;
-            subscription.unsubscribe();
-            processingRef.current = false;
-            setTimeout(() => setShowForm(true), 3000);
-          }
+          setStatus("Authorization failed. Please try again.");
+          resolved = true;
+          subscription.unsubscribe();
+          processingRef.current = false;
+          setTimeout(() => setShowForm(true), 3000);
           return;
         }
         if (data?.session) {
@@ -103,14 +112,12 @@ export default function LoginPage() {
         }
       });
     } else {
-      console.log("[LoginPage] No code in URL, trying getSession…");
-      setStatus("恢复会话中…");
+      setStatus("Restoring session…");
       supabase.auth.getSession().then(async ({ data, error }) => {
-        console.log("[LoginPage] getSession result:", { hasSession: !!data?.session, error: error?.message });
         if (data?.session && !resolved) {
           await handleSession(data.session);
         } else if (!resolved) {
-          setStatus("未检测到会话，请重新登录");
+          setStatus("No session found. Please sign in again.");
           resolved = true;
           subscription.unsubscribe();
           processingRef.current = false;
@@ -121,11 +128,10 @@ export default function LoginPage() {
 
     const fallback = setTimeout(() => {
       if (!resolved) {
-        console.log("[LoginPage] Fallback timeout");
         resolved = true;
         subscription.unsubscribe();
         processingRef.current = false;
-        setStatus("登录超时，请重试");
+        setStatus("Login timed out. Please try again.");
         setTimeout(() => {
           window.history.replaceState({}, "", "/login");
           setShowForm(true);
