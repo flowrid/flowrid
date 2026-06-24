@@ -1,4 +1,10 @@
 import type { ThreePL } from "@/types/3pl";
+import {
+  translateCategories,
+  translateState,
+  translateSpeed,
+  translatePricing,
+} from "./translate-data";
 
 /** "texas" → "Texas", "new-york" → "New York" */
 export function formatState(s: string): string {
@@ -82,10 +88,10 @@ export function generateOverview(p: ThreePL): string {
 /** 生成 Overview 描述（i18n 版本），接受翻译函数 */
 export function generateOverviewI18n(p: ThreePL, t: (key: string, values?: Record<string, unknown>) => string): string {
   const loc = p.city ? `${p.city}, ${formatState(p.state)}` : formatState(p.state);
-  const cats = (p.categories || []).slice(0, 4).map(formatName).join(", ") || "e-commerce products";
+  const cats = translateCategories((p.categories || []).slice(0, 4), t) || "e-commerce products";
   const platforms = (p.platforms || []).slice(0, 4).join(", ") || "major e-commerce platforms";
-  const speed = p.shipping_speed || "fast";
-  const pricing = (p.cost_level || "$").includes("$") ? "competitive" : "premium";
+  const speed = translateSpeed(p.shipping_speed || "fast", t);
+  const pricing = translatePricing((p.cost_level || "$").includes("$") ? "competitive" : "premium", t);
 
   return t("detail.overviewTemplate", { name: p.name, loc, cats, platforms, speed, pricing });
 }
@@ -110,7 +116,7 @@ export function generateOverviewSecondary(p: ThreePL): string {
 
 /** 生成第二段 Overview（i18n 版本），接受翻译函数 */
 export function generateOverviewSecondaryI18n(p: ThreePL, t: (key: string, values?: Record<string, unknown>) => string): string {
-  const cats = (p.categories || []).map(formatName).join(", ") || "e-commerce products";
+  const cats = translateCategories(p.categories || [], t) || "e-commerce products";
   const techList = (p.platforms || []).concat(p.integrations || []).slice(0, 6).join(", ") || "major platforms";
   const hasCats = !!(p.categories || []).length;
   const hasTech = !!(p.platforms || []).length || !!(p.integrations || []).length;
@@ -160,11 +166,14 @@ export function generateFAQItems(p: ThreePL): { q: string; a: string }[] {
 
 /** 生成 FAQ（i18n 版本），接受翻译函数 */
 export function generateFAQItemsI18n(p: ThreePL, t: (key: string, values?: Record<string, unknown>) => string): { q: string; a: string }[] {
-  const stateName = formatState(p.state);
-  const catList = (p.categories || []).slice(0, 4).map(formatName).join(", ") || "e-commerce";
+  const stateName = translateState(p.state, t);
+  const catList = translateCategories((p.categories || []).slice(0, 4), t) || "e-commerce";
   const platList = (p.platforms || []).slice(0, 5).join(", ") || "major platforms";
-  const speed = p.shipping_speed || "standard";
-  const costDesc = (p.cost_level || "$").includes("$$$") ? "premium" : (p.cost_level || "$").includes("$$") ? "mid-range" : "competitive";
+  const speed = translateSpeed(p.shipping_speed || "standard", t);
+  const costDesc = translatePricing(
+    (p.cost_level || "$").includes("$$$") ? "premium" : (p.cost_level || "$").includes("$$") ? "mid-range" : "competitive",
+    t,
+  );
   const city = p.city || "";
   const rating = Math.round(p.rating || 0);
   const firstPlatform = platList.split(",")[0] || "e-commerce";
