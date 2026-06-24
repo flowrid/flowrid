@@ -912,6 +912,7 @@
     "integrationsLabel": "集成",
     "automationLabel": "自动化",
     "auditLabel": "审计",
+    "settingsLabel": "账户设置",
     "compareProvidersLabel": "对比供应商",
     "workspace": "工作区",
     "operations": "运营",

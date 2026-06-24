@@ -912,6 +912,7 @@
     "integrationsLabel": "連携",
     "automationLabel": "自動化",
     "auditLabel": "監査",
+    "settingsLabel": "設定",
     "compareProvidersLabel": "プロバイダー比較",
     "workspace": "ワークスペース",
     "operations": "オペレーション",

@@ -912,6 +912,7 @@
     "integrationsLabel": "Integrationen",
     "automationLabel": "Automatisierung",
     "auditLabel": "Audit",
+    "settingsLabel": "Einstellungen",
     "compareProvidersLabel": "Anbieter Vergleichen",
     "workspace": "Workspace",
     "operations": "Betrieb",

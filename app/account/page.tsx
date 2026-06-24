@@ -112,7 +112,7 @@ export default function AccountPage() {
     { key: "billingLabel", href: "/account/billing", icon: "/icons/billing.png" },
     { key: "automationLabel", href: "/account/automation", icon: "/icons/automation.png" },
     { key: "auditLabel", href: "/account/audit", icon: "/icons/audit.png" },
-    { key: "settings", href: "/account/settings", icon: "/icons/settings.png" },
+    { key: "settingsLabel", href: "/account/settings", icon: "/icons/settings.png" },
   ];
 
   return (
@@ -167,7 +167,7 @@ export default function AccountPage() {
           <Link
             key={link.key}
             href={link.href}
-            className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-border text-sm text-text-secondary hover:text-text hover:border-primary/40 hover:bg-gray-50 transition-all"
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-border bg-card text-sm text-text-secondary hover:text-text hover:border-primary/40 hover:bg-gray-50 transition-all"
           >
             <img src={link.icon} alt="" className="w-4 h-4 opacity-50" />
             <span className="truncate">{t(`account.${link.key}`)}</span>
