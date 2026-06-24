@@ -41,8 +41,29 @@ const NICHE_TRANSLATION_KEYS: Record<string, string> = {
   collectibles: "artsAndCrafts",
 };
 
+// Icon filenames mapped to the English name (icon files are English-named)
+const NICHE_ICON_NAMES: Record<string, string> = {
+  apparel: "Apparel",
+  babyCare: "Baby Care",
+  beautyAndPersonalCare: "Beauty & Personal Care",
+  booksAndPublishing: "Books & Publishing",
+  electronics: "Electronics",
+  foodAndBeverage: "Food & Beverage",
+  healthAndPharma: "Health & Pharma",
+  homeAndGarden: "Home & Garden",
+  jewelryAndAccessories: "Jewelry & Accessories",
+  lighting: "Lighting",
+  luggageAndTravel: "Luggage & Travel",
+  officeAndStationery: "Office & Stationery",
+  petSupplies: "Pet Supplies",
+  shoes: "Shoes",
+  sportsAndOutdoors: "Sports & Outdoors",
+  toysAndGames: "Toys & Games",
+  automotive: "Automotive",
+  artsAndCrafts: "Arts & Crafts",
+};
+
 // VAS service name to translation key mapping
-// Supports direct match, trimmed match, case-insensitive, and fuzzy partial match
 const VAS_TRANSLATION_KEYS: Record<string, string> = {
   "Quality Control": "qualityControl",
   "Quality Control Inspections": "qualityControl",
@@ -116,7 +137,6 @@ const VAS_TRANSLATION_KEYS: Record<string, string> = {
   "POD": "printOnDemand",
   "Dropshipping": "dropshipping",
   "Drop Ship": "dropshipping",
-  // User-reported missing services
   "Customization - Embroidery": "customizationEmbroidery",
   "Embroidery": "customizationEmbroidery",
   "Logistics - Domestic (FTL & LTL)": "logisticsDomestic",
@@ -159,17 +179,13 @@ function getVasTranslationKey(service: string): string | null {
   const trimmed = service.trim();
   if (!trimmed) return null;
 
-  // Direct match (most specific first)
   if (VAS_TRANSLATION_KEYS[trimmed]) return VAS_TRANSLATION_KEYS[trimmed];
 
-  // Case-insensitive direct match
   const lowerTrimmed = trimmed.toLowerCase();
   for (const [k, v] of Object.entries(VAS_TRANSLATION_KEYS)) {
     if (k.toLowerCase() === lowerTrimmed) return v;
   }
 
-  // Fuzzy: try to find any key that is contained within the service name or vice versa
-  // Match longer keys first for specificity
   const sortedKeys = Object.keys(VAS_TRANSLATION_KEYS).sort((a, b) => b.length - a.length);
   for (const k of sortedKeys) {
     const lowerK = k.toLowerCase();
@@ -181,14 +197,12 @@ function getVasTranslationKey(service: string): string | null {
   return null;
 }
 
-// Helper to access nested translations like detail.categories.apparel
 function tCategory(t: Awaited<ReturnType<typeof getTranslations>>, key: string): string {
   return (t as any)(`detail.categories.${key}`);
 }
 
 function tVas(t: Awaited<ReturnType<typeof getTranslations>>, key: string, fallback: string): string {
   const translated = (t as any)(`detail.vas.${key}`);
-  // If translation returns the key itself, it's missing; use fallback
   if (translated === `detail.vas.${key}`) return fallback;
   return translated;
 }
@@ -223,18 +237,20 @@ export default async function SpecialtiesSection({
           <div className="flex flex-wrap gap-2">
             {categories.map((c) => {
               const transKey = getNicheTranslationKey(c);
-              const iconKey = transKey || c.toLowerCase().replace(/[^a-z-]/g, "");
+              const iconFile = transKey ? (NICHE_ICON_NAMES[transKey] || null) : null;
               return (
                 <Link
                   key={c}
                   href={`/3pl/${state}/${c}`}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-lg text-sm text-text-secondary hover:text-text hover:border-primary/40 transition-colors"
                 >
-                  <img
-                    src={`/images/niches/${iconKey}.png`}
-                    alt=""
-                    className="h-4 w-auto shrink-0"
-                  />
+                  {iconFile && (
+                    <img
+                      src={`/images/niches/${iconFile}.png`}
+                      alt=""
+                      className="h-4 w-auto shrink-0"
+                    />
+                  )}
                   {transKey ? tCategory(t, transKey) : formatName(c)}
                 </Link>
               );
