@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { createBrowserClient } from "@/lib/supabase";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
@@ -13,61 +13,6 @@ export default function LoginForm() {
   const [message, setMessage] = useState("");
   const [mode, setMode] = useState<"password" | "magic">("password");
   const router = useRouter();
-
-  // 处理 OAuth / Magic Link 回调 — 使用 onAuthStateChange 避免竞态条件
-  useEffect(() => {
-    const supabase = createBrowserClient();
-    if (!supabase) return;
-
-    const hash = window.location.hash;
-    const hasAuthTokens = hash && (hash.includes("access_token") || hash.includes("code="));
-
-    if (!hasAuthTokens) return;
-
-    // 根据用户 role 决定跳转目标；无 role 则先选角色
-    function getRedirect(session: any) {
-      const role = session?.user?.user_metadata?.role;
-      if (!role) return "/join";
-      return role === "3pl" ? "/saas/dashboard" : "/account";
-    }
-
-    // 3PL 用户需要桥接 flowrid_token cookie 才能访问 /saas/*
-    async function bridgeIf3PL(session: any) {
-      const role = session?.user?.user_metadata?.role;
-      if (role === "3pl" && session?.access_token) {
-        await fetch("/api/auth/bridge", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${session.access_token}` },
-        });
-      }
-    }
-
-    // 首选：监听 SIGNED_IN 事件（在 _getSessionFromUrl 完成后触发）
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session) {
-        subscription.unsubscribe();
-        await bridgeIf3PL(session);
-        router.push(getRedirect(session));
-        router.refresh();
-      }
-    });
-
-    // 兜底：2 秒后手动检查（以防 onAuthStateChange 因某种原因未触发）
-    const fallback = setTimeout(() => {
-      supabase.auth.getSession().then(async ({ data }) => {
-        if (data?.session) {
-          subscription.unsubscribe();
-          await bridgeIf3PL(data.session);
-          router.refresh();
-        }
-      });
-    }, 2000);
-
-    return () => {
-      subscription.unsubscribe();
-      clearTimeout(fallback);
-    };
-  }, [router]);
 
   async function handlePasswordLogin(e: React.FormEvent) {
     e.preventDefault();
