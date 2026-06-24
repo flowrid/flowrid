@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { authedFetch } from "@/lib/authed-fetch";
 
 interface ReceivingItem {
@@ -20,13 +21,14 @@ const STATUS_STYLES: Record<string, string> = {
   pending: "bg-[#8E8E93]/10 text-[#8E8E93]",
 };
 
-function capStatus(s: string): string {
-  if (!s) return "Pending";
+function capStatus(s: string, t: (k: string) => string): string {
+  if (!s) return t("pending");
   if (s === s.toUpperCase()) return s.charAt(0) + s.slice(1).toLowerCase();
   return s;
 }
 
 export default function ReceivingContent() {
+  const t = useTranslations("saasContent.receiving");
   const [items, setItems] = useState<ReceivingItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,14 +55,14 @@ export default function ReceivingContent() {
             supplier: r.customer_name || r.supplier || "—",
             expected: r.expected_date ? new Date(r.expected_date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—",
             items: r.item_count || 0,
-            status: capStatus(r.status || "pending"),
+            status: capStatus(r.status || "pending", (k) => t(k as any)),
           })));
           return;
         }
       }
       setItems([]);
     } catch {
-      setError("Failed to load");
+      setError(t("failedToLoad"));
     } finally {
       setLoading(false);
     }
@@ -73,7 +75,7 @@ export default function ReceivingContent() {
   async function handleCreateASN(e: React.FormEvent) {
     e.preventDefault();
     if (!asnNumber.trim()) {
-      setCreateMsg("ASN number is required");
+      setCreateMsg(t("asnNumberRequired"));
       return;
     }
     setCreating(true);
@@ -97,10 +99,10 @@ export default function ReceivingContent() {
         load();
       } else {
         const d = await res.json();
-        setCreateMsg(d.error || "Failed to create");
+        setCreateMsg(d.error || t("failedToCreate"));
       }
     } catch {
-      setCreateMsg("Network error");
+      setCreateMsg(t("networkError"));
     } finally {
       setCreating(false);
     }
@@ -114,9 +116,9 @@ export default function ReceivingContent() {
         const res = await authedFetch(`/api/saas/receiving/${id}`, { method: "DELETE" });
         if (!res.ok) {
           const err = await res.json();
-          setCreateMsg(err.error || `Delete failed (${res.status})`);
+          setCreateMsg(err.error || t("deleteFailed"));
         }
-      } catch { setCreateMsg("Network error"); }
+      } catch { setCreateMsg(t("networkError")); }
     }
     setSelectedIds(new Set());
     setDeleting(false);
@@ -148,7 +150,7 @@ export default function ReceivingContent() {
   if (error) return (
     <div className="p-8 text-center">
       <p className="text-[#FF3B30] text-sm mb-3">{error}</p>
-      <button onClick={() => window.location.reload()} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">重试</button>
+      <button onClick={() => window.location.reload()} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">{t("retry")}</button>
     </div>
   );
 
@@ -156,36 +158,35 @@ export default function ReceivingContent() {
     <div className="p-6 md:p-8 max-w-[1280px]">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Receiving</h1>
-          <p className="text-[#86868B] text-sm mt-0.5">Inbound shipments</p>
+          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">{t("title")}</h1>
+          <p className="text-[#86868B] text-sm mt-0.5">{t("subtitle")}</p>
         </div>
       </div>
 
-      {/* New ASN form — always visible */}
       <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">New ASN (Advance Shipment Notice)</h2>
+        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">{t("newASN")}</h2>
         <form onSubmit={handleCreateASN} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">ASN Number</label>
-              <input type="text" value={asnNumber} onChange={(e) => setAsnNumber(e.target.value)} placeholder="ASN-XXXX" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("asnNumber")}</label>
+              <input type="text" value={asnNumber} onChange={(e) => setAsnNumber(e.target.value)} placeholder={t("asnPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Supplier</label>
-              <input type="text" value={supplier} onChange={(e) => setSupplier(e.target.value)} placeholder="Supplier name" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("supplier")}</label>
+              <input type="text" value={supplier} onChange={(e) => setSupplier(e.target.value)} placeholder={t("supplierPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Expected Date</label>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("expectedDate")}</label>
               <input type="date" value={expectedDate} onChange={(e) => setExpectedDate(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Item Count</label>
-              <input type="number" value={itemCount} onChange={(e) => setItemCount(e.target.value)} placeholder="0" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("itemCount")}</label>
+              <input type="number" value={itemCount} onChange={(e) => setItemCount(e.target.value)} placeholder={t("itemCountPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
           </div>
           <div className="flex items-center gap-3">
             <button type="submit" disabled={creating} className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
-              {creating ? "Creating..." : "Create ASN"}
+              {creating ? t("creating") : t("createASN")}
             </button>
             {createMsg && <span className="text-xs text-[#FF3B30]">{createMsg}</span>}
           </div>
@@ -198,15 +199,15 @@ export default function ReceivingContent() {
             <thead>
               <tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
                 <th className="px-5 py-3.5 w-10"><input type="checkbox" checked={items.length > 0 && items.every((r) => selectedIds.has(r.id))} onChange={toggleSelectAll} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></th>
-                <th className="px-5 py-3.5">ASN</th>
-                <th className="px-5 py-3.5">Supplier</th>
-                <th className="px-5 py-3.5">Expected</th>
-                <th className="px-5 py-3.5">Items</th>
-                <th className="px-5 py-3.5">Status</th>
+                <th className="px-5 py-3.5">{t("asnLabel")}</th>
+                <th className="px-5 py-3.5">{t("supplierLabel")}</th>
+                <th className="px-5 py-3.5">{t("expectedLabel")}</th>
+                <th className="px-5 py-3.5">{t("itemsLabel")}</th>
+                <th className="px-5 py-3.5">{t("status")}</th>
                 <th className="px-5 py-3.5 text-right">
                   {selectedIds.size > 0 && (
                     <button onClick={handleDeleteSelected} disabled={deleting} className="text-[11px] text-[#FF3B30] font-medium hover:text-[#FF6B6B] disabled:opacity-50">
-                      {deleting ? "Deleting..." : `Delete (${selectedIds.size})`}
+                      {deleting ? t("deleting") : t("deleteN", { n: selectedIds.size })}
                     </button>
                   )}
                 </th>
@@ -229,7 +230,7 @@ export default function ReceivingContent() {
                 </tr>
               ))}
               {items.length === 0 && (
-                <tr><td colSpan={7} className="px-5 py-12 text-center text-[#86868B] text-sm">No ASNs yet</td></tr>
+                <tr><td colSpan={7} className="px-5 py-12 text-center text-[#86868B] text-sm">{t("noASNs")}</td></tr>
               )}
             </tbody>
           </table>

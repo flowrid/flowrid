@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { authedFetch } from "@/lib/authed-fetch";
 
 export default function ProductsContent() {
+  const t = useTranslations("saasContent.products");
   const router = useRouter();
   const pathname = usePathname();
   const productBasePath = pathname.startsWith("/account") ? "/account/products" : "/saas/products";
@@ -45,13 +47,13 @@ export default function ProductsContent() {
       if (!mountedRef.current) return;
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || `请求失败 (${res.status})`);
+        throw new Error(errData.error || t("networkError"));
       }
       const d = await res.json();
       setProducts(d.data || d.products || []);
       setStats(d.stats || { total: 0 });
     } catch (err: any) {
-      if (mountedRef.current) setError(err.message || "加载失败");
+      if (mountedRef.current) setError(err.message || t("networkError"));
     } finally {
       if (mountedRef.current) setLoading(false);
     }
@@ -76,25 +78,25 @@ export default function ProductsContent() {
       });
       if (res.ok) {
         setSku(""); setName(""); setCategory(""); setBrand(""); setWeight("");
-        setMessage({ type: "success", text: "Product created" });
+        setMessage({ type: "success", text: t("productCreated") });
         fetchProducts();
       } else {
         const d = await res.json().catch(() => ({}));
-        setMessage({ type: "error", text: d.error || "Failed to create product" });
+        setMessage({ type: "error", text: d.error || t("failedToCreate") });
       }
     } catch {
-      setMessage({ type: "error", text: "Network error" });
+      setMessage({ type: "error", text: t("networkError") });
     } finally {
       setSaving(false);
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Delete this product?")) return;
+    if (!confirm(t("deleteConfirm"))) return;
     const res = await authedFetch(`/api/saas/products/${id}`, { method: "DELETE" });
     if (!res.ok) {
       const d = await res.json();
-      alert(d.error || "Failed to delete");
+      alert(d.error || t("failedToDelete"));
     }
     fetchProducts();
   }
@@ -109,7 +111,7 @@ export default function ProductsContent() {
   if (error) return (
     <div className="p-8 text-center">
       <p className="text-[#FF3B30] text-sm mb-3">{error}</p>
-      <button onClick={() => fetchProducts()} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">重试</button>
+      <button onClick={() => fetchProducts()} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">{t("retry")}</button>
     </div>
   );
 
@@ -119,8 +121,8 @@ export default function ProductsContent() {
     <div className="p-6 md:p-8 max-w-[1280px]">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Products</h1>
-          <p className="text-[#86868B] text-sm mt-0.5">{stats.total} total</p>
+          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">{t("title")}</h1>
+          <p className="text-[#86868B] text-sm mt-0.5">{t("subtitle", { n: stats.total })}</p>
         </div>
       </div>
 
@@ -130,14 +132,13 @@ export default function ProductsContent() {
         </div>
       )}
 
-      {/* Search & Filter */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex-1 max-w-xs">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name or SKU..."
+            placeholder={t("searchPlaceholder")}
             className="w-full bg-white border border-black/5 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20"
           />
         </div>
@@ -147,61 +148,59 @@ export default function ProductsContent() {
             onChange={(e) => setCategoryFilter(e.target.value)}
             className="bg-white border border-black/5 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20"
           >
-            <option value="">All Categories</option>
+            <option value="">{t("allCategories")}</option>
             {categories.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         )}
       </div>
 
-      {/* Create Form */}
       <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-6 mb-6">
-        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">Add Product</h2>
+        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">{t("addProduct")}</h2>
         <div className="flex flex-wrap items-end gap-3">
           <div className="flex-1 min-w-[120px]">
-            <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1.5">SKU *</label>
-            <input type="text" value={sku} onChange={(e) => setSku(e.target.value)} placeholder="SKU-001"
+            <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1.5">{t("sku")}</label>
+            <input type="text" value={sku} onChange={(e) => setSku(e.target.value)} placeholder={t("skuPlaceholder")}
               className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
           </div>
           <div className="flex-1 min-w-[180px]">
-            <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1.5">Name *</label>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Product Name"
+            <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1.5">{t("name")}</label>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder={t("namePlaceholder")}
               className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
           </div>
           <div className="flex-1 min-w-[120px]">
-            <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1.5">Category</label>
-            <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Electronics"
+            <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1.5">{t("category")}</label>
+            <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder={t("categoryPlaceholder")}
               className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
           </div>
           <div className="flex-1 min-w-[120px]">
-            <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1.5">Brand</label>
-            <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="Brand"
+            <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1.5">{t("brand")}</label>
+            <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder={t("brandPlaceholder")}
               className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
           </div>
           <div className="w-[100px]">
-            <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1.5">Weight (lbs)</label>
-            <input type="number" step="0.01" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="0.00"
+            <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1.5">{t("weight")}</label>
+            <input type="number" step="0.01" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder={t("weightPlaceholder")}
               className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
           </div>
           <button onClick={handleCreate} disabled={saving || !sku.trim() || !name.trim()}
             className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
-            {saving ? "Creating..." : "Create"}
+            {saving ? t("creating") : t("create")}
           </button>
         </div>
       </div>
 
-      {/* Product List */}
       <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
-                <th className="px-5 py-3.5">SKU</th>
-                <th className="px-5 py-3.5">Name</th>
-                <th className="px-5 py-3.5">Category</th>
-                <th className="px-5 py-3.5">Brand</th>
-                <th className="px-5 py-3.5">Weight</th>
-                <th className="px-5 py-3.5">Status</th>
-                <th className="px-5 py-3.5 text-right">Actions</th>
+                <th className="px-5 py-3.5">{t("skuLabel")}</th>
+                <th className="px-5 py-3.5">{t("nameLabel")}</th>
+                <th className="px-5 py-3.5">{t("categoryLabel")}</th>
+                <th className="px-5 py-3.5">{t("brandLabel")}</th>
+                <th className="px-5 py-3.5">{t("weightLabel")}</th>
+                <th className="px-5 py-3.5">{t("status")}</th>
+                <th className="px-5 py-3.5 text-right">{t("actions")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black/[0.04]">
@@ -215,21 +214,21 @@ export default function ProductsContent() {
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-1.5">
                       {p.is_hazmat && (
-                        <span className="inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#FF9500]/10 text-[#FF9500]">Hazmat</span>
+                        <span className="inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#FF9500]/10 text-[#FF9500]">{t("hazmat")}</span>
                       )}
-                      <span className="inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#34C759]/10 text-[#34C759]">Active</span>
+                      <span className="inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#34C759]/10 text-[#34C759]">{t("active")}</span>
                     </div>
                   </td>
                   <td className="px-5 py-3.5 text-right">
                     <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }}
                       className="text-[11px] text-[#FF3B30] hover:bg-[#FF3B30]/5 px-2 py-1 rounded-full font-medium transition-colors">
-                      Delete
+                      {t("delete")}
                     </button>
                   </td>
                 </tr>
               ))}
               {products.length === 0 && (
-                <tr><td colSpan={7} className="px-5 py-12 text-center text-[#86868B] text-sm">No products yet</td></tr>
+                <tr><td colSpan={7} className="px-5 py-12 text-center text-[#86868B] text-sm">{t("noProducts")}</td></tr>
               )}
             </tbody>
           </table>

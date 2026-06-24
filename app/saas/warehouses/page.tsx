@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function WarehousesPage() {
+  const t = useTranslations("saasContent.warehouses");
   const router = useRouter();
   const [warehouses, setWarehouses] = useState<any[]>([]);
   const [stats, setStats] = useState({ total: 0, active: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Create form
   const [creating, setCreating] = useState(false);
   const [createMsg, setCreateMsg] = useState<string | null>(null);
   const [name, setName] = useState("");
@@ -27,7 +28,7 @@ export default function WarehousesPage() {
       setWarehouses(d.data || []);
       setStats(d.stats || { total: 0, active: 0 });
     } catch (e: any) {
-      setError(e.message || "Failed to load");
+      setError(e.message || t("failedToLoad"));
     } finally {
       setLoading(false);
     }
@@ -38,7 +39,7 @@ export default function WarehousesPage() {
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim() || !code.trim()) {
-      setCreateMsg("Name and code are required");
+      setCreateMsg(t("nameCodeRequired"));
       return;
     }
     setCreating(true);
@@ -60,10 +61,10 @@ export default function WarehousesPage() {
         fetchWarehouses();
       } else {
         const err = await r.json();
-        setCreateMsg(err.error || "Failed to create");
+        setCreateMsg(err.error || t("failedToCreate"));
       }
     } catch {
-      setCreateMsg("Network error");
+      setCreateMsg(t("networkError"));
     } finally {
       setCreating(false);
     }
@@ -73,7 +74,7 @@ export default function WarehousesPage() {
   if (error) return (
     <div className="p-8 text-center">
       <p className="text-[#FF3B30] text-sm mb-3">{error}</p>
-      <button onClick={() => { setError(null); setLoading(true); fetchWarehouses(); }} className="text-sm text-[#ed6d00] font-medium">Retry</button>
+      <button onClick={() => { setError(null); setLoading(true); fetchWarehouses(); }} className="text-sm text-[#ed6d00] font-medium">{t("retry")}</button>
     </div>
   );
 
@@ -81,47 +82,45 @@ export default function WarehousesPage() {
     <div className="p-6 md:p-8 max-w-[1280px]">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Warehouses</h1>
-          <p className="text-[#86868B] text-sm mt-0.5">{stats.total} total · {stats.active} active</p>
+          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">{t("title")}</h1>
+          <p className="text-[#86868B] text-sm mt-0.5">{t("subtitle", { total: stats.total, active: stats.active })}</p>
         </div>
       </div>
 
-      {/* New Warehouse form */}
       <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">New Warehouse</h2>
+        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">{t("newWarehouse")}</h2>
         <form onSubmit={handleCreate} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Name *</label>
-              <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Chicago Hub" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("name")}</label>
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder={t("namePlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Code *</label>
-              <input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="e.g. ORD1" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("code")}</label>
+              <input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder={t("codePlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">City</label>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("city")}</label>
               <input type="text" value={city} onChange={(e) => setCity(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">State</label>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("state")}</label>
               <input type="text" value={state_} onChange={(e) => setState_(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Sq Footage</label>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("sqFootage")}</label>
               <input type="number" value={sqFootage} onChange={(e) => setSqFootage(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
           </div>
           <div className="flex items-center gap-3">
             <button type="submit" disabled={creating} className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
-              {creating ? "Creating..." : "Create Warehouse"}
+              {creating ? t("creating") : t("createWarehouse")}
             </button>
             {createMsg && <span className="text-xs text-[#FF3B30]">{createMsg}</span>}
           </div>
         </form>
       </div>
 
-      {/* Warehouse cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {warehouses.map((w: any) => (
           <div
@@ -135,7 +134,7 @@ export default function WarehousesPage() {
                 <p className="text-xs text-[#86868B]">{w.code}</p>
               </div>
               <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${w.is_active ? "bg-[#34C759]/10 text-[#34C759]" : "bg-[#8E8E93]/10 text-[#8E8E93]"}`}>
-                {w.is_active ? "Active" : "Inactive"}
+                {w.is_active ? t("active") : t("inactive")}
               </span>
             </div>
             <div className="text-xs text-[#86868B] space-y-1">
@@ -145,7 +144,7 @@ export default function WarehousesPage() {
           </div>
         ))}
         {warehouses.length === 0 && (
-          <div className="col-span-full py-12 text-center text-[#86868B] text-sm">No warehouses yet</div>
+          <div className="col-span-full py-12 text-center text-[#86868B] text-sm">{t("noWarehouses")}</div>
         )}
       </div>
     </div>

@@ -2,56 +2,98 @@ import { formatName, formatState } from "@/lib/detail-content";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
-const NICHE_ICONS: Record<string, string> = {
-  apparel: "Apparel",
-  shoes: "Shoes",
-  automotive: "Automotive",
-  "baby-care": "Baby Care",
-  baby: "Baby Care",
-  beauty: "Beauty & Personal Care",
-  cosmetics: "Beauty & Personal Care",
-  "personal-care": "Beauty & Personal Care",
-  books: "Books & Publishing",
-  publishing: "Books & Publishing",
-  electronics: "Electronics",
-  food: "Food & Beverage",
-  "food-beverage": "Food & Beverage",
-  grocery: "Food & Beverage",
-  health: "Health & Pharma",
-  pharma: "Health & Pharma",
-  supplements: "Health & Pharma",
-  home: "Home & Garden",
-  "home-garden": "Home & Garden",
-  furniture: "Home & Garden",
-  jewelry: "Jewelry & Accessories",
-  accessories: "Jewelry & Accessories",
-  lighting: "Lighting",
-  luggage: "Luggage & Travel",
-  "travel-gear": "Luggage & Travel",
-  office: "Office & Stationery",
-  stationery: "Office & Stationery",
-  "pet-supplies": "Pet Supplies",
-  pets: "Pet Supplies",
-  sports: "Sports & Outdoors",
-  toys: "Toys & Games",
-  games: "Toys & Games",
-  "arts-crafts": "Arts & Crafts",
-  crafts: "Arts & Crafts",
-  "collectibles": "Arts & Crafts",
+// Maps category keys to translation paths under detail.categories
+const NICHE_TRANSLATION_KEYS: Record<string, string> = {
+  apparel: "apparel",
+  shoes: "shoes",
+  automotive: "automotive",
+  "baby-care": "babyCare",
+  baby: "babyCare",
+  beauty: "beautyAndPersonalCare",
+  cosmetics: "beautyAndPersonalCare",
+  "personal-care": "beautyAndPersonalCare",
+  books: "booksAndPublishing",
+  publishing: "booksAndPublishing",
+  electronics: "electronics",
+  food: "foodAndBeverage",
+  "food-beverage": "foodAndBeverage",
+  grocery: "foodAndBeverage",
+  health: "healthAndPharma",
+  pharma: "healthAndPharma",
+  supplements: "healthAndPharma",
+  home: "homeAndGarden",
+  "home-garden": "homeAndGarden",
+  furniture: "homeAndGarden",
+  jewelry: "jewelryAndAccessories",
+  accessories: "jewelryAndAccessories",
+  lighting: "lighting",
+  luggage: "luggageAndTravel",
+  "travel-gear": "luggageAndTravel",
+  office: "officeAndStationery",
+  stationery: "officeAndStationery",
+  "pet-supplies": "petSupplies",
+  pets: "petSupplies",
+  sports: "sportsAndOutdoors",
+  toys: "toysAndGames",
+  games: "toysAndGames",
+  "arts-crafts": "artsAndCrafts",
+  crafts: "artsAndCrafts",
+  collectibles: "artsAndCrafts",
 };
 
-function getNicheIcon(category: string): { icon: string; label: string } | null {
+// VAS service name to translation key mapping
+const VAS_TRANSLATION_KEYS: Record<string, string> = {
+  "Quality Control": "qualityControl",
+  "Kitting": "kitting",
+  "Custom Packaging": "customPackaging",
+  "Returns Management": "returnsManagement",
+  "FBA Prep": "fbaPrep",
+  "B2B Fulfillment": "b2bFulfillment",
+  "Subscription Box": "subscriptionBox",
+  "Crowdfunding Fulfillment": "crowdfundingFulfillment",
+  "Cross-docking": "crossDocking",
+  "Labeling & Barcoding": "labelingAndBarcoding",
+  "Photography": "photography",
+  "Gift Wrapping": "giftWrapping",
+  "Insert Marketing": "insertMarketing",
+  "Same-Day Shipping": "sameDayShipping",
+  "International Shipping": "internationalShipping",
+  "Hazmat Handling": "hazmatHandling",
+  "Temperature-Controlled Storage": "temperatureControlledStorage",
+  "Batch/Lot Tracking": "batchLotTracking",
+  "Serial Number Tracking": "serialNumberTracking",
+  "EDI Integration": "ediIntegration",
+};
+
+function getNicheTranslationKey(category: string): string | null {
   const key = category.toLowerCase().replace(/[^a-z-]/g, "");
-  let match: string | null = null;
-  if (NICHE_ICONS[category]) match = NICHE_ICONS[category];
-  else if (NICHE_ICONS[key]) match = NICHE_ICONS[key];
-  else {
-    for (const [k, v] of Object.entries(NICHE_ICONS)) {
-      if (category.includes(k) || k.includes(category)) { match = v; break; }
-    }
+  if (NICHE_TRANSLATION_KEYS[category]) return NICHE_TRANSLATION_KEYS[category];
+  if (NICHE_TRANSLATION_KEYS[key]) return NICHE_TRANSLATION_KEYS[key];
+  for (const [k, v] of Object.entries(NICHE_TRANSLATION_KEYS)) {
+    if (category.includes(k) || k.includes(category)) return v;
   }
-  if (!match) return null;
-  return { icon: match, label: match };
+  return null;
+}
+
+function getVasTranslationKey(service: string): string | null {
+  if (VAS_TRANSLATION_KEYS[service]) return VAS_TRANSLATION_KEYS[service];
+  // Try case-insensitive match
+  for (const [k, v] of Object.entries(VAS_TRANSLATION_KEYS)) {
+    if (k.toLowerCase() === service.toLowerCase()) return v;
+  }
+  return null;
+}
+
+// Helper to access nested translations like detail.categories.apparel
+function tCategory(t: Awaited<ReturnType<typeof getTranslations>>, key: string): string {
+  return (t as any)(`detail.categories.${key}`);
+}
+
+function tVas(t: Awaited<ReturnType<typeof getTranslations>>, key: string, fallback: string): string {
+  const translated = (t as any)(`detail.vas.${key}`);
+  // If translation returns the key itself, it's missing; use fallback
+  if (translated === `detail.vas.${key}`) return fallback;
+  return translated;
 }
 
 interface SpecialtiesSectionProps {
@@ -83,21 +125,20 @@ export default async function SpecialtiesSection({
           </p>
           <div className="flex flex-wrap gap-2">
             {categories.map((c) => {
-              const info = getNicheIcon(c);
+              const transKey = getNicheTranslationKey(c);
+              const iconKey = transKey || c.toLowerCase().replace(/[^a-z-]/g, "");
               return (
                 <Link
                   key={c}
                   href={`/3pl/${state}/${c}`}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-lg text-sm text-text-secondary hover:text-text hover:border-primary/40 transition-colors"
                 >
-                  {info && (
-                    <img
-                      src={`/images/niches/${info.icon}.png`}
-                      alt=""
-                      className="h-4 w-auto shrink-0"
-                    />
-                  )}
-                  {info ? info.label : formatName(c)}
+                  <img
+                    src={`/images/niches/${iconKey}.png`}
+                    alt=""
+                    className="h-4 w-auto shrink-0"
+                  />
+                  {transKey ? tCategory(t, transKey) : formatName(c)}
                 </Link>
               );
             })}
@@ -134,14 +175,18 @@ export default async function SpecialtiesSection({
             {t("detail.vasDesc", { name })}
           </p>
           <div className="flex flex-wrap gap-2">
-            {integrations.map((s) => (
-              <span
-                key={s}
-                className="px-3 py-1.5 border border-border rounded-lg text-sm text-text-secondary"
-              >
-                {s}
-              </span>
-            ))}
+            {integrations.map((s) => {
+              const vasKey = getVasTranslationKey(s);
+              const displayName = vasKey ? tVas(t, vasKey, s) : s;
+              return (
+                <span
+                  key={s}
+                  className="px-3 py-1.5 border border-border rounded-lg text-sm text-text-secondary"
+                >
+                  {displayName}
+                </span>
+              );
+            })}
           </div>
         </div>
       )}

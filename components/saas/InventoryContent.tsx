@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { authedFetch } from "@/lib/authed-fetch";
 
 const DT: Record<string, any> = { products: [], warehouses: [], stats: { totalSKUs: 0 } };
 
 export default function InventoryContent() {
+  const t = useTranslations("saasContent.inventory");
   const [data, setData] = useState(DT);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,9 +26,9 @@ export default function InventoryContent() {
     setLoading(true);
     let cancelled = false;
     authedFetch("/api/saas/inventory")
-      .then(r => { if (!r.ok) throw new Error(`请求失败 (${r.status})`); return r.json(); })
+      .then(r => { if (!r.ok) throw new Error(t("networkError")); return r.json(); })
       .then(d => { if (!cancelled) { setData(d); setLoading(false); } })
-      .catch(e => { if (!cancelled) { setError(e.message || "加载失败"); setLoading(false); } });
+      .catch(e => { if (!cancelled) { setError(e.message || t("networkError")); setLoading(false); } });
     return () => { cancelled = true; };
   }
 
@@ -38,7 +40,7 @@ export default function InventoryContent() {
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     if (!sku.trim() || !name.trim()) {
-      setCreateMsg("SKU and Name are required");
+      setCreateMsg(t("skuNameRequired"));
       return;
     }
     setCreating(true);
@@ -63,10 +65,10 @@ export default function InventoryContent() {
         fetchInventory();
       } else {
         const err = await res.json();
-        setCreateMsg(err.error || "Failed to create");
+        setCreateMsg(err.error || t("failedToCreate"));
       }
     } catch {
-      setCreateMsg("Network error");
+      setCreateMsg(t("networkError"));
     } finally {
       setCreating(false);
     }
@@ -107,65 +109,63 @@ export default function InventoryContent() {
     </div>
   );
 
-  if (error) return <div className="p-8 text-center"><p className="text-[#FF3B30] text-sm mb-3">{error}</p><button onClick={() => { setError(null); fetchInventory(); }} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">重试</button></div>;
+  if (error) return <div className="p-8 text-center"><p className="text-[#FF3B30] text-sm mb-3">{error}</p><button onClick={() => { setError(null); fetchInventory(); }} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">{t("retry")}</button></div>;
 
   return (
     <div className="p-6 md:p-8 max-w-[1280px]">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Inventory</h1>
-          <p className="text-[#86868B] text-sm mt-0.5">{stats.totalSKUs} SKUs</p>
+          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">{t("title")}</h1>
+          <p className="text-[#86868B] text-sm mt-0.5">{t("subtitle", { n: stats.totalSKUs })}</p>
         </div>
       </div>
 
-      {/* Add Product form — always visible */}
       <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">Add Product</h2>
+        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">{t("addProduct")}</h2>
         <form onSubmit={handleCreate} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">SKU *</label>
-              <input type="text" value={sku} onChange={(e) => setSku(e.target.value)} placeholder="SKU-001" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("sku")}</label>
+              <input type="text" value={sku} onChange={(e) => setSku(e.target.value)} placeholder={t("skuPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Name *</label>
-              <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Product Name" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("name")}</label>
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder={t("namePlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Category</label>
-              <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Electronics" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("category")}</label>
+              <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder={t("categoryPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Brand</label>
-              <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="Brand" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("brand")}</label>
+              <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder={t("brandPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Weight (lbs)</label>
-              <input type="number" step="0.01" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="0.00" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("weight")}</label>
+              <input type="number" step="0.01" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder={t("weightPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
           </div>
           <div className="flex items-center gap-3">
             <button type="submit" disabled={creating} className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
-              {creating ? "Creating..." : "Create Product"}
+              {creating ? t("creating") : t("createProduct")}
             </button>
             {createMsg && <span className="text-xs text-[#FF3B30]">{createMsg}</span>}
           </div>
         </form>
       </div>
 
-      {/* Product list */}
       <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
                 <th className="px-5 py-3.5 w-10"><input type="checkbox" checked={products.length > 0 && products.every((p: any) => selectedIds.has(p.id))} onChange={toggleSelectAll} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></th>
-                <th className="px-5 py-3.5">SKU</th><th className="px-5 py-3.5">Product</th>
-                <th className="px-5 py-3.5">Category</th><th className="px-5 py-3.5 text-right">Weight</th>
+                <th className="px-5 py-3.5">{t("skuLabel")}</th><th className="px-5 py-3.5">{t("productLabel")}</th>
+                <th className="px-5 py-3.5">{t("categoryLabel")}</th><th className="px-5 py-3.5 text-right">{t("weightLabel")}</th>
                 <th className="px-5 py-3.5 text-right">
                   {selectedIds.size > 0 && (
                     <button onClick={handleDeleteSelected} disabled={deleting} className="text-[11px] text-[#FF3B30] font-medium hover:text-[#FF6B6B] disabled:opacity-50">
-                      {deleting ? "Deleting..." : `Delete (${selectedIds.size})`}
+                      {deleting ? t("deleting") : t("deleteN", { n: selectedIds.size })}
                     </button>
                   )}
                 </th>
@@ -183,7 +183,7 @@ export default function InventoryContent() {
                 </tr>
               ))}
               {products.length === 0 && (
-                <tr><td colSpan={6} className="px-5 py-12 text-center text-[#86868B] text-sm">No products yet</td></tr>
+                <tr><td colSpan={6} className="px-5 py-12 text-center text-[#86868B] text-sm">{t("noProducts")}</td></tr>
               )}
             </tbody>
           </table>

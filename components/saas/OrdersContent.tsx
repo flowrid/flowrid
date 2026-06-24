@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { authedFetch } from "@/lib/authed-fetch";
 
 interface Order {
@@ -35,6 +36,7 @@ function generateOrderNumber() {
 }
 
 export default function OrdersContent() {
+  const t = useTranslations("saasContent.orders");
   const [data, setData] = useState(DT);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +62,7 @@ export default function OrdersContent() {
       const d = await r.json();
       setData(d);
     } catch (e: any) {
-      setError(e.message || "Failed to load");
+      setError(e.message || t("failedToLoad"));
     } finally {
       setLoading(false);
     }
@@ -68,7 +70,6 @@ export default function OrdersContent() {
 
   useEffect(() => {
     fetchOrders();
-    // Fetch warehouses for dropdown
     authedFetch("/api/saas/warehouses")
       .then(r => r.ok ? r.json() : null)
       .then(d => {
@@ -84,7 +85,7 @@ export default function OrdersContent() {
   async function handleCreateOrder(e: React.FormEvent) {
     e.preventDefault();
     if (!orderNumber.trim()) {
-      setCreateMsg("Order number is required");
+      setCreateMsg(t("orderNumberRequired"));
       return;
     }
     setCreating(true);
@@ -92,7 +93,7 @@ export default function OrdersContent() {
     try {
       const body: Record<string, unknown> = {
         order_number: orderNumber.trim(),
-        customer_name: customerName || "Walk-in Customer",
+        customer_name: customerName || t("walkInCustomer"),
         source,
       };
       if (customerEmail) body.customer_email = customerEmail;
@@ -114,10 +115,10 @@ export default function OrdersContent() {
         fetchOrders();
       } else {
         const err = await res.json();
-        setCreateMsg(err.error || "Failed to create");
+        setCreateMsg(err.error || t("failedToCreate"));
       }
     } catch {
-      setCreateMsg("Network error");
+      setCreateMsg(t("networkError"));
     } finally {
       setCreating(false);
     }
@@ -160,10 +161,10 @@ export default function OrdersContent() {
     const now = new Date();
     const diffMs = now.getTime() - d.getTime();
     const diffMin = Math.floor(diffMs / 60000);
-    if (diffMin < 1) return "Just now";
-    if (diffMin < 60) return `${diffMin}m ago`;
+    if (diffMin < 1) return t("justNow");
+    if (diffMin < 60) return t("minutesAgo", { n: diffMin });
     const diffHr = Math.floor(diffMin / 60);
-    if (diffHr < 24) return `${diffHr}h ago`;
+    if (diffHr < 24) return t("hoursAgo", { n: diffHr });
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
@@ -174,7 +175,7 @@ export default function OrdersContent() {
   if (error) return (
     <div className="p-8 text-center">
       <p className="text-[#FF3B30] text-sm mb-3">{error}</p>
-      <button onClick={() => { setError(null); setLoading(true); fetchOrders(); }} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">Retry</button>
+      <button onClick={() => { setError(null); setLoading(true); fetchOrders(); }} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">{t("retry")}</button>
     </div>
   );
 
@@ -182,75 +183,73 @@ export default function OrdersContent() {
     <div className="p-6 md:p-8 max-w-[1280px]">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Orders</h1>
-          <p className="text-[#86868B] text-sm mt-0.5">{stats.total} total · {stats.pending} pending · {stats.shipped} shipped</p>
+          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">{t("title")}</h1>
+          <p className="text-[#86868B] text-sm mt-0.5">{t("subtitle", { total: stats.total, pending: stats.pending, shipped: stats.shipped })}</p>
         </div>
       </div>
 
-      {/* New Order form — always visible */}
       <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">New Order</h2>
+        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">{t("newOrder")}</h2>
         <form onSubmit={handleCreateOrder} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Order Number *</label>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("orderNumber")}</label>
               <input type="text" value={orderNumber} onChange={(e) => setOrderNumber(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Customer Name</label>
-              <input type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Walk-in Customer" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("customerName")}</label>
+              <input type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder={t("customerNamePlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Customer Email</label>
-              <input type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} placeholder="email@example.com" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("customerEmail")}</label>
+              <input type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} placeholder={t("customerEmailPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Source</label>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("source")}</label>
               <select value={source} onChange={(e) => setSource(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
-                <option value="manual">Manual</option>
-                <option value="shopify">Shopify</option>
-                <option value="amazon">Amazon</option>
-                <option value="ebay">eBay</option>
+                <option value="manual">{t("sourceManual")}</option>
+                <option value="shopify">{t("sourceShopify")}</option>
+                <option value="amazon">{t("sourceAmazon")}</option>
+                <option value="ebay">{t("sourceEbay")}</option>
               </select>
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Warehouse</label>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("warehouse")}</label>
               <select value={warehouseId} onChange={(e) => setWarehouseId(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
-                <option value="">Auto-select</option>
+                <option value="">{t("warehouseAutoSelect")}</option>
                 {warehouses.map((wh: any) => (
                   <option key={wh.id} value={wh.id}>{wh.name} ({wh.code})</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Shipping ZIP</label>
-              <input type="text" value={shippingZip} onChange={(e) => setShippingZip(e.target.value)} placeholder="optional" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("shippingZip")}</label>
+              <input type="text" value={shippingZip} onChange={(e) => setShippingZip(e.target.value)} placeholder={t("shippingZipPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
           </div>
           <div className="flex items-center gap-3">
             <button type="submit" disabled={creating} className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
-              {creating ? "Creating..." : "Create Order"}
+              {creating ? t("creating") : t("createOrder")}
             </button>
             {createMsg && <span className="text-xs text-[#FF3B30]">{createMsg}</span>}
           </div>
         </form>
       </div>
 
-      {/* Orders list */}
       <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
                 <th className="px-5 py-3.5 w-10"><input type="checkbox" checked={orders.length > 0 && orders.every((o: any) => selectedIds.has(o.id))} onChange={toggleSelectAll} className="w-3.5 h-3.5 rounded border-black/20 text-[#ed6d00] focus:ring-[#ed6d00]/20" /></th>
-                <th className="px-5 py-3.5">Order</th><th className="px-5 py-3.5">Customer</th>
-                <th className="px-5 py-3.5">Warehouse</th>
-                <th className="px-5 py-3.5">Source</th><th className="px-5 py-3.5">Status</th>
-                <th className="px-5 py-3.5 text-right">Time</th>
+                <th className="px-5 py-3.5">{t("orderLabel")}</th><th className="px-5 py-3.5">{t("customerLabel")}</th>
+                <th className="px-5 py-3.5">{t("warehouseLabel")}</th>
+                <th className="px-5 py-3.5">{t("sourceLabel")}</th><th className="px-5 py-3.5">{t("statusLabel")}</th>
+                <th className="px-5 py-3.5 text-right">{t("timeLabel")}</th>
                 <th className="px-5 py-3.5 text-right">
                   {selectedIds.size > 0 && (
                     <button onClick={handleDeleteSelected} disabled={deleting} className="text-[11px] text-[#FF3B30] font-medium hover:text-[#FF6B6B] disabled:opacity-50">
-                      {deleting ? "Deleting..." : `Delete (${selectedIds.size})`}
+                      {deleting ? t("deleting") : t("deleteN", { n: selectedIds.size })}
                     </button>
                   )}
                 </th>
@@ -275,12 +274,12 @@ export default function OrdersContent() {
                       <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${STATUS_STYLES[displayStatus] || ""}`}>{cap(displayStatus)}</span>
                     </td>
                     <td className="px-5 py-3.5 text-xs text-[#86868B] text-right">{fmtTime(o.created_at || o.time)}</td>
-                    <td className="px-5 py-3.5" /> {/* spacer for delete column */}
+                    <td className="px-5 py-3.5" />
                   </tr>
                 );
               })}
               {orders.length === 0 && (
-                <tr><td colSpan={8} className="px-5 py-12 text-center text-[#86868B] text-sm">No orders yet</td></tr>
+                <tr><td colSpan={8} className="px-5 py-12 text-center text-[#86868B] text-sm">{t("noOrders")}</td></tr>
               )}
             </tbody>
           </table>
