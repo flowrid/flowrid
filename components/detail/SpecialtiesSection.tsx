@@ -86,7 +86,7 @@ export default function SpecialtiesSection({
                 <Link
                   key={c}
                   href={`/3pl/${state}/${c}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-text-secondary hover:text-text transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-lg text-sm text-text-secondary hover:text-text hover:border-primary/40 transition-colors"
                 >
                   {info && (
                     <img
@@ -115,7 +115,7 @@ export default function SpecialtiesSection({
               <Link
                 key={p}
                 href={`/3pl/${state}/${p}`}
-                className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-text-secondary hover:text-text transition-colors"
+                className="px-3 py-1.5 border border-border rounded-lg text-sm text-text-secondary hover:text-text hover:border-primary/40 transition-colors"
               >
                 {p}
               </Link>
@@ -135,7 +135,7 @@ export default function SpecialtiesSection({
             {integrations.map((s) => (
               <span
                 key={s}
-                className="px-3 py-1.5 bg-gray-100 rounded-lg text-sm text-text-secondary"
+                className="px-3 py-1.5 border border-border rounded-lg text-sm text-text-secondary"
               >
                 {s}
               </span>
@@ -151,14 +151,14 @@ export default function SpecialtiesSection({
           Industry certifications and compliance standards.
         </p>
         <div className="flex flex-wrap gap-2">
-          <Link href={`/3pl/${state}`} className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-text-secondary hover:text-text transition-colors">
+          <Link href={`/3pl/${state}`} className="px-3 py-1.5 border border-border rounded-lg text-sm text-text-secondary hover:text-text hover:border-primary/40 transition-colors">
             {stateFormatted} 3PL
           </Link>
           {(categories || []).slice(0, 3).map((c) => (
             <Link
               key={c}
               href={`/3pl/${state}/${c}`}
-              className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-text-secondary hover:text-text transition-colors"
+              className="px-3 py-1.5 border border-border rounded-lg text-sm text-text-secondary hover:text-text hover:border-primary/40 transition-colors"
             >
               {formatName(c)} Specialist
             </Link>
