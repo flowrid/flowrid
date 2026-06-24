@@ -85,6 +85,8 @@
     "alternatives": "代替候補",
     "integrations": "連携",
     "faq": "よくある質問",
+    "faqDefaultAnswer": "当社の AI が数百の 3PL プロバイダーの実際の物流データを分析し、お客様の製品タイプ、プラットフォーム、地域要件に基づいて最も正確な回答を提供します。",
+    "faqHeading": "よくある質問",
     "notFound": "3PLが見つかりません",
     "browseAll": "すべての3PLプロバイダーを閲覧",
     "backTo": "{state}の3PLに戻る",

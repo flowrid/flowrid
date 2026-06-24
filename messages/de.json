@@ -85,6 +85,8 @@
     "alternatives": "Alternativen",
     "integrations": "Integrationen",
     "faq": "FAQ",
+    "faqDefaultAnswer": "Unsere KI analysiert echte Fulfillment-Daten von Hunderten von 3PL-Anbietern, um Ihnen die genaueste Antwort basierend auf Ihrem Produkttyp, Ihrer Plattform und Ihren Standortanforderungen zu geben.",
+    "faqHeading": "Häufig Gestellte Fragen",
     "notFound": "3PL nicht gefunden",
     "browseAll": "Alle 3PL-Anbieter durchsuchen",
     "backTo": "Zurück zu {state} 3PLs",

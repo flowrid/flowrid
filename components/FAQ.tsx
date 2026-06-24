@@ -5,24 +5,27 @@
  * - 新：{ q: string, a: string }[]
  * - 旧：string[]（仅问题，答案用通用文案）
  */
+import { useTranslations } from "next-intl";
+
 export default function FAQ({
   items,
 }: {
   items: string[] | { q: string; a: string }[];
 }) {
+  const t = useTranslations();
   if (!items || items.length === 0) return null;
 
   return (
     <section className="mt-8">
       <h2 className="text-xl font-bold text-text mb-4">
-        Frequently Asked Questions
+        {t("detail.faqHeading")}
       </h2>
       <div className="space-y-3">
         {items.map((item, i) => {
           const question = typeof item === "string" ? item : item.q;
           const answer =
             typeof item === "string"
-              ? "Our AI analyzes real fulfillment data across hundreds of 3PL providers to give you the most accurate answer based on your specific product type, platform, and location requirements."
+              ? t("detail.faqDefaultAnswer")
               : item.a;
 
           return (

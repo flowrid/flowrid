@@ -85,6 +85,8 @@
     "alternatives": "Alternatives",
     "integrations": "Intégrations",
     "faq": "FAQ",
+    "faqDefaultAnswer": "Notre IA analyse les données réelles de fulfillment de centaines de fournisseurs 3PL pour vous donner la réponse la plus précise en fonction de votre type de produit, plateforme et exigences de localisation.",
+    "faqHeading": "Questions Fréquentes",
     "notFound": "3PL introuvable",
     "browseAll": "Parcourir tous les prestataires 3PL",
     "backTo": "Retour aux 3PL en {state}",

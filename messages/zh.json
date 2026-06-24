@@ -85,6 +85,8 @@
     "alternatives": "替代方案",
     "integrations": "集成",
     "faq": "常见问题",
+    "faqDefaultAnswer": "我们的 AI 分析数百家 3PL 提供商的真实物流数据，根据您的产品类型、平台和位置需求，为您提供最准确的答案。",
+    "faqHeading": "常见问题",
     "notFound": "未找到 3PL",
     "browseAll": "浏览全部 3PL 服务商",
     "backTo": "返回 {state} 3PL",

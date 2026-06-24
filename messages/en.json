@@ -85,6 +85,8 @@
     "alternatives": "Alternatives",
     "integrations": "Integrations",
     "faq": "FAQ",
+    "faqDefaultAnswer": "Our AI analyzes real fulfillment data across hundreds of 3PL providers to give you the most accurate answer based on your specific product type, platform, and location requirements.",
+    "faqHeading": "Frequently Asked Questions",
     "notFound": "3PL Not Found",
     "browseAll": "Browse all 3PL providers",
     "backTo": "Back to {state} 3PLs",
