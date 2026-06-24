@@ -20,6 +20,7 @@ export default async function LocationsSection({
 }: LocationsSectionProps) {
   const t = await getTranslations();
   const stateFormatted = formatState(state);
+  const stateIcon = `/images/states/${stateFormatted}.png`;
   const hasCoords = lat !== undefined && lng !== undefined;
 
   return (
@@ -51,7 +52,8 @@ export default async function LocationsSection({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <p className="text-sm">
+                <p className="text-sm flex items-center justify-center gap-1.5">
+                  <img src={stateIcon} alt={stateFormatted} className="w-5 h-5 inline-block" />
                   {city ? `${city}, ${stateFormatted}` : stateFormatted}
                 </p>
               </div>
@@ -65,8 +67,9 @@ export default async function LocationsSection({
           <div className="flex flex-wrap gap-2">
             <Link
               href={`/3pl/${state}`}
-              className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-text-secondary hover:text-text transition-colors"
+              className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-text-secondary hover:text-text transition-colors inline-flex items-center gap-1.5"
             >
+              <img src={stateIcon} alt={stateFormatted} className="w-4 h-4" />
               {stateFormatted}
             </Link>
             {hasCoords && (
