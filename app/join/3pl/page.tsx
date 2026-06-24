@@ -48,6 +48,15 @@ export default function ThreePLJoinPage() {
         setError(updateError.message);
         setLoading(false);
       } else {
+        // 同步写入 public.users 表，避免后续 OAuth 登录时角色丢失
+        const at = sessionData.session.access_token;
+        if (at) {
+          await fetch("/api/auth/set-role", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${at}` },
+            body: JSON.stringify({ role: "3pl" }),
+          });
+        }
         // 桥接：获取 SaaS flowrid_token cookie
         const { data: newSession } = await supabase.auth.getSession();
         const accessToken = newSession?.session?.access_token;

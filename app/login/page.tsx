@@ -37,20 +37,17 @@ export default function LoginPage() {
     // Resolve role: user_metadata first, then DB as fallback
     async function resolveRole(session: any): Promise<string | null> {
       const metaRole = session?.user?.user_metadata?.role as string | undefined;
-      console.log("[LoginPage] user_metadata.role:", metaRole);
       if (metaRole) return metaRole;
 
       // Google OAuth may overwrite user_metadata — check via API
-      console.log("[LoginPage] user_metadata has no role, calling /api/auth/me…");
       try {
         const res = await fetch("/api/auth/me", {
           headers: { Authorization: `Bearer ${session.access_token}` },
         });
         const body = await res.json();
-        console.log("[LoginPage] /api/auth/me response:", body);
         return body.role || null;
-      } catch (e) {
-        console.error("[LoginPage] /api/auth/me failed:", e);
+      } catch {
+        // fall through
       }
       return null;
     }
