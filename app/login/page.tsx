@@ -14,7 +14,6 @@ export default function LoginPage() {
     // 防止 React Strict Mode 双重挂载导致重复处理
     if (processingRef.current) return;
 
-    // 同时检查 query string（PKCE 流程：?code=xxx）和 hash（implicit 流程：#access_token=xxx）
     const search = window.location.search;
     const hash = window.location.hash;
     const hasAuthInQuery = search.includes("code=");
@@ -54,36 +53,58 @@ export default function LoginPage() {
       }
     }
 
-    // resolved 标志防止 onAuthStateChange 和 getSession 双重触发
     let resolved = false;
 
     async function handleSession(session: any) {
       if (resolved || !session) return;
       resolved = true;
-      subscription.unsubscribe();
+      subscription?.unsubscribe();
       clearTimeout(fallback);
       await bridgeIf3PL(session);
-      // 清理 URL 中的 auth 参数，避免浏览器回退时重新触发
       window.history.replaceState({}, "", "/login");
       router.push(getRedirect(session));
       router.refresh();
     }
 
-    // 方案 A：监听 SIGNED_IN 事件（PKCE code exchange 完成时触发）
+    // 注册 onAuthStateChange（自动检测完成后触发 SIGNED_IN）
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_IN" && session) {
         await handleSession(session);
       }
     });
 
-    // 方案 B：主动检查 session（处理事件在监听器注册前已触发的情况）
-    supabase.auth.getSession().then(async ({ data }) => {
-      if (data?.session && !resolved) {
-        await handleSession(data.session);
-      }
-    });
+    // 主动处理：从 query string 提取 code 并交换 session
+    const urlParams = new URLSearchParams(search);
+    const code = urlParams.get("code");
 
-    // 兜底：5 秒后仍未解析则回退到登录表单
+    if (code) {
+      // 手动交换 PKCE code（比依赖 detectSessionInUrl 更可靠）
+      supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
+        if (error) {
+          console.error("PKCE exchange failed:", error.message);
+          if (!resolved) {
+            resolved = true;
+            subscription.unsubscribe();
+            processingRef.current = false;
+            window.history.replaceState({}, "", "/login");
+            setShowForm(true);
+          }
+          return;
+        }
+        if (data?.session) {
+          await handleSession(data.session);
+        }
+      });
+    } else {
+      // 非 PKCE 流程（hash token）：尝试 getSession
+      supabase.auth.getSession().then(async ({ data }) => {
+        if (data?.session && !resolved) {
+          await handleSession(data.session);
+        }
+      });
+    }
+
+    // 兜底：8 秒后仍未解析则回退到登录表单
     const fallback = setTimeout(() => {
       if (!resolved) {
         resolved = true;
@@ -92,7 +113,7 @@ export default function LoginPage() {
         window.history.replaceState({}, "", "/login");
         setShowForm(true);
       }
-    }, 5000);
+    }, 8000);
 
     return () => {
       subscription.unsubscribe();
