@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface OrderDetail {
   order: any;
@@ -23,6 +24,7 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 export default function OrderDetailPage() {
+  const t = useTranslations("saas");
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
@@ -39,7 +41,7 @@ export default function OrderDetailPage() {
       if (!r.ok) throw new Error(`Request failed (${r.status})`);
       setData(await r.json());
     } catch (e: any) {
-      setError(e.message || "Failed to load order");
+      setError(e.message || t("failedToLoadOrder"));
     } finally {
       setLoading(false);
     }
@@ -60,10 +62,10 @@ export default function OrderDetailPage() {
         fetchOrder();
       } else {
         const err = await r.json();
-        setMsg(err.error || "Failed to update status");
+        setMsg(err.error || t("failedToUpdateStatus"));
       }
     } catch {
-      setMsg("Network error");
+      setMsg(t("networkError"));
     } finally {
       setUpdating(false);
     }
@@ -73,7 +75,7 @@ export default function OrderDetailPage() {
   if (error) return (
     <div className="p-8 text-center">
       <p className="text-[#FF3B30] text-sm mb-3">{error}</p>
-      <button onClick={() => { setError(null); setLoading(true); fetchOrder(); }} className="text-sm text-[#ed6d00] font-medium">Retry</button>
+      <button onClick={() => { setError(null); setLoading(true); fetchOrder(); }} className="text-sm text-[#ed6d00] font-medium">{t("retry")}</button>
     </div>
   );
   if (!data) return null;
@@ -96,7 +98,7 @@ export default function OrderDetailPage() {
           {/* Status Actions */}
           {allowedTransitions.length > 0 && (
             <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-              <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-3">Actions</h2>
+              <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-3">{t("actions")}</h2>
               <div className="flex flex-wrap gap-2">
                 {allowedTransitions.map((s) => (
                   <button
@@ -105,7 +107,7 @@ export default function OrderDetailPage() {
                     disabled={updating}
                     className="bg-[#ed6d00] text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors"
                   >
-                    {updating ? "..." : `Mark as ${cap(s)}`}
+                    {updating ? "..." : t("markAs", { status: cap(s) })}
                   </button>
                 ))}
               </div>
@@ -115,7 +117,7 @@ export default function OrderDetailPage() {
 
           {/* Order Info */}
           <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-            <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">Order Information</h2>
+            <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">{t("orderInformation")}</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
               <Info label="Source" value={order.source || "—"} />
               <Info label="Priority" value={cap(order.priority || "normal")} />
@@ -125,13 +127,13 @@ export default function OrderDetailPage() {
               <Info label="Email" value={order.customer_email || "—"} />
               <Info label="Shipping Method" value={order.shipping_method || "—"} />
               <Info label="Tracking" value={order.tracking_number || "—"} />
-              <Info label="Created" value={order.created_at ? new Date(order.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—"} />
+              <Info label="Created" value={order.created_at ? new Date(order.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—"} />
             </div>
           </div>
 
           {/* Shipping Address */}
           <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-            <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">Shipping Address</h2>
+            <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">{t("shippingAddress")}</h2>
             <p className="text-sm text-[#1D1D1F] leading-relaxed">
               {order.shipping_address_line1 || "—"}<br />
               {[order.shipping_city, order.shipping_state, order.shipping_zip].filter(Boolean).join(", ") || "—"}<br />
@@ -148,12 +150,12 @@ export default function OrderDetailPage() {
               <table className="w-full">
                 <thead>
                   <tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
-                    <th className="px-5 py-3">Product</th>
-                    <th className="px-5 py-3">SKU</th>
-                    <th className="px-5 py-3 text-right">Ordered</th>
-                    <th className="px-5 py-3 text-right">Picked</th>
-                    <th className="px-5 py-3 text-right">Packed</th>
-                    <th className="px-5 py-3 text-right">Shipped</th>
+                    <th className="px-5 py-3">{t("product")}</th>
+                    <th className="px-5 py-3">{t("sku")}</th>
+                    <th className="px-5 py-3 text-right">{t("ordered")}</th>
+                    <th className="px-5 py-3 text-right">{t("picked")}</th>
+                    <th className="px-5 py-3 text-right">{t("packed")}</th>
+                    <th className="px-5 py-3 text-right">{t("shipped")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-black/[0.04]">
@@ -179,7 +181,7 @@ export default function OrderDetailPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-6">
             <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-3">Packages ({pkgs.length})</h2>
             {pkgs.length === 0 ? (
-              <p className="text-sm text-[#86868B]">No packages yet</p>
+              <p className="text-sm text-[#86868B]">{t("noPackages")}</p>
             ) : (
               <div className="space-y-3">
                 {pkgs.map((p: any) => (
@@ -200,7 +202,7 @@ export default function OrderDetailPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-6">
             <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-3">Returns ({returns.length})</h2>
             {returns.length === 0 ? (
-              <p className="text-sm text-[#86868B]">No returns</p>
+              <p className="text-sm text-[#86868B]">{t("noReturns")}</p>
             ) : (
               <div className="space-y-3">
                 {returns.map((r: any) => (

@@ -101,7 +101,7 @@ export default function BrandOperationPage({
               href="/account/rfqs"
               className="rounded-full border border-black/10 bg-white px-5 py-2.5 text-sm font-semibold text-[#1D1D1F] transition-colors hover:bg-black/[0.03]"
             >
-              Review RFQs
+              {t("account.reviewRFQs")}
             </Link>
           </div>
         </div>

@@ -3,10 +3,12 @@
 // Container / Movable Unit 管理
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 const CONTAINER_TYPES = ["pallet", "tote", "cart", "cage", "trailer"];
 
 export default function ContainersPage() {
+  const t = useTranslations("saas");
   const [containers, setContainers] = useState<any[]>([]);
   const [warehouses, setWarehouses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +72,7 @@ export default function ContainersPage() {
 
   return (
     <div className="p-6 md:p-8 max-w-[1280px]">
-      <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F] mb-6">Containers</h1>
+      <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F] mb-6">{t("containers")}</h1>
 
       {selectedContainer ? (
         <div className="space-y-6">
@@ -89,10 +91,10 @@ export default function ContainersPage() {
 
           <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">
             <div className="px-6 py-3 bg-[#F5F5F7] border-b border-black/5">
-              <h3 className="text-sm font-semibold text-[#1D1D1F]">Contents ({containerItems.length})</h3>
+              <h3 className="text-sm font-semibold text-[#1D1D1F]">{t("contents", { n: containerItems.length })}</h3>
             </div>
             <table className="w-full">
-              <thead><tr className="text-left text-xs text-[#86868B] border-b"><th className="px-5 py-2.5">Product</th><th className="px-5 py-2.5 text-right">Qty</th><th className="px-5 py-2.5">Lot #</th></tr></thead>
+              <thead><tr className="text-left text-xs text-[#86868B] border-b"><th className="px-5 py-2.5">{t("product")}</th><th className="px-5 py-2.5 text-right">{t("qtyCol")}</th><th className="px-5 py-2.5">{t("lotCol")}</th></tr></thead>
               <tbody className="divide-y divide-black/[0.04]">
                 {containerItems.map((item: any) => (
                   <tr key={item.id}>
@@ -102,7 +104,7 @@ export default function ContainersPage() {
                   </tr>
                 ))}
                 {containerItems.length === 0 && (
-                  <tr><td colSpan={3} className="px-5 py-12 text-center text-[#86868B] text-sm">Empty container</td></tr>
+                  <tr><td colSpan={3} className="px-5 py-12 text-center text-[#86868B] text-sm">{t("emptyContainer")}</td></tr>
                 )}
               </tbody>
             </table>
@@ -111,52 +113,52 @@ export default function ContainersPage() {
       ) : (
         <>
           <div className="flex flex-wrap gap-4 mb-6">
-            <input type="text" placeholder="Search by barcode or name..." value={search} onChange={(e) => setSearch(e.target.value)}
+            <input type="text" placeholder={t("searchBarcode")} value={search} onChange={(e) => setSearch(e.target.value)}
               className="bg-white border border-black/5 rounded-xl px-4 py-2.5 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
               className="bg-white border border-black/5 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
-              <option value="">All Statuses</option>
-              <option value="available">Available</option>
-              <option value="in_use">In Use</option>
-              <option value="staged">Staged</option>
+              <option value="">{t("allStatuses")}</option>
+              <option value="available">{t("available")}</option>
+              <option value="in_use">{t("inUse")}</option>
+              <option value="staged">{t("staged")}</option>
               <option value="shipped">Shipped</option>
             </select>
           </div>
 
           {/* Create form */}
           <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-            <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">Create Container</h2>
+            <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">{t("createContainer")}</h2>
             <form onSubmit={handleCreate} className="space-y-4">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div>
-                  <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">Warehouse *</label>
+                  <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">{t("warehouseRequired")}</label>
                   <select value={warehouseId} onChange={(e) => setWarehouseId(e.target.value)}
                     className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
-                    <option value="">Select...</option>
+                    <option value="">{t("selectPlaceholder")}</option>
                     {warehouses.map((w: any) => <option key={w.id} value={w.id}>{w.name}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">Type</label>
+                  <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">{t("typeLabel")}</label>
                   <select value={containerType} onChange={(e) => setContainerType(e.target.value)}
                     className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
                     {CONTAINER_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">Barcode</label>
-                  <input type="text" value={barcode} onChange={(e) => setBarcode(e.target.value)} placeholder="Auto-generated"
+                  <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">{t("barcode")}</label>
+                  <input type="text" value={barcode} onChange={(e) => setBarcode(e.target.value)} placeholder={t("autoGeneratedBarcode")}
                     className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">Max Weight (lbs)</label>
+                  <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">{t("maxWeightLbs")}</label>
                   <input type="number" step="0.1" value={maxWeight} onChange={(e) => setMaxWeight(e.target.value)}
                     className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
                 </div>
               </div>
               <button type="submit" disabled={creating}
                 className="bg-[#ed6d00] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
-                {creating ? "Creating..." : "Create Container"}
+                {creating ? t("creating") : t("createContainer")}
               </button>
             </form>
           </div>
@@ -182,7 +184,7 @@ export default function ContainersPage() {
               </div>
             ))}
             {containers.length === 0 && (
-              <div className="col-span-full py-12 text-center text-[#86868B] text-sm">No containers yet</div>
+              <div className="col-span-full py-12 text-center text-[#86868B] text-sm">{t("noContainers")}</div>
             )}
           </div>
         </>

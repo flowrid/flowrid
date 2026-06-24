@@ -18,7 +18,7 @@ export default function RegisterPage() {
     setError("");
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+      setError(t("saas.passwordMinLength"));
       setLoading(false);
       return;
     }
@@ -32,13 +32,13 @@ export default function RegisterPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Registration failed");
+        setError(data.error || t("saas.registrationFailed"));
         return;
       }
 
       setSuccess(true);
     } catch {
-      setError("Network error. Please try again.");
+      setError(t("saas.networkErrorRetry"));
     } finally {
       setLoading(false);
     }
@@ -107,7 +107,7 @@ export default function RegisterPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20 transition-all"
-              placeholder="Min 6 characters"
+              placeholder={t("saas.minCharacters")}
               required
             />
           </div>

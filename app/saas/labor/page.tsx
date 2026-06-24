@@ -3,8 +3,10 @@
 // 劳动力分析
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function LaborPage() {
+  const t = useTranslations("saas");
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [warehouses, setWarehouses] = useState<any[]>([]);
@@ -30,19 +32,19 @@ export default function LaborPage() {
 
   return (
     <div className="p-6 md:p-8 max-w-[1280px]">
-      <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F] mb-6">Labor Analytics</h1>
+      <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F] mb-6">{t("laborAnalytics")}</h1>
 
       <div className="flex items-center gap-4 mb-6">
         <select value={warehouseId} onChange={(e) => setWarehouseId(e.target.value)}
           className="bg-white border border-black/5 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
-          <option value="">All Warehouses</option>
+          <option value="">{t("allWarehouses")}</option>
           {warehouses.map((w: any) => <option key={w.id} value={w.id}>{w.name}</option>)}
         </select>
         <select value={days} onChange={(e) => setDays(parseInt(e.target.value))}
           className="bg-white border border-black/5 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
-          <option value={7}>Last 7 days</option>
-          <option value={30}>Last 30 days</option>
-          <option value={90}>Last 90 days</option>
+          <option value={7}>{t("last7Days")}</option>
+          <option value={30}>{t("last30Days")}</option>
+          <option value={90}>{t("last90Days")}</option>
         </select>
       </div>
 
@@ -63,17 +65,17 @@ export default function LaborPage() {
           {/* Picker table */}
           <div className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden">
             <div className="px-6 py-3 bg-[#F5F5F7] border-b border-black/5">
-              <h3 className="text-sm font-semibold text-[#1D1D1F]">Picker Performance</h3>
+              <h3 className="text-sm font-semibold text-[#1D1D1F]">{t("pickerPerformance")}</h3>
             </div>
             <table className="w-full">
               <thead>
                 <tr className="text-left text-xs text-[#86868B] border-b border-black/5">
-                  <th className="px-5 py-2.5">Name</th>
-                  <th className="px-5 py-2.5 text-right">Tasks</th>
-                  <th className="px-5 py-2.5 text-right">Items</th>
-                  <th className="px-5 py-2.5 text-right">Total Time</th>
-                  <th className="px-5 py-2.5 text-right">Avg/Task</th>
-                  <th className="px-5 py-2.5 text-right">Accuracy</th>
+                  <th className="px-5 py-2.5">{t("nameCol")}</th>
+                  <th className="px-5 py-2.5 text-right">{t("tasksCol")}</th>
+                  <th className="px-5 py-2.5 text-right">{t("itemsCol")}</th>
+                  <th className="px-5 py-2.5 text-right">{t("totalTime")}</th>
+                  <th className="px-5 py-2.5 text-right">{t("avgPerTask")}</th>
+                  <th className="px-5 py-2.5 text-right">{t("accuracy")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-black/[0.04]">
@@ -96,7 +98,7 @@ export default function LaborPage() {
           </div>
         </div>
       ) : (
-        <div className="py-12 text-center text-[#86868B] text-sm">No data available</div>
+        <div className="py-12 text-center text-[#86868B] text-sm">{t("noData")}</div>
       )}
     </div>
   );

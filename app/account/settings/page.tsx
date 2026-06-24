@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useRef } from "react";
 import { createBrowserClient } from "@/lib/supabase";
@@ -74,7 +74,7 @@ export default function AccountSettingsPage() {
     const { error } = await supabase!.auth.updateUser({
       data: { username, country, city, occupation, member_id: memberId },
     });
-    if (error) setMessage("Error: " + error.message);
+    if (error) setMessage(t("account.settings.saveError", { message: error.message }));
     else setMessage(t("account.settings.profileUpdated"));
     setSaving(false);
   }
@@ -96,7 +96,7 @@ export default function AccountSettingsPage() {
       .upload(filePath, file, { upsert: true });
 
     if (uploadError) {
-      setMessage("Upload failed: " + uploadError.message);
+      setMessage(t("account.settings.uploadError", { message: uploadError.message }));
       setSaving(false);
       return;
     }
@@ -115,20 +115,20 @@ export default function AccountSettingsPage() {
     setSaving(true);
     setMessage("");
     const { error } = await supabase!.auth.updateUser({ email: newEmail });
-    if (error) setMessage("Error: " + error.message);
-    else setMessage("Confirmation emails sent to both old and new addresses.");
+    if (error) setMessage(t("account.settings.saveError", { message: error.message }));
+    else setMessage(t("account.settings.emailConfirmationSent"));
     setSaving(false);
   }
 
   async function handleChangePassword() {
     if (!newPassword || newPassword.length < 6) {
-      setMessage("Password must be at least 6 characters.");
+      setMessage(t("account.settings.passwordMinLength"));
       return;
     }
     setSaving(true);
     setMessage("");
     const { error } = await supabase!.auth.updateUser({ password: newPassword });
-    if (error) setMessage("Error: " + error.message);
+    if (error) setMessage(t("account.settings.saveError", { message: error.message }));
     else setMessage(t("account.settings.passwordUpdated"));
     setSaving(false);
     setNewPassword("");
@@ -137,11 +137,11 @@ export default function AccountSettingsPage() {
   }
 
   if (loading) {
-    return <div className="text-center py-12"><p className="text-text-secondary">Loading...</p></div>;
+    return <div className="text-center py-12"><p className="text-text-secondary">{t("auth.loading")}</p></div>;
   }
 
   if (!supabase) {
-    return <div className="text-center py-12"><p className="text-text-secondary">Please log in.</p></div>;
+    return <div className="text-center py-12"><p className="text-text-secondary">{t("account.settings.pleaseLogin")}</p></div>;
   }
 
   const inputClass = "w-full px-4 py-3 border border-border rounded-xl bg-white text-text placeholder:text-text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all";
@@ -154,7 +154,7 @@ export default function AccountSettingsPage() {
       <p className="text-text-secondary mb-8">{t("account.settings.desc")}</p>
 
       {message && (
-        <div className={`mb-6 text-sm px-4 py-3 rounded-xl border ${message.startsWith("Error") ? "text-danger bg-danger/5 border-danger/20" : "text-success bg-success/5 border-success/20"}`}>
+        <div className={`mb-6 text-sm px-4 py-3 rounded-xl border ${message.startsWith(t("account.settings.errorPrefix")) ? "text-danger bg-danger/5 border-danger/20" : "text-success bg-success/5 border-success/20"}`}>
           {message}
         </div>
       )}
@@ -165,7 +165,7 @@ export default function AccountSettingsPage() {
         <div className="flex items-center gap-5 mb-6">
           <div className="relative">
             {avatarUrl ? (
-              <img src={avatarUrl} alt="Avatar" className="w-16 h-16 rounded-full object-cover border-2 border-border" />
+              <img src={avatarUrl} alt={t("account.settings.avatarAlt")} className="w-16 h-16 rounded-full object-cover border-2 border-border" />
             ) : (
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
                 {username.charAt(0).toUpperCase()}
@@ -263,7 +263,7 @@ export default function AccountSettingsPage() {
         ) : (
           <div className="space-y-3">
             <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
-              className={inputClass} placeholder="New password (min 6 characters)" />
+              className={inputClass} placeholder={t("account.settings.newPasswordPlaceholder")} />
             <div className="flex gap-3">
               <button onClick={handleChangePassword} disabled={saving || !newPassword}
                 className="px-6 py-2.5 bg-primary text-white rounded-xl font-medium text-sm hover:bg-primary-dark transition-colors disabled:opacity-60">

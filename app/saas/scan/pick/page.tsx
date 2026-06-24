@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import CameraView from "../components/CameraView";
 import PickProgressBar from "../components/PickProgressBar";
 
@@ -18,6 +19,7 @@ interface PickTaskItem {
 }
 
 export default function PickPage() {
+  const t = useTranslations("saas");
   const [phase, setPhase] = useState<"select" | "scan">("select");
   const [tasks, setTasks] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<any>(null);
@@ -56,7 +58,7 @@ export default function PickPage() {
       if (currentItem.locations?.barcode === barcode) {
         setScannedLocation(true);
         setExpectingLocation(false);
-        setMessage("Location confirmed — scan product now");
+        setMessage(t("locationConfirmed"));
         setPaused(false);
       } else {
         setMessage(`Wrong location! Expected: ${currentItem.locations?.barcode || currentItem.location_id}`);
@@ -82,7 +84,7 @@ export default function PickPage() {
           setMessage(`Picked: ${currentItem.products?.name || currentItem.products?.sku}`);
 
           if (data.taskComplete) {
-            setMessage("All picks complete!");
+            setMessage(t("allPicksComplete"));
             setTimeout(() => setPhase("select"), 2000);
           } else if (currentItemIndex < items.length - 1) {
             setCurrentItemIndex((i) => i + 1);
@@ -91,11 +93,11 @@ export default function PickPage() {
             setPaused(false);
           }
         } else {
-          setMessage(data.error || "Confirm failed");
+          setMessage(data.error || t("confirmFailed"));
           setPaused(false);
         }
       } catch {
-        setMessage("Network error");
+        setMessage(t("networkError"));
         setPaused(false);
       }
     } else {
@@ -107,9 +109,9 @@ export default function PickPage() {
   if (phase === "select") {
     return (
       <div className="p-6">
-        <h2 className="text-[22px] font-bold text-[#1D1D1F] mb-4">Pick Tasks</h2>
+        <h2 className="text-[22px] font-bold text-[#1D1D1F] mb-4">{t("pickTasks")}</h2>
         {tasks.length === 0 ? (
-          <p className="text-[#86868B] text-sm">No active pick tasks</p>
+          <p className="text-[#86868B] text-sm">{t("noActivePickTasks")}</p>
         ) : (
           <div className="space-y-3">
             {tasks.map((task) => (
@@ -148,7 +150,7 @@ export default function PickPage() {
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-black/5">
             <div className="flex items-center justify-between mb-2">
               <p className="text-xs text-[#86868B] uppercase font-medium">
-                {expectingLocation ? "Scan Location" : "Scan Product"}
+                {expectingLocation ? t("scanLocation") : t("scanProduct")}
               </p>
               <span className="text-[11px] bg-[#F5F5F7] text-[#86868B] px-2 py-0.5 rounded-full">
                 {currentItemIndex + 1}/{totalItems}

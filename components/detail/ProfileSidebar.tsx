@@ -30,12 +30,12 @@ export default async function ProfileSidebar({ threePL: p }: ProfileSidebarProps
         <StatBox label={t("detail.founded")} value={String(founded)} />
         <StatBox label={t("detail.warehouses")} value={String(warehouses)} />
         <StatBox label={t("detail.totalSqFt")} value={formatSqFt(sqFt)} />
-        <StatBox label={t("detail.orderCapacity")} value={`${formatCapacity(p.order_capacity || 0)}/mo`} />
+        <StatBox label={t("detail.orderCapacity")} value={t("detail.perMonth", { value: formatCapacity(p.order_capacity || 0) })} />
         <StatBox label={t("detail.skuCapacity")} value={formatCapacity(p.sku_capacity || 0)} />
-        <StatBox label={t("detail.shippingSpeed")} value={p.shipping_speed || "Contact"} />
-        <StatBox label={t("detail.categories")} value={`${(p.categories || []).length} types`} />
-        <StatBox label={t("detail.platforms")} value={`${(p.platforms || []).length} integrated`} />
-        <StatBox label={t("detail.techPartners")} value={`${(p.integrations || []).length} systems`} />
+        <StatBox label={t("detail.shippingSpeed")} value={p.shipping_speed || t("detail.contactForInfo")} />
+        <StatBox label={t("detail.categories")} value={t("detail.countTypes", { count: (p.categories || []).length })} />
+        <StatBox label={t("detail.platforms")} value={t("detail.countIntegrated", { count: (p.platforms || []).length })} />
+        <StatBox label={t("detail.techPartners")} value={t("detail.countSystems", { count: (p.integrations || []).length })} />
       </div>
 
       {/* 存储环境 */}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -28,7 +28,7 @@ export default function AccountIntegrationsPage() {
       setLastSync(data.lastSync || null);
       if (data.shop) setShop(data.shop);
     } else {
-      setMessage({ type: "error", text: data.error || "Could not load Shopify status." });
+      setMessage({ type: "error", text: data.error || t("account.integrations.couldNotLoadStatus") });
     }
   }, []);
 
@@ -59,12 +59,12 @@ export default function AccountIntegrationsPage() {
 
   async function callShopify(action: "test" | "connect") {
     if (!accessToken) {
-      setMessage({ type: "error", text: "Please log in before connecting a store." });
+      setMessage({ type: "error", text: t("account.integrations.pleaseLogin") });
       return;
     }
 
     if (!shop.trim() || !token.trim()) {
-      setMessage({ type: "error", text: "Please enter your Shopify store name and Admin API token." });
+      setMessage({ type: "error", text: t("account.integrations.pleaseEnterShopify") });
       return;
     }
 
@@ -90,12 +90,12 @@ export default function AccountIntegrationsPage() {
       setMessage({
         type: "success",
         text: action === "test"
-          ? `Connection works — ${data.shop}${data.plan ? ` (${data.plan})` : ""}.`
-          : `Shopify connected — ${data.shop}.`,
+          ? t("account.integrations.connectionWorks", { shop: data.shop, plan: data.plan ? ` (${data.plan})` : "" })
+          : t("account.integrations.shopifyConnected", { shop: data.shop }),
       });
       await fetchStatus(accessToken);
     } else {
-      setMessage({ type: "error", text: data.error || "Shopify connection failed." });
+      setMessage({ type: "error", text: data.error || t("account.integrations.shopifyConnectionFailed") });
     }
 
     setStatus("idle");
@@ -115,26 +115,24 @@ export default function AccountIntegrationsPage() {
     const data = await res.json();
     if (res.ok) {
       setLastSync(new Date().toISOString());
-      setMessage({ type: "success", text: `Synced ${data.imported} recent Shopify orders for matching analysis.` });
+      setMessage({ type: "success", text: t("account.integrations.syncedOrders", { count: data.imported }) });
     } else {
-      setMessage({ type: "error", text: data.error || "Shopify sync failed." });
+      setMessage({ type: "error", text: data.error || t("account.integrations.shopifySyncFailed") });
     }
 
     setStatus("idle");
   }
 
   if (loading) {
-    return <div className="text-center py-12"><p className="text-text-secondary">Loading integrations...</p></div>;
+    return <div className="text-center py-12"><p className="text-text-secondary">{t("account.integrations.loading")}</p></div>;
   }
 
   if (!accessToken) {
     return (
       <div className="text-center py-12">
         <h1 className="text-2xl font-bold text-text mb-2">{t("account.integrations.title")}</h1>
-        <p className="text-text-secondary mb-6">Log in to connect your ecommerce store to Flowrid.</p>
-        <Link href="/login" className="inline-block bg-primary text-white px-6 py-2.5 rounded-xl font-medium text-sm hover:bg-primary-dark transition-colors">
-          Log in
-        </Link>
+        <p className="text-text-secondary mb-6">{t("account.integrations.loginToConnect")}</p>
+        <Link href="/login" className="inline-block bg-primary text-white px-6 py-2.5 rounded-xl font-medium text-sm hover:bg-primary-dark transition-colors">{t("account.integrations.logIn")}</Link>
       </div>
     );
   }
@@ -176,10 +174,10 @@ export default function AccountIntegrationsPage() {
         </div>
 
         <div className="bg-background border border-border rounded-xl p-4 mb-5 text-xs text-text-secondary space-y-1.5">
-          <p className="font-semibold text-text text-sm mb-2">How to get your Shopify Admin API token:</p>
+          <p className="font-semibold text-text text-sm mb-2">{t("account.integrations.howToGetToken")}</p>
           <p>1. Shopify admin → <b>Settings</b> → <b>Apps and sales channels</b></p>
           <p>2. Click <b>Develop apps</b> → <b>Create an app</b></p>
-          <p>3. Configure Admin API scopes: <code className="bg-black/5 px-1 rounded">read_orders</code>, <code className="bg-black/5 px-1 rounded">read_products</code></p>
+          <p>{t("account.integrations.guideStep3")}: <code className="bg-black/5 px-1 rounded">read_orders</code>, <code className="bg-black/5 px-1 rounded">read_products</code></p>
           <p>4. Install the app and copy the Admin API access token that starts with <code className="bg-black/5 px-1 rounded">shpat_</code></p>
         </div>
 
@@ -194,7 +192,7 @@ export default function AccountIntegrationsPage() {
           <div className="flex items-center gap-2">
             <input
               type="text"
-              placeholder="your-store-name"
+              placeholder={t("account.integrations.yourStoreName")}
               value={shop}
               onChange={(e) => setShop(e.target.value)}
               className={`${inputClass} flex-1`}
@@ -203,7 +201,7 @@ export default function AccountIntegrationsPage() {
           </div>
           <input
             type="password"
-            placeholder="shpat_xxxxxxxxxxxxxxxxxxxx"
+            placeholder={t("account.integrations.shpatPlaceholder")}
             value={token}
             onChange={(e) => setToken(e.target.value)}
             className={`${inputClass} font-mono`}

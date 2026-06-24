@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { BRAND_ACCOUNT_ITEMS } from "@/lib/account-menu";
+import { getBrandAccountItems } from "@/lib/account-menu";
+import { getTranslations } from "next-intl/server";
 
 const accentClasses = {
   primary: "bg-primary/10 text-primary",
@@ -8,18 +9,23 @@ const accentClasses = {
   neutral: "bg-background text-text-secondary",
 } as const;
 
-export default function AccountPage() {
+export default async function AccountPage() {
+  const t = await getTranslations();
+
+  // Let the parent layout render the translated heading
+  // Individual menu items already use translated text from getBrandAccountItems(t)
+
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-text mb-2">Brand Account</h1>
+        <h1 className="text-2xl font-bold text-text mb-2">{t("account.brandAccount")}</h1>
         <p className="text-text-secondary">
-          Manage your RFQs, saved providers, store integrations, and account settings.
+          {t("account.desc")}
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {BRAND_ACCOUNT_ITEMS.map((item) => (
+        {getBrandAccountItems(t).map((item) => (
           <Link
             key={item.href}
             href={item.href}
@@ -36,14 +42,14 @@ export default function AccountPage() {
 
       <div className="mt-8 bg-card border border-border rounded-2xl p-6 flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-text mb-1">Sign out</h2>
-          <p className="text-sm text-text-secondary">Use this if you are done managing your Flowrid account.</p>
+          <h2 className="text-lg font-semibold text-text mb-1">{t("account.signOut")}</h2>
+          <p className="text-sm text-text-secondary">{t("account.signOutDesc")}</p>
         </div>
         <a
           href="/api/auth/signout"
           className="shrink-0 px-5 py-2.5 rounded-xl text-sm font-medium border border-border text-text-secondary hover:border-danger/30 hover:text-danger transition-colors"
         >
-          Sign out
+          {t("account.signOut")}
         </a>
       </div>
     </>

@@ -9,36 +9,36 @@ export default function AccountComparePage() {
   return (
     <BrandOperationPage
       ns="account.compare"
-      eyebrow="Provider decisions"
-      title="Compare Providers"
-      description="Keep shortlisted 3PL providers in a brand-owned comparison workspace before sending RFQs or syncing operational data."
+      eyebrow={t("account.compare.eyebrow")}
+      title={t("account.compare.title")}
+      description={t("account.compare.description")}
       metrics={[
-        { label: "Selected providers", value: "0" },
-        { label: "Open RFQs", value: "0", tone: "warning" },
-        { label: "Saved 3PLs", value: "0" },
-        { label: "Decision status", value: "Not started" },
+        { label: t("account.compare.selectedProviders"), value: "0" },
+        { label: t("account.compare.openRFQs"), value: "0", tone: "warning" },
+        { label: t("account.compare.saved3PLs"), value: "0" },
+        { label: t("account.compare.decisionStatus"), value: t("account.compare.notStarted") },
       ]}
       actions={[
-        { label: "Browse directory", href: "/3pl", primary: true },
-        { label: "Review saved 3PL", href: "/account/saved" },
+        { label: t("account.compare.browseDirectory"), href: "/3pl", primary: true },
+        { label: t("account.compare.reviewSaved"), href: "/account/saved" },
       ]}
-      emptyTitle="No providers selected for comparison yet"
-      emptyDescription="Use the public 3PL directory to shortlist providers, then return here to compare fit, RFQ readiness, and brand-side decision notes."
+      emptyTitle={t("account.compare.emptyTitle")}
+      emptyDescription={t("account.compare.emptyDescription")}
       sections={[
         {
-          title: "Decision signals",
-          description: "Compare providers using the inputs that matter most to ecommerce brands.",
-          items: ["Category fit", "Platform support", "Regional coverage"],
+          title: t("account.compare.decisionSignals"),
+          description: t("account.compare.decisionSignalsDesc"),
+          items: [t("account.compare.categoryFit"), t("account.compare.platformSupport"), t("account.compare.regionalCoverage")],
         },
         {
-          title: "Next best action",
-          description: "Build a shortlist before requesting quotes so provider outreach stays focused.",
-          items: ["Save candidate 3PLs", "Compare service fit", "Submit RFQ when ready"],
+          title: t("account.compare.nextBestAction"),
+          description: t("account.compare.nextBestActionDesc"),
+          items: [t("account.compare.saveCandidates"), t("account.compare.compareServiceFit"), t("account.compare.submitRFQ")],
         },
         {
-          title: "Brand-safe scope",
-          description: "This page stays inside the account workspace and does not reuse warehouse operator workflows.",
-          items: ["No SaaS operator API calls", "No warehouse task mutation", "No public compare page re-export"],
+          title: t("account.compare.brandSafeScope"),
+          description: t("account.compare.brandSafeScopeDesc"),
+          items: [t("account.compare.noSaaSApi"), t("account.compare.noWarehouseMutation"), t("account.compare.noPublicReexport")],
         },
       ]}
     />

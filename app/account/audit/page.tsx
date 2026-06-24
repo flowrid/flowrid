@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import BrandOperationPage from "@/components/BrandOperationPage";
 import { useTranslations } from "next-intl";
@@ -16,18 +16,18 @@ export default function AccountAuditPage() {
         { label: t("account.audit.recentEvents"), value: "0" },
         { label: t("account.audit.integrationChanges"), value: "0" },
         { label: t("account.audit.rfqUpdates"), value: "0" },
-        { label: t("account.audit.status"), value: "Ready", tone: "success" },
+        { label: t("account.audit.status"), value: t("account.audit.ready"), tone: "success" },
       ]}
       actions={[
         { label: t("account.audit.manageIntegrations"), href: "/account/integrations", primary: true },
         { label: t("account.audit.accountSettings"), href: "/account/settings" },
       ]}
-      emptyTitle="No brand audit events yet"
-      emptyDescription="Brand account audit events will appear here as integrations, RFQs, saved providers, and settings change."
+      emptyTitle={t("account.audit.empty")}
+      emptyDescription={t("account.audit.emptyDesc")}
       sections={[
         {
-          title: "Tracked changes",
-          description: "The audit log should explain brand account activity in plain language.",
+          title: t("account.audit.sections.trackedChanges"),
+          description: t("account.audit.sections.trackedChangesDesc"),
           items: [
             t("account.audit.trackedChanges.integrationConnected"),
             t("account.audit.trackedChanges.rfqSubmitted"),
@@ -36,8 +36,8 @@ export default function AccountAuditPage() {
           ],
         },
         {
-          title: "Operational confidence",
-          description: "Audit history helps teams understand what changed and when.",
+          title: t("account.audit.sections.operationalConfidence"),
+          description: t("account.audit.sections.operationalConfidenceDesc"),
           items: [
             t("account.audit.operational.changeTimeline"),
             t("account.audit.operational.userAttribution"),
@@ -45,8 +45,8 @@ export default function AccountAuditPage() {
           ],
         },
         {
-          title: "Scope boundary",
-          description: "This view does not expose internal warehouse staff or operator task logs.",
+          title: t("account.audit.sections.scopeBoundary"),
+          description: t("account.audit.sections.scopeBoundaryDesc"),
           items: [
             t("account.audit.scope.noPickerIds"),
             t("account.audit.scope.noWarehouseOnly"),

@@ -4,6 +4,7 @@
 // 顶部通知图标 + 下拉列表
 
 import { useEffect, useState, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { authedFetch } from "@/lib/authed-fetch";
 
 interface Notification {
@@ -35,6 +36,7 @@ interface Props {
 }
 
 export default function NotificationBell({ onNotificationClick }: Props) {
+  const t = useTranslations("notifications");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [open, setOpen] = useState(false);
@@ -90,7 +92,7 @@ export default function NotificationBell({ onNotificationClick }: Props) {
   function timeAgo(ts: string) {
     const diff = Date.now() - new Date(ts).getTime();
     const min = Math.floor(diff / 60000);
-    if (min < 1) return "Just now";
+    if (min < 1) return t("justNow");
     if (min < 60) return `${min}m ago`;
     const hrs = Math.floor(min / 60);
     if (hrs < 24) return `${hrs}h ago`;
@@ -116,7 +118,7 @@ export default function NotificationBell({ onNotificationClick }: Props) {
       {open && (
         <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-lg border border-black/5 z-50 max-h-96 overflow-hidden flex flex-col">
           <div className="flex items-center justify-between px-4 py-3 border-b border-black/5">
-            <span className="text-sm font-semibold text-[#1D1D1F]">Notifications</span>
+            <span className="text-sm font-semibold text-[#1D1D1F]">{t("title")}</span>
             {unreadCount > 0 && (
               <button onClick={markAllRead} disabled={loading} className="text-xs text-[#ed6d00] font-medium hover:text-[#FF8A1F]">
                 Mark all read
@@ -126,7 +128,7 @@ export default function NotificationBell({ onNotificationClick }: Props) {
 
           <div className="overflow-y-auto flex-1">
             {notifications.length === 0 ? (
-              <div className="px-4 py-8 text-center text-[#86868B] text-sm">No notifications</div>
+              <div className="px-4 py-8 text-center text-[#86868B] text-sm">{t("noNotifications")}</div>
             ) : (
               notifications.map((n) => (
                 <button

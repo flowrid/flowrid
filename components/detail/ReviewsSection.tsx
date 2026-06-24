@@ -72,7 +72,7 @@ export default async function ReviewsSection({ name, rating, reviewCount, slug }
               ))}</div>
               <p className="text-sm text-text-secondary mt-1">{t(labelKey)}</p>
               <p className="text-xs text-text-secondary mt-0.5">
-                {reviewCount > 0 ? t("detail.basedOn", { count: reviewCount }) : "verified data"}
+                {reviewCount > 0 ? t("detail.basedOn", { count: reviewCount }) : t("detail.verifiedData")}
               </p>
             </div>
           </div>
@@ -119,7 +119,7 @@ export default async function ReviewsSection({ name, rating, reviewCount, slug }
       ) : (
         <div className="text-center py-6 bg-card border border-border rounded-xl">
           <p className="text-text-secondary">
-            {reviewCount} verified review{reviewCount > 1 ? "s" : ""} available for {name}.
+            {t("detail.reviewCount", { count: reviewCount, name })}
           </p>
         </div>
       )}

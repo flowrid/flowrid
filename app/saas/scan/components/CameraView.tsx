@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface CameraViewProps {
   mode: "receive" | "pick" | "lookup";
@@ -10,6 +11,7 @@ interface CameraViewProps {
 }
 
 export default function CameraView({ mode, onScan, paused, onResume }: CameraViewProps) {
+  const t = useTranslations("scan");
   const [scanner, setScanner] = useState<any>(null);
   const [hasCamera, setHasCamera] = useState(true);
   const [lastResult, setLastResult] = useState("");
@@ -85,9 +87,9 @@ export default function CameraView({ mode, onScan, paused, onResume }: CameraVie
   }
 
   const modeHint = {
-    receive: "Scan product barcode to receive",
-    pick: "Scan barcode to pick item",
-    lookup: "Scan any barcode to lookup",
+    receive: t("scan.scanToReceive"),
+    pick: t("scan.scanToPick"),
+    lookup: t("scan.scanToLookup"),
   }[mode];
 
   if (loadError || !hasCamera) {
@@ -95,19 +97,19 @@ export default function CameraView({ mode, onScan, paused, onResume }: CameraVie
       <div className="flex-1 flex items-center justify-center bg-[#1D1D1F] p-8">
         <div className="text-center max-w-sm">
           <p className="text-white text-lg font-semibold mb-2">
-            {loadError ? "Scanner Unavailable" : "Camera Not Available"}
+            {loadError ? t("scan.scannerUnavailable") : t("scan.cameraNotAvailable")}
           </p>
           <p className="text-[#86868B] text-sm mb-6">
             {loadError
-              ? "The barcode scanner could not be loaded. You can type a barcode manually."
-              : "Please allow camera access or use a device with a camera."}
+              ? t("scan.manualHint")
+              : t("scan.cameraHint")}
           </p>
           <form onSubmit={handleManualSubmit} className="space-y-3">
             <input
               type="text"
               value={manualBarcode}
               onChange={(e) => setManualBarcode(e.target.value)}
-              placeholder="Type barcode number..."
+              placeholder={t("scan.typeBarcode")}
               className="w-full bg-[#2C2C2E] text-white border border-[#48484A] rounded-xl px-4 py-3 text-sm placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/30"
             />
             <button

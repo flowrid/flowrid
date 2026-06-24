@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 
 export default function WarehouseLocationsPage() {
+  const t = useTranslations("saas");
   const params = useParams();
   const router = useRouter();
   const warehouseId = params.id as string;
@@ -49,7 +51,7 @@ export default function WarehouseLocationsPage() {
       setZones(d.zones || []);
       setStats(d.stats || { total: 0, occupied: 0 });
     } catch (e: any) {
-      setError(e.message || "Failed to load");
+      setError(e.message || t("failedToLoad"));
     } finally {
       setLoading(false);
     }
@@ -60,7 +62,7 @@ export default function WarehouseLocationsPage() {
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     if (!zone.trim()) {
-      setCreateMsg("Zone is required");
+      setCreateMsg(t("zoneIsRequired"));
       return;
     }
     setCreating(true);
@@ -84,10 +86,10 @@ export default function WarehouseLocationsPage() {
         fetchData();
       } else {
         const err = await r.json();
-        setCreateMsg(err.error || "Failed to create");
+        setCreateMsg(err.error || t("failedToCreate"));
       }
     } catch {
-      setCreateMsg("Network error");
+      setCreateMsg(t("networkError"));
     } finally {
       setCreating(false);
     }
@@ -105,7 +107,7 @@ export default function WarehouseLocationsPage() {
   if (error) return (
     <div className="p-8 text-center">
       <p className="text-[#FF3B30] text-sm mb-3">{error}</p>
-      <button onClick={() => { setError(null); setLoading(true); fetchData(); }} className="text-sm text-[#ed6d00] font-medium">Retry</button>
+      <button onClick={() => { setError(null); setLoading(true); fetchData(); }} className="text-sm text-[#ed6d00] font-medium">{t("retry")}</button>
     </div>
   );
 
@@ -114,7 +116,7 @@ export default function WarehouseLocationsPage() {
       <div className="flex items-center gap-3 mb-6">
         <button onClick={() => router.push("/saas/warehouses")} className="text-[#86868B] hover:text-[#1D1D1F] text-sm">&larr; Warehouses</button>
         <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">
-          {warehouse?.name || "Warehouse"} Locations
+          {t("warehouseLocations", { name: warehouse?.name || t("warehouse") })}
         </h1>
         <span className="text-[#86868B] text-sm">{stats.total} total · {stats.occupied} occupied</span>
       </div>
@@ -122,50 +124,50 @@ export default function WarehouseLocationsPage() {
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <input
           type="text"
-          placeholder="Search by barcode or zone..."
+          placeholder={t("searchByZone")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="bg-white border border-black/5 rounded-xl px-4 py-2.5 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20"
         />
         <select value={zoneFilter} onChange={(e) => setZoneFilter(e.target.value)} className="bg-white border border-black/5 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
-          <option value="">All Zones</option>
+          <option value="">{t("allZones")}</option>
           {zones.map((z) => <option key={z} value={z}>{z}</option>)}
         </select>
       </div>
 
       {/* New Location form */}
       <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">Add Location</h2>
+        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">{t("addLocation")}</h2>
         <form onSubmit={handleCreate} className="space-y-4">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">Zone *</label>
-              <input type="text" value={zone} onChange={(e) => setZone(e.target.value)} placeholder="e.g. A" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">{t("zoneRequired")}</label>
+              <input type="text" value={zone} onChange={(e) => setZone(e.target.value)} placeholder={t("zonePlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">Aisle</label>
-              <input type="text" value={aisle} onChange={(e) => setAisle(e.target.value)} placeholder="01" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">{t("aisle")}</label>
+              <input type="text" value={aisle} onChange={(e) => setAisle(e.target.value)} placeholder={t("aislePlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">Rack</label>
-              <input type="text" value={rack} onChange={(e) => setRack(e.target.value)} placeholder="R1" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">{t("rack")}</label>
+              <input type="text" value={rack} onChange={(e) => setRack(e.target.value)} placeholder={t("rackPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">Shelf</label>
-              <input type="text" value={shelf} onChange={(e) => setShelf(e.target.value)} placeholder="S2" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">{t("shelf")}</label>
+              <input type="text" value={shelf} onChange={(e) => setShelf(e.target.value)} placeholder={t("shelfPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">Bin</label>
-              <input type="text" value={bin_} onChange={(e) => setBin(e.target.value)} placeholder="B3" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">{t("bin")}</label>
+              <input type="text" value={bin_} onChange={(e) => setBin(e.target.value)} placeholder={t("binPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">Max Wt (lbs)</label>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase mb-1">{t("maxWtLbs")}</label>
               <input type="number" step="0.1" value={maxWeight} onChange={(e) => setMaxWeight(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
           </div>
           <div className="flex items-center gap-3">
             <button type="submit" disabled={creating} className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
-              {creating ? "Adding..." : "Add Location"}
+              {creating ? t("adding") : t("addLocationBtn")}
             </button>
             {createMsg && <span className="text-xs text-[#FF3B30]">{createMsg}</span>}
           </div>
@@ -205,7 +207,7 @@ export default function WarehouseLocationsPage() {
                       <td className="px-5 py-2.5 text-sm">{loc.max_weight_lbs ? `${loc.max_weight_lbs} lbs` : "—"}</td>
                       <td className="px-5 py-2.5">
                         <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${loc.is_occupied ? "bg-[#ed6d00]/10 text-[#ed6d00]" : "bg-[#34C759]/10 text-[#34C759]"}`}>
-                          {loc.is_occupied ? "Occupied" : "Empty"}
+                          {loc.is_occupied ? t("occupied") : t("empty")}
                         </span>
                       </td>
                     </tr>
@@ -216,7 +218,7 @@ export default function WarehouseLocationsPage() {
           </div>
         ))}
         {locations.length === 0 && (
-          <div className="py-12 text-center text-[#86868B] text-sm">No locations yet — add your first location above</div>
+          <div className="py-12 text-center text-[#86868B] text-sm">{t("noLocations")}</div>
         )}
       </div>
     </div>

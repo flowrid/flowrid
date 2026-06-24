@@ -1,9 +1,13 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 export default function QuantityInput({ value, onChange, onConfirm }: { value: number; onChange: (v: number) => void; onConfirm: () => void }) {
+  const t = useTranslations("scan");
+
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm border border-black/5">
-      <p className="text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-3">Quantity</p>
+      <p className="text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-3">{t("qty")}</p>
       <div className="flex items-center gap-4">
         <button
           onClick={() => onChange(Math.max(1, value - 1))}
@@ -23,7 +27,7 @@ export default function QuantityInput({ value, onChange, onConfirm }: { value: n
         onClick={onConfirm}
         className="w-full mt-4 bg-[#ed6d00] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#FF8A1F] transition-colors active:scale-[0.98]"
       >
-        Confirm Add to Receiving
+        {t("confirmAdd")}
       </button>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { authedFetch } from "@/lib/authed-fetch";
 
 interface Return {
@@ -22,6 +23,7 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 export default function ReturnsContent() {
+  const t = useTranslations("returnsContent");
   const [returns, setReturns] = useState<Return[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,7 +47,7 @@ export default function ReturnsContent() {
       setReturns(d.data || []);
       setStats(d.stats || { total: 0, pending: 0 });
     } catch (e: any) {
-      setError(e.message || "Failed to load");
+      setError(e.message || t("failedToLoad"));
     } finally {
       setLoading(false);
     }
@@ -56,7 +58,7 @@ export default function ReturnsContent() {
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     if (!orderNumber.trim() || !reason.trim()) {
-      setCreateMsg("Order Number and reason are required");
+      setCreateMsg(t("orderNumberAndReasonRequired"));
       return;
     }
     setCreating(true);
@@ -72,10 +74,10 @@ export default function ReturnsContent() {
         fetchReturns();
       } else {
         const err = await r.json();
-        setCreateMsg(err.error || "Failed to create");
+        setCreateMsg(err.error || t("failedToCreate"));
       }
     } catch {
-      setCreateMsg("Network error");
+      setCreateMsg(t("networkError"));
     } finally {
       setCreating(false);
     }
@@ -96,7 +98,7 @@ export default function ReturnsContent() {
       }
       fetchReturns();
     } catch {
-      setCreateMsg("Network error");
+      setCreateMsg(t("networkError"));
     }
   }
 
@@ -106,7 +108,7 @@ export default function ReturnsContent() {
   if (error) return (
     <div className="p-8 text-center">
       <p className="text-[#FF3B30] text-sm mb-3">{error}</p>
-      <button onClick={() => { setError(null); setLoading(true); fetchReturns(); }} className="text-sm text-[#ed6d00] font-medium">Retry</button>
+      <button onClick={() => { setError(null); setLoading(true); fetchReturns(); }} className="text-sm text-[#ed6d00] font-medium">{t("retry")}</button>
     </div>
   );
 
@@ -114,45 +116,45 @@ export default function ReturnsContent() {
     <div className="p-6 md:p-8 max-w-[1280px]">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">Returns</h1>
+          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">{t("title")}</h1>
           <p className="text-[#86868B] text-sm mt-0.5">{stats.total} total · {stats.pending} pending</p>
         </div>
         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="bg-white border border-black/5 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
-          <option value="">All Statuses</option>
-          <option value="pending">Pending</option>
-          <option value="received">Received</option>
-          <option value="inspected">Inspected</option>
-          <option value="resolved">Resolved</option>
+          <option value="">{t("allStatuses")}</option>
+          <option value="pending">{t("pending")}</option>
+          <option value="received">{t("received")}</option>
+          <option value="inspected">{t("inspected")}</option>
+          <option value="resolved">{t("resolved")}</option>
         </select>
       </div>
 
       {/* New RMA form */}
       <div className="mb-6 bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">New Return (RMA)</h2>
+        <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">{t("newReturn")}</h2>
         <form onSubmit={handleCreate} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Order Number *</label>
-              <input type="text" value={orderNumber} onChange={(e) => setOrderNumber(e.target.value)} placeholder="e.g. ORD-MPGV9UU8" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("orderNumber")}</label>
+              <input type="text" value={orderNumber} onChange={(e) => setOrderNumber(e.target.value)} placeholder={t("orderNumberPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Reason *</label>
-              <input type="text" value={reason} onChange={(e) => setReason(e.target.value)} placeholder="e.g. Defective product" className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("reasonRequired")}</label>
+              <input type="text" value={reason} onChange={(e) => setReason(e.target.value)} placeholder={t("reasonPlaceholder")} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20" />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Condition</label>
+              <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("condition")}</label>
               <select value={condition} onChange={(e) => setCondition(e.target.value)} className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20">
                 <option value="">—</option>
-                <option value="resellable">Resellable</option>
-                <option value="damaged">Damaged</option>
-                <option value="defective">Defective</option>
-                <option value="expired">Expired</option>
+                <option value="resellable">{t("conditionResellable")}</option>
+                <option value="damaged">{t("conditionDamaged")}</option>
+                <option value="defective">{t("conditionDefective")}</option>
+                <option value="expired">{t("conditionExpired")}</option>
               </select>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <button type="submit" disabled={creating} className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors">
-              {creating ? "Creating..." : "Create RMA"}
+              {creating ? t("creating") : t("createRMA")}
             </button>
             {createMsg && <span className="text-xs text-[#FF3B30]">{createMsg}</span>}
           </div>
@@ -165,13 +167,13 @@ export default function ReturnsContent() {
           <table className="w-full">
             <thead>
               <tr className="text-left text-xs font-medium text-[#86868B] border-b border-black/5">
-                <th className="px-5 py-3.5">RMA #</th>
-                <th className="px-5 py-3.5">Order</th>
-                <th className="px-5 py-3.5">Customer</th>
-                <th className="px-5 py-3.5">Reason</th>
+                <th className="px-5 py-3.5">{t("rmaCol")}</th>
+                <th className="px-5 py-3.5">{t("orderCol")}</th>
+                <th className="px-5 py-3.5">{t("customerCol")}</th>
+                <th className="px-5 py-3.5">{t("reasonCol")}</th>
                 <th className="px-5 py-3.5">Condition</th>
-                <th className="px-5 py-3.5">Status</th>
-                <th className="px-5 py-3.5 text-right">Action</th>
+                <th className="px-5 py-3.5">{t("statusCol")}</th>
+                <th className="px-5 py-3.5 text-right">{t("actionCol")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black/[0.04]">
@@ -187,16 +189,16 @@ export default function ReturnsContent() {
                   </td>
                   <td className="px-5 py-3.5 text-right">
                     {r.status === "pending" && (
-                      <button onClick={() => updateStatus(r.id, "received")} className="text-xs text-[#ed6d00] font-medium hover:text-[#FF8A1F] mr-3">Mark Received</button>
+                      <button onClick={() => updateStatus(r.id, "received")} className="text-xs text-[#ed6d00] font-medium hover:text-[#FF8A1F] mr-3">{t("markReceived")}</button>
                     )}
                     {r.status === "received" && (
-                      <button onClick={() => updateStatus(r.id, "resolved")} className="text-xs text-[#34C759] font-medium hover:text-[#30D158] mr-3">Resolve</button>
+                      <button onClick={() => updateStatus(r.id, "resolved")} className="text-xs text-[#34C759] font-medium hover:text-[#30D158] mr-3">{t("resolve")}</button>
                     )}
                   </td>
                 </tr>
               ))}
               {returns.length === 0 && (
-                <tr><td colSpan={7} className="px-5 py-12 text-center text-[#86868B] text-sm">No returns yet</td></tr>
+                <tr><td colSpan={7} className="px-5 py-12 text-center text-[#86868B] text-sm">{t("noReturns")}</td></tr>
               )}
             </tbody>
           </table>

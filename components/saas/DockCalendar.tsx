@@ -4,6 +4,7 @@
 // 周视图日历 + 时段选择
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface DockAppointment {
   id: string;
@@ -32,13 +33,14 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function DockCalendar({ appointments, onSlotClick, onAppointmentClick, dockDoors }: Props) {
+  const t = useTranslations("dockCalendar");
   const [weekOffset, setWeekOffset] = useState(0);
   const today = new Date();
   const weekStart = new Date(today);
   weekStart.setDate(weekStart.getDate() - weekStart.getDay() + weekOffset * 7);
 
   const doors = dockDoors || [...new Set(appointments.map((a) => a.dock_door))];
-  if (doors.length === 0) doors.push("Dock 1", "Dock 2");
+  if (doors.length === 0) doors.push(t("dock1"), t("dock2"));
 
   const hours = Array.from({ length: 14 }, (_, i) => i + 6); // 6am - 8pm
   const days = Array.from({ length: 7 }, (_, i) => {
@@ -79,10 +81,10 @@ export default function DockCalendar({ appointments, onSlotClick, onAppointmentC
         <div className="min-w-[800px]">
           {/* Day headers */}
           <div className="grid grid-cols-[80px_repeat(7,1fr)] border-b border-black/5">
-            <div className="px-2 py-2 text-[10px] font-medium text-[#86868B] uppercase">Door</div>
+            <div className="px-2 py-2 text-[10px] font-medium text-[#86868B] uppercase">{t("door")}</div>
             {days.map((d) => (
               <div key={d.toISOString()} className={`px-2 py-2 text-center text-xs font-medium ${d.toDateString() === today.toDateString() ? "text-[#ed6d00]" : "text-[#1D1D1F]"}`}>
-                {d.toLocaleDateString("en-US", { weekday: "short" })}<br />
+                {d.toLocaleDateString(undefined, { weekday: "short", month: "numeric", day: "numeric" })}<br />
                 <span className="text-[#86868B]">{d.getDate()}</span>
               </div>
             ))}

@@ -4,6 +4,7 @@
 // 嵌入式表单：选择订单 → 逐项检查 → 提交
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { authedFetch } from "@/lib/authed-fetch";
 
 interface QCCheckItem {
@@ -13,27 +14,6 @@ interface QCCheckItem {
   notes?: string;
 }
 
-const DEFAULT_CHECKLIST: QCCheckItem[] = [
-  { category: "packing", check_name: "Outer box undamaged", passed: true },
-  { category: "packing", check_name: "Proper cushioning / void fill", passed: true },
-  { category: "packing", check_name: "Sealed securely (tape / strap)", passed: true },
-  { category: "product", check_name: "Correct product picked", passed: true },
-  { category: "product", check_name: "Quantity matches order", passed: true },
-  { category: "product", check_name: "No visible damage or defects", passed: true },
-  { category: "labeling", check_name: "Shipping label correct & legible", passed: true },
-  { category: "labeling", check_name: "Barcode scannable", passed: true },
-  { category: "labeling", check_name: "Hazmat label (if applicable)", passed: true },
-  { category: "documentation", check_name: "Packing slip included", passed: true },
-  { category: "documentation", check_name: "Customs docs (if international)", passed: true },
-];
-
-const CAT_LABELS: Record<string, string> = {
-  packing: "Packing",
-  product: "Product",
-  labeling: "Labeling",
-  documentation: "Documents",
-};
-
 interface Props {
   orderId?: string;
   onComplete?: (passed: boolean) => void;
@@ -41,9 +21,34 @@ interface Props {
 }
 
 export default function QCChecklist({ orderId: initialOrderId, onComplete, compact }: Props) {
+  const t = useTranslations("qcChecklist");
+
+  // Category labels
+  const catLabels: Record<string, string> = {
+    packing: t("packing"),
+    product: t("product"),
+    labeling: t("labeling"),
+    documentation: t("documents"),
+  };
+
+  // Default checklist items
+  const defaultChecklist: QCCheckItem[] = [
+    { category: "packing", check_name: t("outerBoxUndamaged"), passed: true },
+    { category: "packing", check_name: t("properCushioning"), passed: true },
+    { category: "packing", check_name: t("sealTapeSecure"), passed: true },
+    { category: "product", check_name: t("itemsMatchOrder"), passed: true },
+    { category: "product", check_name: t("correctVariant"), passed: true },
+    { category: "product", check_name: t("productUndamaged"), passed: true },
+    { category: "labeling", check_name: t("shippingLabelCorrect"), passed: true },
+    { category: "labeling", check_name: t("barcodeScannable"), passed: true },
+    { category: "labeling", check_name: t("hazmatLabelsPresent"), passed: true },
+    { category: "documentation", check_name: t("packingSlipIncluded"), passed: true },
+    { category: "documentation", check_name: t("labelsCorrect"), passed: true },
+  ];
+
   const [orderId, setOrderId] = useState(initialOrderId || "");
   const [checklist, setChecklist] = useState<QCCheckItem[]>(
-    DEFAULT_CHECKLIST.map((c) => ({ ...c }))
+    defaultChecklist.map((c) => ({ ...c }))
   );
   const [inspectorName, setInspectorName] = useState("");
   const [packerName, setPackerName] = useState("");
@@ -68,7 +73,7 @@ export default function QCChecklist({ orderId: initialOrderId, onComplete, compa
 
   async function handleSubmit() {
     if (!orderId.trim()) {
-      setResult({ success: false, message: "Order ID is required" });
+      setResult({ success: false, message: t("orderIdIsRequired") });
       return;
     }
     setSubmitting(true);
@@ -88,13 +93,13 @@ export default function QCChecklist({ orderId: initialOrderId, onComplete, compa
       });
       const d = await r.json();
       if (r.ok) {
-        setResult({ success: true, message: allPassed ? "QC passed — order advanced to packed" : "QC recorded with failures" });
+        setResult({ success: true, message: allPassed ? t("qcPassed") : t("qcFailed") });
         onComplete?.(allPassed);
       } else {
-        setResult({ success: false, message: d.error || "Failed to submit QC" });
+        setResult({ success: false, message: d.error || t("failedToSubmit") });
       }
     } catch {
-      setResult({ success: false, message: "Network error" });
+      setResult({ success: false, message: t("networkError") });
     } finally {
       setSubmitting(false);
     }
@@ -103,22 +108,22 @@ export default function QCChecklist({ orderId: initialOrderId, onComplete, compa
   return (
     <div className={compact ? "" : "bg-white rounded-2xl shadow-sm border border-black/5 p-6"}>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[15px] font-semibold text-[#1D1D1F]">QC Checklist</h3>
+        <h3 className="text-[15px] font-semibold text-[#1D1D1F]">{t("title")}</h3>
         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
           allPassed ? "bg-[#34C759]/10 text-[#34C759]" : "bg-[#FF3B30]/10 text-[#FF3B30]"
         }`}>
-          {allPassed ? "All Passed" : `${failedCount} Failed`}
+          {allPassed ? t("allPassed") : t("failedCount", { n: failedCount })}
         </span>
       </div>
 
       {!initialOrderId && (
         <div className="mb-4">
-          <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Order ID *</label>
+          <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("orderIdRequired")}</label>
           <input
             type="text"
             value={orderId}
             onChange={(e) => setOrderId(e.target.value)}
-            placeholder="Paste order ID..."
+            placeholder={t("pasteOrderId")}
             className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20"
           />
         </div>
@@ -132,7 +137,7 @@ export default function QCChecklist({ orderId: initialOrderId, onComplete, compa
           return (
             <div key={cat}>
               <div className="text-[11px] font-semibold text-[#86868B] uppercase tracking-wide mb-1.5">
-                {CAT_LABELS[cat]}
+                {catLabels[cat]}
               </div>
               <div className="space-y-1">
                 {items.map((item, i) => {
@@ -165,7 +170,7 @@ export default function QCChecklist({ orderId: initialOrderId, onComplete, compa
                         type="text"
                         value={item.notes || ""}
                         onChange={(e) => updateNote(globalIdx, e.target.value)}
-                        placeholder="Note..."
+                        placeholder={t("notes")}
                         className="w-24 opacity-0 group-hover:opacity-100 focus:opacity-100 bg-[#F5F5F7] border-0 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#ed6d00]/20 transition-opacity"
                       />
                     </div>
@@ -180,34 +185,34 @@ export default function QCChecklist({ orderId: initialOrderId, onComplete, compa
       {/* Inspector & notes */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
         <div>
-          <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Inspector</label>
+          <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("inspector")}</label>
           <input
             type="text"
             value={inspectorName}
             onChange={(e) => setInspectorName(e.target.value)}
-            placeholder="Name"
+            placeholder={t("namePlaceholder")}
             className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20"
           />
         </div>
         <div>
-          <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Packer</label>
+          <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("packer")}</label>
           <input
             type="text"
             value={packerName}
             onChange={(e) => setPackerName(e.target.value)}
-            placeholder="Name"
+            placeholder={t("namePlaceholder")}
             className="w-full bg-[#F5F5F7] border-0 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20"
           />
         </div>
       </div>
 
       <div className="mb-4">
-        <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">Notes</label>
+        <label className="block text-[11px] font-medium text-[#86868B] uppercase tracking-wide mb-1">{t("notes")}</label>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={2}
-          placeholder="Additional observations..."
+          placeholder={t("additionalObservations")}
           className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20 resize-none"
         />
       </div>
@@ -219,7 +224,7 @@ export default function QCChecklist({ orderId: initialOrderId, onComplete, compa
           disabled={submitting}
           className="bg-[#ed6d00] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FF8A1F] disabled:opacity-50 transition-colors"
         >
-          {submitting ? "Submitting..." : "Submit QC Check"}
+          {submitting ? t("submitting") : t("submitQC")}
         </button>
         {result && (
           <span className={`text-xs ${result.success ? "text-[#34C759]" : "text-[#FF3B30]"}`}>

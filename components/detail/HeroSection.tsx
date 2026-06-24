@@ -81,7 +81,7 @@ export default async function HeroSection({
 
         {/* 徽章 */}
         <div className="flex flex-wrap items-center gap-2">
-          <img src="/flowrid-verified.png" alt="Flowrid Verified" className="w-[52px] h-[52px] shrink-0" />
+          <img src="/flowrid-verified.png" alt={t("detail.flowridVerified")} className="w-[52px] h-[52px] shrink-0" />
           {badges.map((b) => (
             <span key={b.label} className={`px-3 py-1 rounded-full text-xs font-medium ${b.color}`}>
               {b.label}
@@ -91,7 +91,7 @@ export default async function HeroSection({
 
         {/* 描述 */}
         <p className="text-text-secondary leading-relaxed max-w-2xl text-sm md:text-base">
-          {description || `${name} is a ${stateFormatted}-based fulfillment provider offering comprehensive warehousing and logistics services for e-commerce brands.`}
+          {description || t("detail.heroFallbackDesc", { name, state: stateFormatted })}
         </p>
 
         {/* CTA */}
@@ -111,7 +111,7 @@ export default async function HeroSection({
           {heroImage ? (
             <img
               src={heroImage}
-              alt={`${name} warehouse facility`}
+              alt={t("detail.warehouseFacilityAlt", { name })}
               className="w-full h-full object-cover"
             />
           ) : logo ? (

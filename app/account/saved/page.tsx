@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { createBrowserClient } from "@/lib/supabase";
@@ -61,14 +61,14 @@ export default function Saved3PLsPage() {
   }
 
   if (loading) {
-    return <div className="text-center py-12"><p className="text-text-secondary">Loading...</p></div>;
+    return <div className="text-center py-12"><p className="text-text-secondary">{t("auth.loading")}</p></div>;
   }
 
   if (!email) {
     return (
       <div className="text-center py-12">
         <p className="text-text-secondary mb-4">{t("account.saved.loginPrompt")}</p>
-        <a href="/login" className="text-primary hover:underline font-medium">Log in</a>
+        <a href="/login" className="text-primary hover:underline font-medium">{t("account.saved.logIn")}</a>
       </div>
     );
   }

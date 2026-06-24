@@ -52,7 +52,7 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F]">{t("saas.dashboard")}</h1>
           <p className="text-[#86868B] text-sm mt-0.5">
-            {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+            {new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
           </p>
         </div>
         {/* Warehouse Switcher */}
@@ -89,7 +89,7 @@ export default function DashboardPage() {
                     <p className="text-sm font-semibold text-[#1D1D1F]">{w.name}</p>
                     <p className="text-[11px] text-[#86868B]">{w.city}, {cap(w.state)} · {w.code}</p>
                   </div>
-                  <span className="text-[11px] text-[#ed6d00] font-medium">View &rarr;</span>
+                  <span className="text-[11px] text-[#ed6d00] font-medium">{t("saas.viewArrow")}</span>
                 </div>
                 <div className="flex gap-4">
                   <div><p className="text-[22px] font-bold text-[#FF9500]">{w.pending}</p><p className="text-[10px] text-[#86868B] uppercase">{t("saas.pending")}</p></div>

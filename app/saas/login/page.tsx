@@ -16,10 +16,10 @@ export default function LoginPage() {
     setError("");
     try {
       const res = await fetch("/api/saas/auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "login", email, password }) });
-      if (!res.ok) { const data = await res.json(); setError(data.error || "Invalid credentials"); return; }
+      if (!res.ok) { const data = await res.json(); setError(data.error || t("saas.invalidCredentials")); return; }
       window.location.href = "/saas/dashboard";
     } catch {
-      setError("Network error");
+      setError(t("saas.networkError"));
     } finally {
       setLoading(false);
     }
@@ -52,7 +52,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#ed6d00]/20 transition-all"
-              placeholder="••••••••"
+              placeholder={t("saas.passwordPlaceholder")}
               required
             />
           </div>

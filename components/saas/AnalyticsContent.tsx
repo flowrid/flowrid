@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { authedFetch } from "@/lib/authed-fetch";
 
 interface Data { daily_volume: any[]; source_breakdown: any[]; status_distribution: Record<string,number>; warehouse_throughput: any[]; client_revenue: any[]; }
 
 export default function AnalyticsContent() {
+  const t = useTranslations("analyticsContent");
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +21,7 @@ export default function AnalyticsContent() {
       const nextData = await res.json();
       setData(nextData);
     } catch (e: any) {
-      setError(e.message || "Failed to load analytics");
+      setError(e.message || t("failedToLoad"));
       setData(null);
     } finally {
       setLoading(false);
@@ -31,7 +33,7 @@ export default function AnalyticsContent() {
   }, []);
 
   if (loading) return <div className="p-8 space-y-4 animate-pulse"><div className="h-8 w-40 bg-black/5 rounded-xl"/>{[...Array(4)].map((_,i)=><div key={i} className="h-48 bg-white/50 rounded-2xl"/>)}</div>;
-  if (error) return <div className="p-8 text-center"><p className="text-[#FF3B30] text-sm mb-3">{error}</p><button onClick={loadAnalytics} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">Retry</button></div>;
+  if (error) return <div className="p-8 text-center"><p className="text-[#FF3B30] text-sm mb-3">{error}</p><button onClick={loadAnalytics} className="text-sm text-[#ed6d00] font-medium hover:text-[#FF8A1F]">{t("retry")}</button></div>;
   if (!data) return null;
 
   const dailyVolume = data.daily_volume || [];
@@ -43,13 +45,13 @@ export default function AnalyticsContent() {
 
   return (
     <div className="p-6 md:p-8 max-w-[1280px]">
-      <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F] mb-2">Analytics</h1>
-      <p className="text-[#86868B] text-sm mb-8">Last 30 days</p>
+      <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F] mb-2">{t("title")}</h1>
+      <p className="text-[#86868B] text-sm mb-8">{t("subtitle")}</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Order Volume Trend */}
         <section className="bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-          <h2 className="text-[17px] font-semibold text-[#1D1D1F] mb-4">Order Volume Trend</h2>
+          <h2 className="text-[17px] font-semibold text-[#1D1D1F] mb-4">{t("orderVolumeTrend")}</h2>
           <div className="flex items-end gap-[2px] h-32">
             {dailyVolume.map((d:any) => (
               <div key={d.date} className="flex-1 relative group">
@@ -62,7 +64,7 @@ export default function AnalyticsContent() {
 
         {/* Source Breakdown */}
         <section className="bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-          <h2 className="text-[17px] font-semibold text-[#1D1D1F] mb-4">Orders by Source</h2>
+          <h2 className="text-[17px] font-semibold text-[#1D1D1F] mb-4">{t("ordersBySource")}</h2>
           <div className="space-y-3">
             {sourceBreakdown.map((s:any) => (
               <div key={s.source} className="flex items-center gap-3">
@@ -98,7 +100,7 @@ export default function AnalyticsContent() {
 
         {/* Warehouse Throughput */}
         <section className="bg-white rounded-2xl shadow-sm border border-black/5 p-6">
-          <h2 className="text-[17px] font-semibold text-[#1D1D1F] mb-4">Warehouse Throughput</h2>
+          <h2 className="text-[17px] font-semibold text-[#1D1D1F] mb-4">{t("warehouseThroughput")}</h2>
           <div className="space-y-4">
             {warehouseThroughput.map((w:any) => (
               <div key={w.name}>

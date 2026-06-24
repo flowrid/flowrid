@@ -4,6 +4,7 @@
 // 收货/拣货环节中采集批次号和序列号
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export interface LotSerialEntry {
   type: "lot" | "serial";
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export default function LotSerialInput({ onEntriesChange, initialEntries, mode = "both", maxEntries = 50, compact }: Props) {
+  const t = useTranslations("lotSerial");
   const [entries, setEntries] = useState<LotSerialEntry[]>(initialEntries || []);
   const [inputValue, setInputValue] = useState("");
   const [entryType, setEntryType] = useState<"lot" | "serial">(mode === "serial" ? "serial" : "lot");

@@ -28,8 +28,8 @@ export default async function AwardsSection({ name, rating, state }: AwardsSecti
     .join(" ");
 
   badges.push({
-    title: `${locBadge} Fulfillment`,
-    subtitle: `Strategically located in ${locBadge} for optimized regional shipping.`,
+    title: t("detail.stateFulfillment", { state: locBadge }),
+    subtitle: t("detail.stateFulfillmentDesc", { state: locBadge }),
     icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z",
     color: "#3B82F6",
   });

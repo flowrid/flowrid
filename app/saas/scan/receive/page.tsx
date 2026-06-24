@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import CameraView from "../components/CameraView";
 import QuantityInput from "../components/QuantityInput";
 
 const WAREHOUSE_ID = "00000000-0000-0000-0000-000000000001";
 
 export default function ReceivePage() {
+  const t = useTranslations("saas");
   const [scannedProduct, setScannedProduct] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
   const [paused, setPaused] = useState(false);
@@ -25,11 +27,11 @@ export default function ReceivePage() {
       if (data.type === "product") {
         setScannedProduct(data.data);
       } else {
-        setMessage("Product not found — try again");
+        setMessage(t("productNotFound"));
         setPaused(false);
       }
     } catch {
-      setMessage("Scan error");
+      setMessage(t("scanError"));
       setPaused(false);
     }
   }
@@ -54,10 +56,10 @@ export default function ReceivePage() {
         setQuantity(1);
         setPaused(false);
       } else {
-        setMessage(data.error || "Failed");
+        setMessage(data.error || t("failed"));
       }
     } catch {
-      setMessage("Network error");
+      setMessage(t("networkError"));
     }
   }
 

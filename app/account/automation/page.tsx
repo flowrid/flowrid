@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import BrandOperationPage from "@/components/BrandOperationPage";
 import { useTranslations } from "next-intl";
@@ -16,7 +16,7 @@ export default function AccountAutomationPage() {
         { label: t("account.automation.activeRules"), value: "0" },
         { label: t("account.automation.draftRules"), value: "0" },
         { label: t("account.automation.triggers"), value: "Brand-safe" },
-        { label: t("account.automation.dataStatus"), value: "Not connected", tone: "warning" },
+        { label: t("account.automation.dataStatus"), value: t("account.automation.notConnected"), tone: "warning" },
       ]}
       actions={[
         { label: t("account.automation.connectData"), href: "/account/integrations", primary: true },
@@ -26,8 +26,8 @@ export default function AccountAutomationPage() {
       emptyDescription={t("account.automation.emptyDesc")}
       sections={[
         {
-          title: "Brand-safe triggers",
-          description: "Automations should react to brand data events, not warehouse worker tasks.",
+          title: t("account.automation.sections.brandSafeTriggers"),
+          description: t("account.automation.sections.brandSafeTriggersDesc"),
           items: [
             t("account.automation.triggersList.orderCreated"),
             t("account.automation.triggersList.lowStock"),
@@ -36,8 +36,8 @@ export default function AccountAutomationPage() {
           ],
         },
         {
-          title: "Suggested actions",
-          description: "Keep actions focused on visibility and decision support.",
+          title: t("account.automation.sections.suggestedActions"),
+          description: t("account.automation.sections.suggestedActionsDesc"),
           items: [
             t("account.automation.actionsList.sendNotification"),
             t("account.automation.actionsList.createReminder"),
@@ -45,8 +45,8 @@ export default function AccountAutomationPage() {
           ],
         },
         {
-          title: "Excluded controls",
-          description: "Warehouse task automation remains in the operator SaaS system.",
+          title: t("account.automation.sections.excludedControls"),
+          description: t("account.automation.sections.excludedControlsDesc"),
           items: [
             t("account.automation.excludedList.noPickTask"),
             t("account.automation.excludedList.noDockScheduling"),

@@ -18,7 +18,6 @@ import AlternativesSection from "@/components/detail/AlternativesSection";
 import TechnologySection from "@/components/detail/TechnologySection";
 import DetailFAQ from "@/components/detail/DetailFAQ";
 import ProfileSidebar from "@/components/detail/ProfileSidebar";
-import type { Metadata } from "next";
 import type { ThreePL } from "@/types/3pl";
 import Link from "next/link";
 
@@ -35,10 +34,14 @@ function formatState(s: string): string {
     .join(" ");
 }
 
-export const metadata: Metadata = {
-  title: "3PL Provider Details | Flowrid",
-  description: "View detailed information, reviews, and capabilities of this 3PL provider.",
-};
+export async function generateMetadata({ params }: Props) {
+  const t = await getTranslations();
+  const { slug } = await params;
+  return {
+    title: t("detail.metaTitle", { slug }),
+    description: t("detail.metaDescription"),
+  };
+}
 
 export default async function ThreePLDetailPage({ params }: Props) {
   const t = await getTranslations();
