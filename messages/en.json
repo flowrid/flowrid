@@ -224,7 +224,9 @@
       "logisticsPortDrayage": "Logistics - Port Drayage",
       "productAuditingQA": "Product Auditing & QA",
       "ticketingAndPacking": "Ticketing and Packing",
-      "baggingAndSealing": "Bagging and Sealing"
+      "baggingAndSealing": "Bagging and Sealing",
+      "customizationHandwrittenNote": "Customization - Handwritten Note",
+      "operationsCustomerServiceCallCenter": "Operations - Customer Service Call Center"
     },
     "ratingLabels": {
       "excellent": "Excellent",

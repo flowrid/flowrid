@@ -224,7 +224,9 @@
       "logisticsPortDrayage": "Hafentransport",
       "productAuditingQA": "Produktaudit & Qualitätssicherung",
       "ticketingAndPacking": "Etikettierung und Verpackung",
-      "baggingAndSealing": "Verpacken und Versiegeln"
+      "baggingAndSealing": "Verpacken und Versiegeln",
+      "customizationHandwrittenNote": "Individualisierung - Handgeschriebene Notiz",
+      "operationsCustomerServiceCallCenter": "Betrieb - Kundenservice-Callcenter"
     },
     "ratingLabels": {
       "excellent": "Hervorragend",

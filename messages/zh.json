@@ -224,7 +224,9 @@
       "logisticsPortDrayage": "港口拖运",
       "productAuditingQA": "产品审核与质检",
       "ticketingAndPacking": "挂牌与包装",
-      "baggingAndSealing": "装袋与封口"
+      "baggingAndSealing": "装袋与封口",
+      "customizationHandwrittenNote": "定制手写卡片",
+      "operationsCustomerServiceCallCenter": "客服呼叫中心运营"
     },
     "ratingLabels": {
       "excellent": "优秀",

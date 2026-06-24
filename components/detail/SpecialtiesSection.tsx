@@ -138,6 +138,10 @@ const VAS_TRANSLATION_KEYS: Record<string, string> = {
   "Bagging and Sealing": "baggingAndSealing",
   "Bagging & Sealing": "baggingAndSealing",
   "Sealing": "baggingAndSealing",
+  "Customization - Handwritten Note": "customizationHandwrittenNote",
+  "Handwritten Note": "customizationHandwrittenNote",
+  "Operations - Customer Service Call Center": "operationsCustomerServiceCallCenter",
+  "Customer Service Call Center": "operationsCustomerServiceCallCenter",
 };
 
 function getNicheTranslationKey(category: string): string | null {

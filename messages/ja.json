@@ -241,7 +241,9 @@
       "logisticsPortDrayage": "港湾輸送",
       "productAuditingQA": "製品監査と品質保証",
       "ticketingAndPacking": "タグ付けと梱包",
-      "baggingAndSealing": "袋詰めと封止"
+      "baggingAndSealing": "袋詰めと封止",
+      "customizationHandwrittenNote": "カスタマイズ - 手書きメモ",
+      "operationsCustomerServiceCallCenter": "オペレーション - カスタマーサービスコールセンター"
     },
     "ratingLabels": {
       "excellent": "非常に良い",

@@ -4,6 +4,7 @@ import TabbedDirectory from "@/components/TabbedDirectory";
 import { createServerClient } from "@/lib/supabase";
 import { getTranslations } from "next-intl/server";
 import { rankThreePLs } from "@/lib/scoring";
+import { translateCategory, translateState } from "@/lib/translate-data";
 import Link from "next/link";
 import type { ThreePL } from "@/types/3pl";
 
@@ -62,15 +63,14 @@ export default async function Home() {
     .sort((a, b) => b.score - a.score)
     .slice(0, 6);
 
-  // Category 显示名 — 从翻译文件读取
+  // Category 显示名 — 使用 translate-data 的正确 slug→key 映射
   function catDisplay(cat: string): string {
-    const key = cat.toLowerCase().replace(/[^a-z-]/g, "");
-    return (t as any)(`detail.categories.${key}`) || cat.charAt(0).toUpperCase() + cat.slice(1);
+    return translateCategory(cat, t as (k: string) => string);
   }
 
-  // State 显示名 — 从翻译文件读取
+  // State 显示名 — 使用 translate-data
   function stateDisplay(s: string): string {
-    return (t as any)(`detail.states.${s}`) || s.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+    return translateState(s, t as (k: string) => string);
   }
 
   return (

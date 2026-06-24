@@ -224,7 +224,9 @@
       "logisticsPortDrayage": "Transporte Portuario",
       "productAuditingQA": "Auditoría de Producto y Control de Calidad",
       "ticketingAndPacking": "Etiquetado y Embalaje",
-      "baggingAndSealing": "Embolsado y Sellado"
+      "baggingAndSealing": "Embolsado y Sellado",
+      "customizationHandwrittenNote": "Personalización - Nota Escrita a Mano",
+      "operationsCustomerServiceCallCenter": "Operaciones - Centro de Atención al Cliente"
     },
     "ratingLabels": {
       "excellent": "Excelente",
