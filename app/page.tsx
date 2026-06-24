@@ -81,6 +81,7 @@ export default async function Home() {
     singapore: "singapore", indonesia: "indonesia", jakarta: "indonesia",
     banten: "indonesia", malaysia: "malaysia", selangor: "malaysia",
     vietnam: "vietnam", "binh-thanh-dist-ho-chi-minh": "vietnam",
+    "ha-noi": "vietnam",
     thailand: "thailand", philippines: "philippines",
     taiwan: "taiwan", "hong-kong": "hong-kong",
     // ===== 欧洲 =====
