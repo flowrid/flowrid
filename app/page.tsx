@@ -64,9 +64,10 @@ export default async function Home() {
     eng: "england", sct: "scotland", wls: "wales",
     // 其他
     hu: "hungary", is: "iceland",
-    // 短码→未知，直接过滤
-    dl: null, hb: null, an: null, li: null, zh: null, ti: null,
   };
+
+  // 短代码明确排除列表（不是有效地点）
+  const EXCLUDED_CODES = new Set(["dl", "hb", "an", "li", "zh", "ti"]);
 
   // 第二步：地理位置→国家（所有非国家地名归入所属国家）
   const GEO_TO_COUNTRY: Record<string, string> = {
@@ -146,10 +147,10 @@ export default async function Home() {
       // 排除纯数字和明显地址（含数字的）
       if (/^\d/.test(lower) || /\d/.test(lower)) return null;
       if (lower.includes("#") || lower.includes("floor") || lower.includes("unit-")) return null;
-      // 检查缩写表（null表示明确排除）
+      if (EXCLUDED_CODES.has(lower)) return null;
+      // 检查缩写表
       if (lower in ABBREV_NORMALIZE) {
         const normalized = ABBREV_NORMALIZE[lower];
-        if (normalized === null) return null;
         return GEO_TO_COUNTRY[normalized] || null;
       }
       // 直接匹配国家映射
