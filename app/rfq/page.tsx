@@ -23,6 +23,7 @@ export default function RFQPage() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [customPlatform, setCustomPlatform] = useState("");
 
   function update(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -126,10 +127,10 @@ export default function RFQPage() {
               {t('rfq.step2Platform')}
             </label>
             <div className="grid grid-cols-1 gap-3 mt-2">
-              {["Shopify", "TikTok Shop", "Amazon", "Other"].map((p) => (
+              {["Shopify", "TikTok Shop", "Amazon"].map((p) => (
                 <button
                   key={p}
-                  onClick={() => update("platform", p)}
+                  onClick={() => { update("platform", p); setCustomPlatform(""); }}
                   className={`border rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
                     form.platform === p
                       ? "border-primary bg-orange-50 text-primary"
@@ -139,7 +140,27 @@ export default function RFQPage() {
                   {p}
                 </button>
               ))}
+              <button
+                onClick={() => { update("platform", customPlatform || "Other"); }}
+                className={`border rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
+                  form.platform && !["Shopify", "TikTok Shop", "Amazon"].includes(form.platform)
+                    ? "border-primary bg-orange-50 text-primary"
+                    : "border-border bg-card hover:border-gray-400"
+                }`}
+              >
+                Other
+              </button>
             </div>
+            {form.platform && !["Shopify", "TikTok Shop", "Amazon"].includes(form.platform) && (
+              <input
+                type="text"
+                placeholder="Enter your platform name"
+                value={customPlatform}
+                onChange={(e) => { setCustomPlatform(e.target.value); update("platform", e.target.value || "Other"); }}
+                className="w-full border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-card mt-3"
+                autoFocus
+              />
+            )}
           </>
         )}
 
