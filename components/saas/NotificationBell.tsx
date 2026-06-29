@@ -29,7 +29,7 @@ interface Props {
 
 export default function NotificationBell({ onNotificationClick, userId, apiPrefix = "saas" }: Props) {
   const t = useTranslations("notifications");
-  const { notifications, unreadCount, loading, markRead, markAllRead } = useRealtimeNotifications({ userId });
+  const { notifications, unreadCount, loading, markRead, markAllRead } = useRealtimeNotifications({ userId, apiPrefix });
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 

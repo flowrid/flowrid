@@ -122,33 +122,30 @@ export default function AccountAutomationPage() {
       if (!supabase) throw new Error("DB unavailable");
       const { data: sessionData } = await supabase.auth.getSession();
       const userId = sessionData?.session?.user?.id;
+      if (!userId) throw new Error("Not logged in");
 
-      const res = await fetch("/api/saas/automation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          trigger,
-          conditions: [],
-          actions: [{ type: action, config: { notification_type: "info" } }],
-          tenant_id: userId,
-        }),
+      // 直接用 Supabase 插入规则（避免跨 SaaS API 鉴权问题）
+      const { error: insertError } = await supabase.from("automation_rules").insert({
+        tenant_id: userId,
+        name,
+        trigger_event: trigger,
+        conditions: [],
+        actions: [{ type: action, config: { notification_type: "info" } }],
+        is_active: true,
+        priority: 1,
       });
 
-      if (res.ok) {
-        setMsg({ type: "success", text: "Template activated! You can customize it below." });
-        // Refresh rules
-        const { data: rulesData } = await supabase
-          .from("automation_rules")
-          .select("*")
-          .eq("tenant_id", userId)
-          .order("created_at", { ascending: false })
-          .limit(20);
-        setRules((rulesData || []) as AutomationRule[]);
-      } else {
-        const err = await res.json();
-        setMsg({ type: "error", text: err.error || "Failed to create rule" });
-      }
+      if (insertError) throw new Error(insertError.message);
+
+      setMsg({ type: "success", text: "Template activated! You can customize it below." });
+      // Refresh rules
+      const { data: rulesData } = await supabase
+        .from("automation_rules")
+        .select("*")
+        .eq("tenant_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      setRules((rulesData || []) as AutomationRule[]);
     } catch (e: any) {
       setMsg({ type: "error", text: e.message });
     } finally { setCreating(false); }

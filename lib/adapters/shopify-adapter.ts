@@ -289,6 +289,7 @@ export class ShopifyAdapter implements ERPAdapter {
 export async function createAdapterFromDB(
   brandUserId: string
 ): Promise<ShopifyAdapter | null> {
+  // TODO: 多平台工厂 — 根据 platform_name 返回不同适配器（Amazon/WooCommerce/BigCommerce）
   const supabase = createServiceClient();
   if (!supabase) return null;
 

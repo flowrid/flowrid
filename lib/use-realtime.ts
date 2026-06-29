@@ -25,14 +25,19 @@ export interface RealtimeNotification {
 interface UseRealtimeOptions {
   userId?: string;
   limit?: number;
+  /** API 端点前缀：Brand 用 "account"，SaaS 用 "saas" */
+  apiPrefix?: "saas" | "account";
 }
 
 export function useRealtimeNotifications(options: UseRealtimeOptions = {}) {
-  const { userId, limit = 20 } = options;
+  const { userId, limit = 20, apiPrefix = "saas" } = options;
   const [notifications, setNotifications] = useState<RealtimeNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const channelRef = useRef<ReturnType<ReturnType<NonNullable<ReturnType<typeof createBrowserClient>>['channel']>['subscribe']> | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const channelRef = useRef<any>(null);
+
+  const apiBase = `/api/${apiPrefix}/notifications`;
 
   // 初始加载
   const fetchInitial = useCallback(async () => {
@@ -44,7 +49,7 @@ export function useRealtimeNotifications(options: UseRealtimeOptions = {}) {
       const token = sessionData?.session?.access_token;
       if (!token) { setLoading(false); return; }
 
-      const res = await fetch("/api/saas/notifications?limit=" + limit, {
+      const res = await fetch(`${apiBase}?limit=${limit}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -52,7 +57,9 @@ export function useRealtimeNotifications(options: UseRealtimeOptions = {}) {
         setNotifications(d.data || []);
         setUnreadCount(d.unreadCount || 0);
       }
-    } catch {} finally {
+    } catch (e) {
+      console.error("[useRealtime] fetch failed:", e);
+    } finally {
       setLoading(false);
     }
   }, [limit]);
@@ -99,7 +106,7 @@ export function useRealtimeNotifications(options: UseRealtimeOptions = {}) {
     const token = sessionData?.session?.access_token;
     if (!token) return;
 
-    await fetch("/api/saas/notifications", {
+    await fetch(apiBase, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -118,7 +125,7 @@ export function useRealtimeNotifications(options: UseRealtimeOptions = {}) {
     const token = sessionData?.session?.access_token;
     if (!token) return;
 
-    await fetch("/api/saas/notifications", {
+    await fetch(apiBase, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -130,5 +137,5 @@ export function useRealtimeNotifications(options: UseRealtimeOptions = {}) {
     setUnreadCount(0);
   }, []);
 
-  return { notifications, unreadCount, loading, markRead, markAllRead, refresh: fetchInitial };
+  return { notifications, unreadCount, loading, error, markRead, markAllRead, refresh: fetchInitial };
 }

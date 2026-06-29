@@ -237,7 +237,7 @@ export async function triggerWarehouseEvent(
   tenantId: string,
   entityId: string,
   data: Record<string, any> = {}
-) {
+): Promise<{ executed: EventAction[]; errors: string[] }> {
   const payload: EventPayload = {
     event,
     tenantId,
@@ -246,8 +246,15 @@ export async function triggerWarehouseEvent(
     timestamp: new Date().toISOString(),
   };
 
-  // 异步执行，不阻塞主操作
-  executeEventChain(payload).catch((e) => {
+  // 异步执行，不阻塞主操作（调用方可选择 await）
+  try {
+    const result = await executeEventChain(payload);
+    if (result.errors.length > 0) {
+      console.error(`[WarehouseEvents] ${event} partial errors:`, result.errors);
+    }
+    return result;
+  } catch (e: any) {
     console.error(`[WarehouseEvents] ${event} failed:`, e);
-  });
+    return { executed: [], errors: [e.message || "Unknown error"] };
+  }
 }
