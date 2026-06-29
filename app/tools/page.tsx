@@ -87,7 +87,7 @@ export default async function ToolsPage() {
       <section className="mb-16">
         <h2 className="text-xl font-bold text-text mb-2">Free Tools</h2>
         <p className="text-sm text-text-secondary mb-6 max-w-[500px] leading-relaxed">Built by Flowrid. No sign-up required. Just useful tools to help you make better logistics decisions.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <Link href="/tools/shipping-calculator" className="group bg-card border border-border rounded-2xl p-6 hover:border-primary/40 hover:shadow-lg transition-all">
             <div className="w-10 h-10 rounded-xl bg-[#16A34A]/10 flex items-center justify-center mb-4 text-2xl">📦</div>
             <h3 className="text-lg font-bold text-text group-hover:text-primary transition-colors mb-1.5">Shipping Rate Calculator</h3>
@@ -99,6 +99,12 @@ export default async function ToolsPage() {
             <h3 className="text-lg font-bold text-text group-hover:text-primary transition-colors mb-1.5">RFQ Generator</h3>
             <p className="text-sm text-text-secondary leading-relaxed mb-3">Get matched with the best 3PLs for your business. Answer 4 quick questions and we'll curate a list of perfect-fit fulfillment partners.</p>
             <span className="text-sm font-medium text-primary group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">Get matched →</span>
+          </Link>
+          <Link href="/tools/fulfillment-cost-estimator" className="group bg-card border border-border rounded-2xl p-6 hover:border-primary/40 hover:shadow-lg transition-all">
+            <div className="w-10 h-10 rounded-xl bg-[#FF9500]/10 flex items-center justify-center mb-4 text-2xl">📊</div>
+            <h3 className="text-lg font-bold text-text group-hover:text-primary transition-colors mb-1.5">Fulfillment Cost Estimator</h3>
+            <p className="text-sm text-text-secondary leading-relaxed mb-3">Estimate your monthly 3PL costs — order processing, pick fees, storage, and shipping. Based on industry benchmarks.</p>
+            <span className="text-sm font-medium text-primary group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">Estimate costs →</span>
           </Link>
         </div>
       </section>
