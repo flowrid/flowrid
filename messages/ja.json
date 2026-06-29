@@ -1,6 +1,7 @@
 {
   "nav": {
     "3plDirectory": "3PLディレクトリ",
+    "tools": "ツール",
     "login": "ログイン",
     "signOut": "ログアウト"
   },
@@ -1784,5 +1785,103 @@
     "product": "Product",
     "labeling": "Labeling",
     "documents": "Documents"
+  }
+},
+  "tools": {
+    "meta": {
+      "title": "Best Logistics Tools for Ecommerce Brands — Compare & Choose | Flowrid",
+      "description": "Find and compare the best logistics tools for ecommerce. Order tracking, shipping software, inventory management, and automation — curated for brands and 3PLs."
+    },
+    "hero": {
+      "eyebrow": "Logistics Tools",
+      "title": "The best logistics tools, curated for ecommerce brands and 3PLs",
+      "description": "Stop guessing which tools to use. We've researched, tested, and compared the top platforms so you can focus on growing your business."
+    },
+    "categories": {
+      "title": "Explore by Task",
+      "tracking": "Tracking & Visibility",
+      "trackingDesc": "Know where every order is, reduce WISMO tickets, and deliver a branded post-purchase experience.",
+      "trackingQuestion": "\"Where is my package?\"",
+      "orderMgmt": "Order Management",
+      "orderMgmtDesc": "Manage orders across Shopify, Amazon, and wholesale — all in one place.",
+      "orderMgmtQuestion": "\"How do I manage orders across platforms?\"",
+      "shipping": "Shipping & Rates",
+      "shippingDesc": "Compare carrier rates, print labels, and automate shipping workflows.",
+      "shippingQuestion": "\"Which carrier is cheapest and fastest?\"",
+      "inventory": "Inventory & Warehouse",
+      "inventoryDesc": "Sync stock across channels in real-time. Prevent overselling and stockouts.",
+      "inventoryQuestion": "\"How do I sync inventory across channels?\"",
+      "automation": "Automation & Integration",
+      "automationDesc": "Connect your tools and automate repetitive workflows.",
+      "automationQuestion": "\"How do I make my systems talk to each other?\"",
+      "compliance": "Compliance & Documentation",
+      "complianceDesc": "Navigate cross-border shipping, tax compliance, and customs documentation.",
+      "complianceQuestion": "\"How do I handle cross-border compliance?\""
+    },
+    "trust": {
+      "title": "Why Trust Flowrid's Tool Recommendations",
+      "researched": "Independently Researched",
+      "researchedDesc": "Every tool is manually tested and reviewed against real ecommerce logistics workflows.",
+      "unbiased": "Unbiased Comparisons",
+      "unbiasedDesc": "We show pros AND cons. No tool is perfect.",
+      "updated": "Regularly Updated",
+      "updatedDesc": "Pricing, features, and ratings are reviewed quarterly. Last updated: June 2026."
+    },
+    "cta": {
+      "title": "Tools are just part of the equation",
+      "description": "The best tracking software won't help if your 3PL isn't right for your business.",
+      "browse3PL": "Browse 3PL Directory",
+      "submitRFQ": "Submit an RFQ"
+    },
+    "tracking": {
+      "metaDesc": "Compare the best order tracking software for ecommerce: AfterShip vs 17TRACK vs ParcelPanel vs Narvar vs Route vs WeSupply.",
+      "hero": {
+        "eyebrow": "Tracking & Visibility",
+        "title": "Turn 'Where is my order?' into 'Wow, that was fast'",
+        "description": "The right tracking tool reduces customer anxiety, cuts support tickets by up to 60%."
+      },
+      "pain": {
+        "title": "You're probably experiencing this right now",
+        "wismo": "Customers keep emailing 'Where is my order?' — and you're manually looking up tracking links.",
+        "multiCarrier": "Tracking information is scattered across different portals and emails.",
+        "time": "Your team spends hours per week on tracking-related customer service."
+      },
+      "comparison": {
+        "title": "Quick Comparison",
+        "description": "A side-by-side look at the top 6 tracking platforms for ecommerce brands."
+      },
+      "guide": {
+        "title": "Which One Should You Choose?",
+        "description": "Answer honestly about your order volume, budget, and technical comfort level."
+      },
+      "deepDive": {
+        "title": "Deep Dive — Full Reviews"
+      },
+      "tutorial": {
+        "title": "How to Set Up Order Tracking",
+        "description": "Follow this process to get professional-grade order tracking.",
+        "step1Title": "Pick the right tool for your volume and budget",
+        "step1Desc": "Under 200 orders/month → ParcelPanel. Over 5,000/month → AfterShip or Narvar.",
+        "step2Title": "Set up branded tracking",
+        "step2Desc": "A branded tracking page keeps customers on your domain.",
+        "step3Title": "Enable proactive notifications",
+        "step3Desc": "Proactive updates reduce WISMO tickets by 40-60%.",
+        "step4Title": "Review delivery analytics monthly",
+        "step4Desc": "Use delivery data to optimize your 3PL and carrier choices.",
+        "proTip": "Pro Tip",
+        "proTipDesc": "Connect your tracking tool to your email platform. Send a survey 3 days after delivery."
+      },
+      "crossSell": {
+        "title": "3PLs that integrate well with tracking tools",
+        "description": "These fulfillment providers have native integrations or API support for tracking platforms.",
+        "browseAll": "Browse All 3PLs",
+        "browseAllDesc": "2,800+ verified fulfillment partners"
+      },
+      "bottomCta": {
+        "title": "Found your tracking tool? Now find your 3PL.",
+        "description": "The best tracking software is wasted on a slow warehouse.",
+        "button": "Browse 3PL Directory"
+      }
+    }
   }
 }

@@ -78,6 +78,9 @@ export default async function RootLayout({
                 <a href="/3pl" className="hover:text-text transition-colors">
                   {t("nav.3plDirectory")}
                 </a>
+                <a href="/tools" className="hover:text-text transition-colors">
+                  {t("nav.tools")}
+                </a>
                 <NavUser />
                 <LanguageSwitcher />
               </div>

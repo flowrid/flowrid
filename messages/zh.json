@@ -1,6 +1,7 @@
 {
   "nav": {
     "3plDirectory": "3PL 目录",
+    "tools": "工具",
     "login": "登录",
     "signOut": "退出登录"
   },
@@ -1784,5 +1785,103 @@
     "product": "产品",
     "labeling": "标签",
     "documents": "文件"
+  }
+},
+  "tools": {
+    "meta": {
+      "title": "电商物流工具推荐 — 对比与选择 | Flowrid",
+      "description": "为电商品牌精选的最佳物流工具。订单追踪、运输软件、库存管理和自动化——为品牌和3PL精心挑选。"
+    },
+    "hero": {
+      "eyebrow": "物流工具",
+      "title": "为电商品牌和3PL精心挑选的最佳物流工具",
+      "description": "别再凭感觉选工具了。我们研究、测试并比较了顶级平台，让你可以专注于业务增长——而不是评估软件。"
+    },
+    "categories": {
+      "title": "按任务探索",
+      "tracking": "追踪与可见性",
+      "trackingDesc": "掌握每个订单的位置，减少WISMO工单，打造品牌化的售后体验。",
+      "trackingQuestion": "\"我的包裹到哪了？\"",
+      "orderMgmt": "订单管理",
+      "orderMgmtDesc": "统一管理 Shopify、Amazon 和批发订单——无需登录五个后台。",
+      "orderMgmtQuestion": "\"如何跨平台管理订单？\"",
+      "shipping": "运输与运费",
+      "shippingDesc": "比较承运商费率、打印面单、自动化运输流程。每单节省20-40%。",
+      "shippingQuestion": "\"哪家快递最便宜最快？\"",
+      "inventory": "库存与仓库",
+      "inventoryDesc": "跨渠道实时同步库存。智能库存管理防止超卖和缺货。",
+      "inventoryQuestion": "\"如何跨渠道同步库存？\"",
+      "automation": "自动化与集成",
+      "automationDesc": "连接工具并自动化重复工作流。从订单到履约到报表——无需手工操作。",
+      "automationQuestion": "\"如何让系统之间自动传数据？\"",
+      "compliance": "合规与单证",
+      "complianceDesc": "轻松应对跨境运输、税务合规和海关文件，不再头疼。",
+      "complianceQuestion": "\"如何搞定跨境合规？\""
+    },
+    "trust": {
+      "title": "为什么信任Flowrid的工具推荐",
+      "researched": "独立研究",
+      "researchedDesc": "每个工具都经过人工测试，基于真实电商物流工作流进行评估，而非付费推荐。",
+      "unbiased": "客观对比",
+      "unbiasedDesc": "展示优点也指出缺点。没有完美的工具，正确的选择取决于你的具体需求。",
+      "updated": "定期更新",
+      "updatedDesc": "定价、功能和评分每季度审核。最近更新：2026年6月。"
+    },
+    "cta": {
+      "title": "工具只是拼图的一部分",
+      "description": "最好的追踪软件也救不了一个不适合你的3PL。先找到最匹配的履约合作伙伴。",
+      "browse3PL": "浏览3PL目录",
+      "submitRFQ": "提交询价"
+    },
+    "tracking": {
+      "metaDesc": "比较最佳电商订单追踪软件：AfterShip vs 17TRACK vs ParcelPanel vs Narvar vs Route vs WeSupply。为你的品牌找到合适的售后体验工具。",
+      "hero": {
+        "eyebrow": "追踪与可见性",
+        "title": "把\"我的订单到哪了\"变成\"哇，这么快就到了\"",
+        "description": "合适的追踪工具能减少客户焦虑，将客服工单减少60%，并将售后体验变成品牌差异化优势。"
+      },
+      "pain": {
+        "title": "你可能正在经历这些",
+        "wismo": "客户不停地发邮件问\"我的包裹在哪\"——而你只能一个个手动去查运单链接。",
+        "multiCarrier": "你使用多个3PL和承运商，追踪信息散落在不同的后台和邮件里。",
+        "time": "你的团队每周要花好几个小时处理追踪相关的客服问题，而不是在拓展业务。"
+      },
+      "comparison": {
+        "title": "快速对比",
+        "description": "六大电商追踪平台并排对比。看看它们在定价、承运商覆盖和最佳场景方面的差异。"
+      },
+      "guide": {
+        "title": "你应该选哪个？",
+        "description": "诚实回答你的订单量、预算和技术水平。合适的工具取决于你现在的阶段——而非你希望达到的目标。"
+      },
+      "deepDive": {
+        "title": "深度测评 — 完整评估"
+      },
+      "tutorial": {
+        "title": "如何正确设置订单追踪",
+        "description": "遵循这四步流程，无需数周实施时间，即可获得专业级的订单追踪体验。",
+        "step1Title": "根据订单量和预算选择合适的工具",
+        "step1Desc": "如果每月订单少于200单，从ParcelPanel免费版开始。超过5,000单，投资AfterShip或Narvar的高级功能如AI送达预测。",
+        "step2Title": "设置品牌化追踪——别让客户跳转到快递公司网站",
+        "step2Desc": "品牌化追踪页让客户留在你的域名下，展示Logo，还能包含产品推荐。本指南中的每个工具都支持品牌化追踪——务必启用。",
+        "step3Title": "开启主动通知（邮件+短信）",
+        "step3Desc": "设置自动触发：订单发货→发送含追踪链接的邮件。派送中→短信通知。已签收→邮件邀请评价。主动更新可将WISMO工单减少40-60%。",
+        "step4Title": "每月复盘配送数据",
+        "step4Desc": "哪家承运商准时率最高？哪些区域延误最多？用这些数据优化3PL和承运商选择——不要设置完就不管了。",
+        "proTip": "专业建议",
+        "proTipDesc": "将追踪工具连接到Klaviyo或邮件平台。签收3天后发送\"体验如何\"的调研。这样做的品牌获得了2-3倍的评价和复购。"
+      },
+      "crossSell": {
+        "title": "与追踪工具集成良好的3PL",
+        "description": "这些履约服务商与上述追踪平台有原生集成或API支持。",
+        "browseAll": "浏览全部3PL",
+        "browseAllDesc": "2,800+个认证履约合作伙伴"
+      },
+      "bottomCta": {
+        "title": "找到追踪工具了？现在找到你的3PL。",
+        "description": "最好的追踪软件配上一个慢速仓库也是浪费。匹配一个发货快且与你技术栈集成的3PL。",
+        "button": "浏览3PL目录"
+      }
+    }
   }
 }
