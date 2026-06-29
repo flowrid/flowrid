@@ -307,19 +307,6 @@ export default function FulfillmentCostEstimatorPage() {
                 </p>
               </div>
 
-              {/* CTA */}
-              <div className="p-5 bg-primary/5 border border-primary/20 rounded-2xl text-center">
-                <p className="text-sm font-semibold text-text mb-1">Ready to get real 3PL quotes?</p>
-                <p className="text-sm text-text-secondary mb-3">Submit an RFQ and get matched with fulfillment partners that fit your profile and budget.</p>
-                <div className="flex flex-wrap gap-3 justify-center">
-                  <Link href="/rfq" className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-dark transition-colors">
-                    Get Matched →
-                  </Link>
-                  <Link href="/3pl" className="inline-flex items-center gap-1.5 px-5 py-2.5 border border-border text-text text-sm font-medium rounded-xl hover:border-primary transition-colors">
-                    Browse 3PL Directory
-                  </Link>
-                </div>
-              </div>
             </>
           )}
         </div>
