@@ -1881,6 +1881,28 @@
         "description": "The best tracking software is wasted on a slow warehouse. Match with a 3PL that ships fast and integrates with your stack.",
         "button": "Browse 3PL Directory"
       }
+    },
+    "orderMgmt": {
+      "metaDesc": "Compare the best multi-channel order management software: ShipStation vs OrderDesk vs Pipe17 vs Skubana vs Ecomdash. Find the right platform to centralize your ecommerce orders.",
+      "hero": { "eyebrow": "Order Management", "title": "One dashboard for every order. No more logging into 5 different platforms.", "description": "The right order management system eliminates manual data entry, prevents overselling, and routes orders to the right warehouse — automatically." },
+      "pain": { "title": "You're probably experiencing this right now", "fiveDashboards": "You log into Shopify, Amazon, eBay, and a wholesale portal every morning just to see what orders came in overnight.", "overselling": "You've sold the same inventory on two channels because stock levels didn't sync in time.", "manual": "You or someone on your team spends hours each week copy-pasting order details into spreadsheets, shipping software, and accounting." },
+      "comparison": { "title": "Quick Comparison", "description": "A side-by-side look at the top 5 order management platforms." },
+      "guide": { "title": "Which One Should You Choose?", "description": "Your channel mix, order volume, and fulfillment complexity determine the right tool." },
+      "deepDive": { "title": "Deep Dive — Full Reviews" },
+      "tutorial": { "title": "How to Set Up Multi-Channel Order Management", "description": "Follow this process to centralize your orders.", "step1Title": "Map your channel and fulfillment network", "step1Desc": "List every sales channel and every fulfillment location. A tool that can't integrate is a dealbreaker.", "step2Title": "Define your automation rules first", "step2Desc": "Write down if-then logic on paper before configuring the tool.", "step3Title": "Start with order aggregation, add routing second", "step3Desc": "Phase 1: get all orders into one dashboard. Phase 2: automate routing.", "step4Title": "Set up inventory sync guardrails", "step4Desc": "Enable automatic inventory sync but set safety stock buffers to prevent overselling.", "proTip": "Pro Tip", "proTipDesc": "If you use multiple 3PLs, designate a primary warehouse for each SKU and route overflow manually." },
+      "crossSell": { "title": "3PLs with native integration support", "description": "These fulfillment providers have built-in integrations with the order management platforms reviewed above.", "browseAll": "Browse All 3PLs", "browseAllDesc": "2,800+ verified fulfillment partners" },
+      "bottomCta": { "title": "Centralized orders mean nothing without fast fulfillment", "description": "Match with a 3PL partner that integrates with your stack.", "button": "Browse 3PL Directory" }
+    },
+    "shipping": {
+      "metaDesc": "Compare shipping software and freight solutions: Shippo vs Easyship vs Freightos vs Flexport vs project44. From parcel to container.",
+      "hero": { "eyebrow": "Shipping & Rates", "title": "Stop overpaying for shipping. Compare, automate, and save 20-40% per shipment.", "description": "Whether you ship 50 parcels a week or 50 containers a month, the right shipping tool finds the best rates." },
+      "pain": { "title": "You're probably experiencing this right now", "overpaying": "You default to one carrier because comparing rates takes too much time. You're likely overpaying by 20-40%.", "forwarderEmails": "You email 10 freight forwarders for a single quote and wait 3-5 days for responses.", "cartAbandonment": "International customers abandon checkout when they can't see the total landed cost upfront." },
+      "comparison": { "title": "Quick Comparison", "description": "From parcel-level to enterprise freight — see how 5 platforms compare." },
+      "guide": { "title": "Which One Should You Choose?", "description": "The right tool depends on what you ship, where you ship, and your volume." },
+      "deepDive": { "title": "Deep Dive — Full Reviews" },
+      "tutorial": { "title": "How to Reduce Shipping Costs", "description": "Follow these steps to cut costs before talking to carrier reps.", "step1Title": "Always compare rates — never default to one carrier", "step1Desc": "Tools like Shippo and Easyship compare all carriers in real-time.", "step2Title": "Right-size your packaging", "step2Desc": "Dimensional weight pricing means oversized boxes are expensive boxes.", "step3Title": "Show landed cost at checkout for international orders", "step3Desc": "Easyship shows duties + taxes + shipping before checkout, boosting conversion 15-30%.", "step4Title": "Use shipping data to negotiate", "step4Desc": "After 3 months of data, show carriers your volume by zone and weight for custom rates.", "proTip": "Pro Tip", "proTipDesc": "Sometimes the best shipping savings come from choosing the right warehouse location, not the right carrier." },
+      "crossSell": { "title": "3PLs in strategic shipping locations", "description": "These fulfillment providers are located in logistics hubs that reduce shipping costs.", "browseAll": "Browse All 3PLs", "browseAllDesc": "2,800+ verified fulfillment partners" },
+      "bottomCta": { "title": "Shipping rates are only half the equation", "description": "A great shipping rate doesn't matter if your 3PL takes 2 days to pick and pack.", "button": "Browse 3PL Directory" }
     }
   }
 }

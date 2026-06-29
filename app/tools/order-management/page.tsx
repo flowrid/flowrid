@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { CATEGORIES } from "@/lib/tools-data";
-import CategoryPlaceholder from "@/components/tools/CategoryPlaceholder";
+import Link from "next/link";
+import { ORDER_MANAGEMENT_TOOLS, CATEGORIES } from "@/lib/tools-data";
+import ToolCard from "@/components/tools/ToolCard";
+import ToolComparisonTable from "@/components/tools/ToolComparisonTable";
+import SelectionGuide, { type SelectionOption } from "@/components/tools/SelectionGuide";
+import ToolIcon from "@/components/tools/ToolIcon";
 
 export const dynamic = "force-dynamic";
 
@@ -9,20 +13,132 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations();
   return {
     title: t("tools.categories.orderMgmt"),
-    description: t("tools.categories.orderMgmtDesc"),
+    description: t("tools.orderMgmt.metaDesc"),
+    keywords: ["order management software", "multi-channel orders", "ShipStation alternative", "OrderDesk", "order routing", "ecommerce operations"],
+    openGraph: { title: t("tools.categories.orderMgmt") + " | Flowrid Tools", description: t("tools.orderMgmt.metaDesc"), url: "https://www.flowrid.com/tools/order-management", siteName: "Flowrid", type: "website" },
   };
 }
 
-export default async function Page() {
+const SELECTION_OPTIONS: SelectionOption[] = [
+  { condition: "You sell on 3+ channels (Shopify + Amazon + eBay + more) and need serious batch processing power", recommendation: "Choose ShipStation", toolSlug: "shipstation", reason: "100+ integrations, best automation, 130K+ merchants can't be wrong" },
+  { condition: "You use multiple 3PLs or warehouses and need intelligent order splitting", recommendation: "Choose OrderDesk", toolSlug: "orderdesk", reason: "Best-in-class multi-warehouse routing and split-order logic" },
+  { condition: "You're scaling past 1,000 orders/month and need a central operations nervous system", recommendation: "Choose Skubana", toolSlug: "skubana-orders", reason: "Unified OMS with profitability analytics per order" },
+  { condition: "You need to connect your entire stack (store → OMS → 3PL → ERP) without custom dev work", recommendation: "Choose Pipe17", toolSlug: "pipe17", reason: "Pre-built connectors, real-time sync, handles edge cases" },
+  { condition: "You self-fulfill + use FBA, need inventory + order management under $30/month", recommendation: "Choose Ecomdash", toolSlug: "ecomdash", reason: "Most affordable multi-channel OMS with inventory sync" },
+];
+
+const RELATED_3PLS = [
+  { name: "ShipBob", state: "IL", category: "general" },
+  { name: "Deliverr", state: "CA", category: "general" },
+  { name: "Red Stag Fulfillment", state: "TN", category: "heavy-goods" },
+];
+
+export default async function OrderManagementPage() {
   const t = await getTranslations();
   const cat = CATEGORIES.find((c) => c.slug === "order-management")!;
+
   return (
-    <CategoryPlaceholder
-      icon={cat.icon}
-      color={cat.color}
-      title={t(cat.titleKey)}
-      description={t(cat.descriptionKey)}
-      question={t(cat.questionKey)}
-    />
+    <div>
+      <nav className="flex items-center gap-2 text-sm text-text-secondary mt-2 mb-8">
+        <Link href="/tools" className="hover:text-text transition-colors">Tools</Link>
+        <span>/</span>
+        <span className="text-text font-medium">{t(cat.titleKey)}</span>
+      </nav>
+
+      <section className="mb-12">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: cat.color }}>
+            <ToolIcon icon={cat.icon} />
+          </div>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{t("tools.orderMgmt.hero.eyebrow")}</p>
+        </div>
+        <h1 className="text-3xl md:text-[40px] font-bold tracking-tight text-text leading-[1.15] mb-4 max-w-[720px]">{t("tools.orderMgmt.hero.title")}</h1>
+        <p className="text-base md:text-lg text-text-secondary leading-relaxed max-w-[640px]">{t("tools.orderMgmt.hero.description")}</p>
+      </section>
+
+      <section className="mb-12 bg-gray-50 rounded-2xl p-6 md:p-8 border border-border">
+        <h2 className="text-lg font-bold text-text mb-4">{t("tools.orderMgmt.pain.title")}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            { icon: "fa-list-alt", text: t("tools.orderMgmt.pain.fiveDashboards") },
+            { icon: "fa-puzzle-piece", text: t("tools.orderMgmt.pain.overselling") },
+            { icon: "fa-clock-o", text: t("tools.orderMgmt.pain.manual") },
+          ].map((item) => (
+            <div key={item.text} className="flex items-start gap-3 p-4 bg-white rounded-xl border border-border">
+              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 text-primary">
+                <ToolIcon icon={item.icon} className="w-4 h-4" />
+              </div>
+              <p className="text-sm text-text leading-relaxed">{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-xl font-bold text-text mb-4">{t("tools.orderMgmt.comparison.title")}</h2>
+        <p className="text-sm text-text-secondary mb-6 max-w-[600px] leading-relaxed">{t("tools.orderMgmt.comparison.description")}</p>
+        <ToolComparisonTable tools={ORDER_MANAGEMENT_TOOLS} />
+      </section>
+
+      <section className="mb-12">
+        <SelectionGuide title={t("tools.orderMgmt.guide.title")} description={t("tools.orderMgmt.guide.description")} options={SELECTION_OPTIONS} tools={ORDER_MANAGEMENT_TOOLS} />
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-xl font-bold text-text mb-6">{t("tools.orderMgmt.deepDive.title")}</h2>
+        <div className="space-y-6">
+          {ORDER_MANAGEMENT_TOOLS.map((tool) => (<ToolCard key={tool.slug} tool={tool} variant="full" />))}
+        </div>
+      </section>
+
+      <section className="mb-12 bg-card border border-border rounded-2xl p-6 md:p-8">
+        <h2 className="text-xl font-bold text-text mb-2">{t("tools.orderMgmt.tutorial.title")}</h2>
+        <p className="text-sm text-text-secondary mb-6 max-w-[600px] leading-relaxed">{t("tools.orderMgmt.tutorial.description")}</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[1,2,3,4].map((n) => (
+            <div key={n} className="flex gap-4">
+              <div className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center shrink-0 text-sm font-bold">{n}</div>
+              <div>
+                <h3 className="text-sm font-bold text-text mb-1">{t(`tools.orderMgmt.tutorial.step${n}Title`)}</h3>
+                <p className="text-sm text-text-secondary leading-relaxed">{t(`tools.orderMgmt.tutorial.step${n}Desc`)}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-xl flex items-start gap-3">
+          <span className="text-primary text-lg shrink-0">💡</span>
+          <div>
+            <p className="text-sm font-semibold text-text">{t("tools.orderMgmt.tutorial.proTip")}</p>
+            <p className="text-sm text-text-secondary mt-1 leading-relaxed">{t("tools.orderMgmt.tutorial.proTipDesc")}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-xl font-bold text-text mb-2">{t("tools.orderMgmt.crossSell.title")}</h2>
+        <p className="text-sm text-text-secondary mb-6 max-w-[600px] leading-relaxed">{t("tools.orderMgmt.crossSell.description")}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {RELATED_3PLS.map((pl) => (
+            <Link key={pl.name} href={`/3pl/${pl.state}/${pl.category}`} className="group bg-card border border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-md transition-all">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3 text-primary"><ToolIcon icon="fa-building" className="w-4 h-4" /></div>
+              <h3 className="text-base font-bold text-text group-hover:text-primary transition-colors">{pl.name}</h3>
+              <p className="text-sm text-text-secondary mt-1">{pl.state} · {pl.category}</p>
+              <span className="inline-block mt-3 text-xs font-medium text-primary">View profile →</span>
+            </Link>
+          ))}
+          <Link href="/3pl" className="group bg-gray-50 border border-dashed border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-md transition-all flex flex-col items-center justify-center text-center">
+            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center mb-3 text-text-secondary"><ToolIcon icon="fa-search" className="w-4 h-4" /></div>
+            <h3 className="text-base font-bold text-text group-hover:text-primary transition-colors">{t("tools.orderMgmt.crossSell.browseAll")}</h3>
+            <p className="text-sm text-text-secondary mt-1">{t("tools.orderMgmt.crossSell.browseAllDesc")}</p>
+          </Link>
+        </div>
+      </section>
+
+      <section className="text-center py-12 bg-gradient-to-b from-white to-gray-50 rounded-2xl border border-border">
+        <h2 className="text-2xl font-bold text-text mb-3">{t("tools.orderMgmt.bottomCta.title")}</h2>
+        <p className="text-text-secondary mb-6 max-w-[480px] mx-auto leading-relaxed">{t("tools.orderMgmt.bottomCta.description")}</p>
+        <Link href="/3pl" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-dark transition-colors">{t("tools.orderMgmt.bottomCta.button")} →</Link>
+      </section>
+    </div>
   );
 }

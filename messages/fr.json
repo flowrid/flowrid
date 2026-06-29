@@ -1881,6 +1881,28 @@
         "description": "The best tracking software is wasted on a slow warehouse. Match with a 3PL that ships fast.",
         "button": "Browse 3PL Directory"
       }
+    },
+    "orderMgmt": {
+      "metaDesc": "Compare the best multi-channel order management software: ShipStation vs OrderDesk vs Pipe17 vs Skubana vs Ecomdash.",
+      "hero": { "eyebrow": "Order Management", "title": "One dashboard for every order. No more logging into 5 different platforms.", "description": "The right order management system eliminates manual data entry and prevents overselling." },
+      "pain": { "title": "You're probably experiencing this right now", "fiveDashboards": "You log into Shopify, Amazon, eBay, and a wholesale portal every morning.", "overselling": "You've sold the same inventory on two channels because stock levels didn't sync.", "manual": "You spend hours copy-pasting order details into spreadsheets and shipping software." },
+      "comparison": { "title": "Quick Comparison", "description": "A side-by-side look at the top 5 order management platforms." },
+      "guide": { "title": "Which One Should You Choose?", "description": "Your channel mix, order volume, and fulfillment complexity determine the right tool." },
+      "deepDive": { "title": "Deep Dive — Full Reviews" },
+      "tutorial": { "title": "How to Set Up Multi-Channel Order Management", "description": "Follow this process to centralize your orders.", "step1Title": "Map your channel and fulfillment network", "step1Desc": "List every sales channel and every fulfillment location.", "step2Title": "Define your automation rules first", "step2Desc": "Write down if-then logic before configuring the tool.", "step3Title": "Start with order aggregation, add routing second", "step3Desc": "Phase 1: aggregation. Phase 2: routing.", "step4Title": "Set up inventory sync guardrails", "step4Desc": "Enable auto sync but set safety stock buffers.", "proTip": "Pro Tip", "proTipDesc": "Designate a primary warehouse for each SKU and route overflow manually." },
+      "crossSell": { "title": "3PLs with native integration support", "description": "These fulfillment providers have built-in integrations.", "browseAll": "Browse All 3PLs", "browseAllDesc": "2,800+ verified fulfillment partners" },
+      "bottomCta": { "title": "Centralized orders mean nothing without fast fulfillment", "description": "Match with a 3PL partner that integrates with your stack.", "button": "Browse 3PL Directory" }
+    },
+    "shipping": {
+      "metaDesc": "Compare shipping software: Shippo vs Easyship vs Freightos vs Flexport vs project44.",
+      "hero": { "eyebrow": "Shipping & Rates", "title": "Stop overpaying for shipping. Compare, automate, and save 20-40%.", "description": "The right shipping tool finds the best rates and automates label creation." },
+      "pain": { "title": "You're probably experiencing this", "overpaying": "You default to one carrier and overpay by 20-40%.", "forwarderEmails": "You email 10 forwarders for a single quote.", "cartAbandonment": "International customers abandon checkout without landed cost." },
+      "comparison": { "title": "Quick Comparison", "description": "From parcel to enterprise freight." },
+      "guide": { "title": "Which One Should You Choose?", "description": "Depends on what you ship, where you ship, and your volume." },
+      "deepDive": { "title": "Deep Dive — Full Reviews" },
+      "tutorial": { "title": "How to Reduce Shipping Costs", "description": "Follow these steps to cut costs.", "step1Title": "Always compare rates", "step1Desc": "Tools like Shippo compare all carriers in real-time.", "step2Title": "Right-size your packaging", "step2Desc": "Dimensional weight pricing makes oversized boxes expensive.", "step3Title": "Show landed cost at checkout", "step3Desc": "Easyship boosts international conversion 15-30%.", "step4Title": "Use data to negotiate", "step4Desc": "After 3 months, show carriers your volume for custom rates.", "proTip": "Pro Tip", "proTipDesc": "Best shipping savings often come from warehouse location, not carrier choice." },
+      "crossSell": { "title": "3PLs in strategic locations", "description": "Fulfillment providers in logistics hubs.", "browseAll": "Browse All 3PLs", "browseAllDesc": "2,800+ verified fulfillment partners" },
+      "bottomCta": { "title": "Shipping rates are only half the equation", "description": "A great rate doesn't matter if your 3PL is slow.", "button": "Browse 3PL Directory" }
     }
   }
 }
