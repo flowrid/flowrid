@@ -124,30 +124,6 @@ export default async function ToolsPage() {
           />
         </div>
       </section>
-
-      {/* Bottom CTA — connect with 3PL */}
-      <section className="text-center py-12 bg-gradient-to-b from-white to-gray-50 rounded-2xl border border-border">
-        <h2 className="text-2xl font-bold text-text mb-3">
-          {t("tools.cta.title")}
-        </h2>
-        <p className="text-text-secondary mb-6 max-w-[480px] mx-auto leading-relaxed">
-          {t("tools.cta.description")}
-        </p>
-        <div className="flex flex-wrap gap-3 justify-center">
-          <Link
-            href="/3pl"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-dark transition-colors"
-          >
-            {t("tools.cta.browse3PL")} →
-          </Link>
-          <Link
-            href="/rfq"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-border text-text text-sm font-semibold rounded-xl hover:border-primary hover:text-primary transition-colors"
-          >
-            {t("tools.cta.submitRFQ")}
-          </Link>
-        </div>
-      </section>
     </div>
   );
 }
