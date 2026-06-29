@@ -77,6 +77,41 @@ export default function DashboardPage() {
         <Tile label={t("saas.integrations")} value={kpi.active_integrations} subtitle={t("saas.connected")} accent="blue" />
       </div>
 
+      {/* My Tasks — 借鉴 sl-express 任务驱动模式 */}
+      <div className="mb-8">
+        <h2 className="text-[17px] font-semibold text-[#1D1D1F] mb-3">{t("saas.myTasks") || "My Tasks"}</h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <a href="/saas/receiving" className="group bg-white rounded-2xl p-4 shadow-sm border border-black/5 hover:border-[#ed6d00]/40 hover:shadow-md transition-all flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#FF9500]/10 flex items-center justify-center text-xl shrink-0">📦</div>
+            <div className="min-w-0">
+              <p className="text-[22px] font-bold text-text">{kpi.pending_orders}</p>
+              <p className="text-[11px] text-[#86868B] font-medium">{t("saas.pendingReceiving") || "Pending Receiving"}</p>
+            </div>
+          </a>
+          <a href="/saas/scan/pick" className="group bg-white rounded-2xl p-4 shadow-sm border border-black/5 hover:border-[#ed6d00]/40 hover:shadow-md transition-all flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#ed6d00]/10 flex items-center justify-center text-xl shrink-0">📋</div>
+            <div className="min-w-0">
+              <p className="text-[22px] font-bold text-text">{kpi.pending_orders}</p>
+              <p className="text-[11px] text-[#86868B] font-medium">{t("saas.pendingPicking") || "Pending Picking"}</p>
+            </div>
+          </a>
+          <a href="/saas/shipping" className="group bg-white rounded-2xl p-4 shadow-sm border border-black/5 hover:border-[#34C759]/40 hover:shadow-md transition-all flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#34C759]/10 flex items-center justify-center text-xl shrink-0">🚚</div>
+            <div className="min-w-0">
+              <p className="text-[22px] font-bold text-text">{kpi.orders_30d}</p>
+              <p className="text-[11px] text-[#86868B] font-medium">{t("saas.pendingShipping") || "Ready to Ship"}</p>
+            </div>
+          </a>
+          <a href="/saas/returns" className="group bg-white rounded-2xl p-4 shadow-sm border border-black/5 hover:border-[#FF3B30]/40 hover:shadow-md transition-all flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#FF3B30]/10 flex items-center justify-center text-xl shrink-0">↩️</div>
+            <div className="min-w-0">
+              <p className="text-[22px] font-bold text-text">—</p>
+              <p className="text-[11px] text-[#86868B] font-medium">{t("saas.pendingReturns") || "Pending Returns"}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
       {/* Per-Warehouse Breakdown */}
       {selectedWh === "all" && kpi.warehouse_breakdown.length > 1 && (
         <div className="mb-8">
