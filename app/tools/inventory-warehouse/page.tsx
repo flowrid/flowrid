@@ -6,6 +6,7 @@ import ToolCard from "@/components/tools/ToolCard";
 import ToolComparisonTable from "@/components/tools/ToolComparisonTable";
 import SelectionGuide, { type SelectionOption } from "@/components/tools/SelectionGuide";
 import ToolIcon from "@/components/tools/ToolIcon";
+import CrossSell3PL from "@/components/tools/CrossSell3PL";
 
 export const dynamic = "force-dynamic";
 
@@ -23,8 +24,6 @@ const SELECTION_OPTIONS: SelectionOption[] = [
   { condition: "You're an SMB with wholesale + DTC, already using QuickBooks, and want affordable inventory control", recommendation: "Choose TradeGecko", toolSlug: "tradegecko", reason: "Most affordable entry point with B2B wholesale portal" },
   { condition: "You want unified inventory + orders + profitability analytics in one platform", recommendation: "Choose Skubana", toolSlug: "skubana", reason: "All-in-one operations with demand forecasting and true COGS" },
 ];
-
-const RELATED_3PLS = [{ name: "ShipBob", state: "IL", category: "general" }, { name: "ShipMonk", state: "FL", category: "general" }, { name: "Extensiv Partner 3PL", state: "CA", category: "general" }];
 
 export default async function InventoryPage() {
   const t = await getTranslations();
@@ -67,9 +66,7 @@ export default async function InventoryPage() {
         <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-xl flex items-start gap-3"><span className="text-primary text-lg shrink-0">💡</span><div><p className="text-sm font-semibold text-text">{t("tools.inventory.tutorial.proTip")}</p><p className="text-sm text-text-secondary mt-1 leading-relaxed">{t("tools.inventory.tutorial.proTipDesc")}</p></div></div>
       </section>
 
-      <section className="mb-12"><h2 className="text-xl font-bold text-text mb-2">{t("tools.inventory.crossSell.title")}</h2><p className="text-sm text-text-secondary mb-6 max-w-[600px] leading-relaxed">{t("tools.inventory.crossSell.description")}</p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">{RELATED_3PLS.map((pl) => (<Link key={pl.name} href={`/3pl/${pl.state}/${pl.category}`} className="group bg-card border border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-md transition-all"><div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3 text-primary"><ToolIcon icon="fa-building" className="w-4 h-4" /></div><h3 className="text-base font-bold text-text group-hover:text-primary transition-colors">{pl.name}</h3><p className="text-sm text-text-secondary mt-1">{pl.state} · {pl.category}</p><span className="inline-block mt-3 text-xs font-medium text-primary">View profile →</span></Link>))}<Link href="/3pl" className="group bg-gray-50 border border-dashed border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-md transition-all flex flex-col items-center justify-center text-center"><div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center mb-3 text-text-secondary"><ToolIcon icon="fa-search" className="w-4 h-4" /></div><h3 className="text-base font-bold text-text group-hover:text-primary transition-colors">{t("tools.inventory.crossSell.browseAll")}</h3><p className="text-sm text-text-secondary mt-1">{t("tools.inventory.crossSell.browseAllDesc")}</p></Link></div>
-      </section>
+      <CrossSell3PL title={t("tools.inventory.crossSell.title")} description={t("tools.inventory.crossSell.description")} browseAllLabel={t("tools.inventory.crossSell.browseAll")} browseAllDesc={t("tools.inventory.crossSell.browseAllDesc")} />
 
       <section className="text-center py-12 bg-gradient-to-b from-white to-gray-50 rounded-2xl border border-border"><h2 className="text-2xl font-bold text-text mb-3">{t("tools.inventory.bottomCta.title")}</h2><p className="text-text-secondary mb-6 max-w-[480px] mx-auto leading-relaxed">{t("tools.inventory.bottomCta.description")}</p><Link href="/3pl" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-dark transition-colors">{t("tools.inventory.bottomCta.button")} →</Link></section>
     </div>
