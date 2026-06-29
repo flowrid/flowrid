@@ -169,12 +169,6 @@ export default function ShippingCalculatorPage() {
             </>
           )}
 
-          {/* CTA */}
-          <div className="mt-8 p-5 bg-primary/5 border border-primary/20 rounded-2xl text-center">
-            <p className="text-sm font-semibold text-text mb-1">Want to save even more on shipping?</p>
-            <p className="text-sm text-text-secondary mb-3">3PLs with strategic warehouse locations can reduce your Zone 8 shipments by 60%.</p>
-            <Link href="/3pl" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">Browse 3PL Directory →</Link>
-          </div>
         </div>
       </div>
     </div>
