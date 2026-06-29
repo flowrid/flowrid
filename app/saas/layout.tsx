@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 const NAV_KEYS = [
   "dashboard", "orders", "products", "inventory", "clients", "warehouses",
   "users", "receiving", "returns", "reports", "dock", "automation", "audit",
-  "scan", "analytics", "shipping", "billing", "settings",
+  "scan", "analytics", "shipping", "billing", "settings", "integrations",
 ] as const;
 
 const NAV_ICONS: Record<string, string> = {
@@ -29,6 +29,7 @@ const NAV_ICONS: Record<string, string> = {
   shipping: "/icons/shipping.png",
   billing: "/icons/billing.png",
   settings: "/icons/settings.png",
+  integrations: "/icons/store-integrations.png",
 };
 
 export default function SaasLayout({ children }: { children: React.ReactNode }) {

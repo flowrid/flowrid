@@ -237,19 +237,26 @@ export default function AccountIntegrationsPage() {
 
       <section className="bg-card border border-border rounded-2xl p-6">
         <h2 className="text-lg font-semibold text-text mb-4">{t("account.integrations.otherIntegrations")}</h2>
-        {[
-          "Amazon Seller Central",
-          "WooCommerce",
-          "BigCommerce",
-          "ShipStation",
-          "QuickBooks",
-          "EDI",
-        ].map((name) => (
-          <div key={name} className="flex items-center justify-between py-3 border-b border-border last:border-0">
-            <p className="text-sm text-text">{name}</p>
-            <span className="text-xs bg-background text-text-secondary px-3 py-1 rounded-full">{t("account.integrations.comingSoon")}</span>
-          </div>
-        ))}
+        <div className="space-y-2">
+          {[
+            { name: "Amazon Seller Central", tool: "/tools/order-management", hint: "See order management tools →" },
+            { name: "WooCommerce", tool: "/tools/order-management", hint: "See order management tools →" },
+            { name: "BigCommerce", tool: "/tools/order-management", hint: "See order management tools →" },
+            { name: "ShipStation", tool: "/tools/shipping-rates", hint: "See shipping tools →" },
+            { name: "QuickBooks", tool: "/tools/automation-integration", hint: "See automation tools →" },
+            { name: "EDI", tool: "/tools/compliance-documents", hint: "See compliance tools →" },
+          ].map((item) => (
+            <div key={item.name} className="flex items-center justify-between py-3 px-4 border border-border rounded-xl hover:border-primary/40 hover:bg-primary/[0.02] transition-all">
+              <p className="text-sm font-medium text-text">{item.name}</p>
+              <Link href={item.tool} className="text-xs text-primary font-medium hover:underline">
+                {item.hint}
+              </Link>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-text-secondary/60 mt-4">
+          These integrations are not yet natively supported. In the meantime, explore our tool guides above or use Zapier/Make to connect them.
+        </p>
       </section>
     </>
   );

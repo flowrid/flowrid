@@ -667,6 +667,7 @@
     "kitting": "Kitting",
     "containers": "Containers",
     "labor": "Labor",
+    "integrations": "Integrations",
     "invalidCredentials": "Invalid credentials",
     "networkError": "Network error",
     "networkErrorRetry": "Network error. Please try again.",

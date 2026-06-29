@@ -667,6 +667,7 @@
     "kitting": "组装",
     "containers": "容器",
     "labor": "人力",
+    "integrations": "平台集成",
     "invalidCredentials": "凭证无效",
     "networkError": "网络错误",
     "networkErrorRetry": "网络错误，请重试。",
