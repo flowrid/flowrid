@@ -29,12 +29,22 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: TABLE_ERROR }, { status: 503 });
   }
 
-  if (!data) return NextResponse.json({ connected: false, lastSync: null, shop: null });
+  if (!data) return NextResponse.json({ connected: false, lastSync: null, shop: null, recentLogs: [] });
 
   const row = data as ShopifyStatusRow;
+
+  // 获取最近同步日志
+  const { data: logs } = await supabase
+    .from("brand_integration_sync_logs")
+    .select("sync_type, records_processed, status, error_message, started_at, completed_at")
+    .eq("brand_user_id", brand.userId)
+    .order("started_at", { ascending: false })
+    .limit(10);
+
   return NextResponse.json({
     connected: row.is_active || false,
     lastSync: row.last_sync_at || null,
     shop: row.credentials?.shop || null,
+    recentLogs: logs || [],
   });
 }

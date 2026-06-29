@@ -13,6 +13,7 @@ export default function AccountIntegrationsPage() {
   const [connected, setConnected] = useState(false);
   const [connectedShop, setConnectedShop] = useState<string | null>(null);
   const [lastSync, setLastSync] = useState<string | null>(null);
+  const [recentLogs, setRecentLogs] = useState<any[]>([]);
   const [status, setStatus] = useState<"idle" | "testing" | "connecting" | "syncing">("idle");
   const [message, setMessage] = useState<{ type: "success" | "error" | "info"; text: string } | null>(null);
 
@@ -26,6 +27,7 @@ export default function AccountIntegrationsPage() {
       setConnected(Boolean(data.connected));
       setConnectedShop(data.shop || null);
       setLastSync(data.lastSync || null);
+      setRecentLogs(data.recentLogs || []);
       if (data.shop) setShop(data.shop);
     } else {
       setMessage({ type: "error", text: data.error || t("account.integrations.couldNotLoadStatus") });
@@ -185,6 +187,25 @@ export default function AccountIntegrationsPage() {
           <div className="mb-4 text-sm text-text-secondary">
             {t("account.integrations.connectedStore", { shop: connectedShop })}
             {lastSync && <span className="block text-xs mt-1">{t("account.integrations.lastSync", { time: new Date(lastSync).toLocaleString() })}</span>}
+          </div>
+        )}
+
+        {/* Sync History */}
+        {recentLogs.length > 0 && (
+          <div className="mb-4">
+            <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Recent Sync Activity</p>
+            <div className="space-y-1 max-h-32 overflow-y-auto">
+              {recentLogs.slice(0, 5).map((log: any, i: number) => (
+                <div key={i} className="flex items-center gap-2 text-xs">
+                  <span className={log.status === "completed" ? "text-[#34C759]" : "text-[#FF3B30]"}>
+                    {log.status === "completed" ? "✓" : "✗"}
+                  </span>
+                  <span className="text-text-secondary">{log.sync_type?.replace(/_/g, " ") || "sync"}</span>
+                  {log.records_processed > 0 && <span className="text-text-secondary/60">{log.records_processed} records</span>}
+                  <span className="text-text-secondary/40 ml-auto">{new Date(log.started_at).toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
