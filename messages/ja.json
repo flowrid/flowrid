@@ -59,7 +59,15 @@
     "tabByState": "州別",
     "tabInternational": "国際",
     "tabByPlatform": "プラットフォーム別",
-    "workspaceHeading": "ブランドと3PLの間の運用管理を橋渡しします"
+    "workspaceHeading": "ブランドと3PLの間の運用管理を橋渡しします",
+    "workspaceDesc": "注文追跡から在庫同期まで、Flowrid Workspaceはブランドと3PLに共有オペレーティングシステムを提供します — スプレッドシートのやり取りや無限のメールスレッドはもう必要ありません。",
+    "workspaceCTA": "無料で始める",
+    "trust3pls": "ネットワーク内の3PL",
+    "trust3plsDesc": "世界中の検証済みフルフィルメントパートナー",
+    "trustStates": "カバーする州",
+    "trustStatesDesc": "米国全土の倉庫カバレッジ",
+    "trustCategories": "製品カテゴリ",
+    "trustCategoriesDesc": "アパレルから電子機器まで幅広く対応"
   },
   "search": {
     "desc": "州、製品カテゴリ、プラットフォーム別にトップのフルフィルメントセンターを比較。数秒でマッチング。",

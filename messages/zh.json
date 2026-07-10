@@ -59,7 +59,15 @@
     "tabByState": "按州",
     "tabInternational": "国际",
     "tabByPlatform": "按平台",
-    "workspaceHeading": "连接品牌与 3PL 之间的运营管理"
+    "workspaceHeading": "连接品牌与 3PL 之间的运营管理",
+    "workspaceDesc": "从订单追踪到库存同步，Flowrid Workspace 为品牌和 3PL 提供共享的操作系统 — 告别 Excel 拉锯和无尽的邮件往来。",
+    "workspaceCTA": "免费开始使用",
+    "trust3pls": "合作 3PL",
+    "trust3plsDesc": "全球认证的履约合作伙伴",
+    "trustStates": "覆盖州数",
+    "trustStatesDesc": "美国全境仓库覆盖",
+    "trustCategories": "产品品类",
+    "trustCategoriesDesc": "从服装到电子产品，无所不包"
   },
   "search": {
     "desc": "按州、产品品类和平台比较顶级履约中心，几秒内即可获得匹配。",

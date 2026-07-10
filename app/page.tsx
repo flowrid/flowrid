@@ -240,7 +240,30 @@ export default async function Home() {
         }))}
       />
 
-      {/* 第五屏：Flowrid Workspace */}
+      {/* 第五屏：Trust Signals */}
+      <section className="max-w-[1460px] mx-auto px-4 py-10">
+        <div className="bg-card border border-border rounded-2xl p-8 md:p-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div>
+              <p className="text-3xl md:text-4xl font-bold text-primary">{providers.length.toLocaleString()}+</p>
+              <p className="text-sm font-semibold text-text mt-2">{t("home.trust3pls")}</p>
+              <p className="text-xs text-text-secondary mt-1">{t("home.trust3plsDesc")}</p>
+            </div>
+            <div>
+              <p className="text-3xl md:text-4xl font-bold text-primary">{usStates.length}+</p>
+              <p className="text-sm font-semibold text-text mt-2">{t("home.trustStates")}</p>
+              <p className="text-xs text-text-secondary mt-1">{t("home.trustStatesDesc")}</p>
+            </div>
+            <div>
+              <p className="text-3xl md:text-4xl font-bold text-primary">{categories.length}+</p>
+              <p className="text-sm font-semibold text-text mt-2">{t("home.trustCategories")}</p>
+              <p className="text-xs text-text-secondary mt-1">{t("home.trustCategoriesDesc")}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 第六屏：Flowrid Workspace */}
       <section className="max-w-[1460px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:grid lg:grid-cols-[65%_35%] items-center gap-10 lg:gap-16">
           <div>
@@ -251,9 +274,18 @@ export default async function Home() {
             />
           </div>
           <div className="text-center lg:text-left">
-            <h2 className="text-2xl md:text-3xl font-bold text-text leading-tight">
+            <h2 className="text-2xl md:text-3xl font-bold text-text leading-tight mb-4">
               {t("home.workspaceHeading")}
             </h2>
+            <p className="text-text-secondary leading-relaxed mb-6">
+              {t("home.workspaceDesc")}
+            </p>
+            <a
+              href="/join"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-dark transition-colors"
+            >
+              {t("home.workspaceCTA")} →
+            </a>
           </div>
         </div>
       </section>

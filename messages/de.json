@@ -59,7 +59,15 @@
     "tabByState": "Nach Bundesstaat",
     "tabInternational": "International",
     "tabByPlatform": "Nach Plattform",
-    "workspaceHeading": "Überbrücken Sie die operative Verwaltung zwischen Marken und 3PL"
+    "workspaceHeading": "Überbrücken Sie die operative Verwaltung zwischen Marken und 3PL",
+    "workspaceDesc": "Von der Sendungsverfolgung bis zur Bestandssynchronisation bietet Flowrid Workspace Marken und 3PLs ein gemeinsames Betriebssystem — kein Tabellen-Pingpong oder endlose E-Mail-Threads mehr.",
+    "workspaceCTA": "Kostenlos starten",
+    "trust3pls": "3PLs im Netzwerk",
+    "trust3plsDesc": "Verifizierte Fulfillment-Partner weltweit",
+    "trustStates": "Bundesstaaten abgedeckt",
+    "trustStatesDesc": "Landesweite Lagerabdeckung in den USA",
+    "trustCategories": "Produktkategorien",
+    "trustCategoriesDesc": "Von Bekleidung bis Elektronik und mehr"
   },
   "search": {
     "desc": "Vergleichen Sie Top-Fulfillment-Center nach Bundesstaat, Produktkategorie und Plattform. In Sekunden vermittelt.",

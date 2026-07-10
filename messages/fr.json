@@ -59,7 +59,15 @@
     "tabByState": "Par État",
     "tabInternational": "International",
     "tabByPlatform": "Par plateforme",
-    "workspaceHeading": "Connectez la gestion opérationnelle entre les marques et les 3PL"
+    "workspaceHeading": "Connectez la gestion opérationnelle entre les marques et les 3PL",
+    "workspaceDesc": "Du suivi des commandes à la synchronisation des stocks, Flowrid Workspace offre aux marques et aux 3PLs un système d'exploitation partagé — fini les échanges de tableurs et les fils d'emails interminables.",
+    "workspaceCTA": "Démarrer gratuitement",
+    "trust3pls": "3PLs dans le réseau",
+    "trust3plsDesc": "Partenaires de fulfillment vérifiés dans le monde entier",
+    "trustStates": "États couverts",
+    "trustStatesDesc": "Couverture d'entrepôts d'un océan à l'autre aux États-Unis",
+    "trustCategories": "Catégories de produits",
+    "trustCategoriesDesc": "De l'habillement à l'électronique et plus encore"
   },
   "search": {
     "desc": "Comparez les meilleurs centres de préparation par État, catégorie de produit et plateforme. Trouvez votre correspondance en quelques secondes.",

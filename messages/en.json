@@ -59,7 +59,15 @@
     "tabByState": "By State",
     "tabInternational": "International",
     "tabByPlatform": "By Platform",
-    "workspaceHeading": "Bridge the operational management between brands and 3PL"
+    "workspaceHeading": "Bridge the operational management between brands and 3PL",
+    "workspaceDesc": "From order tracking to inventory sync, Flowrid Workspace gives brands and 3PLs a shared operating system — no more spreadsheet ping-pong or endless email threads.",
+    "workspaceCTA": "Get Started Free",
+    "trust3pls": "3PLs in Network",
+    "trust3plsDesc": "Verified fulfillment partners worldwide",
+    "trustStates": "States Covered",
+    "trustStatesDesc": "Coast-to-coast US warehouse coverage",
+    "trustCategories": "Product Categories",
+    "trustCategoriesDesc": "From apparel to electronics and beyond"
   },
   "search": {
     "desc": "Compare top fulfillment centers by state, product category, and platform. Get matched in seconds.",
