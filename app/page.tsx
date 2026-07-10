@@ -245,17 +245,17 @@ export default async function Home() {
         <div className="bg-card border border-border rounded-2xl p-8 md:p-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
-              <p className="text-3xl md:text-4xl font-bold text-primary">{providers.length.toLocaleString()}+</p>
+              <p className="text-3xl md:text-4xl font-bold text-primary">4,000+</p>
               <p className="text-sm font-semibold text-text mt-2">{t("home.trust3pls")}</p>
               <p className="text-xs text-text-secondary mt-1">{t("home.trust3plsDesc")}</p>
             </div>
             <div>
-              <p className="text-3xl md:text-4xl font-bold text-primary">{usStates.length}+</p>
+              <p className="text-3xl md:text-4xl font-bold text-primary">50</p>
               <p className="text-sm font-semibold text-text mt-2">{t("home.trustStates")}</p>
               <p className="text-xs text-text-secondary mt-1">{t("home.trustStatesDesc")}</p>
             </div>
             <div>
-              <p className="text-3xl md:text-4xl font-bold text-primary">{categories.length}+</p>
+              <p className="text-3xl md:text-4xl font-bold text-primary">20+</p>
               <p className="text-sm font-semibold text-text mt-2">{t("home.trustCategories")}</p>
               <p className="text-xs text-text-secondary mt-1">{t("home.trustCategoriesDesc")}</p>
             </div>
