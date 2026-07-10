@@ -2,6 +2,7 @@
   "nav": {
     "3plDirectory": "Annuaire 3PL",
     "tools": "Outils",
+    "rfq": "RFQ",
     "login": "Connexion",
     "signOut": "Déconnexion"
   },
@@ -9,6 +10,9 @@
     "tagline": "Trouvez et comparez les meilleurs prestataires 3PL pour votre marque.",
     "privacyPolicy": "Politique de confidentialité",
     "termsOfService": "Conditions d'utilisation",
+    "productLinks": "Produit",
+    "companyLinks": "Entreprise",
+    "compare": "Comparer 3PLs",
     "copyright": "© {year} Flowrid. Tous droits réservés."
   },
   "language": {

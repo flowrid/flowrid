@@ -2,6 +2,7 @@
   "nav": {
     "3plDirectory": "3PLディレクトリ",
     "tools": "ツール",
+    "rfq": "RFQ",
     "login": "ログイン",
     "signOut": "ログアウト"
   },
@@ -9,6 +10,9 @@
     "tagline": "あなたのブランドに最適な3PLプロバイダーを見つけて比較しましょう。",
     "privacyPolicy": "プライバシーポリシー",
     "termsOfService": "利用規約",
+    "productLinks": "製品",
+    "companyLinks": "会社",
+    "compare": "3PLを比較",
     "copyright": "© {year} Flowrid. All rights reserved."
   },
   "language": {

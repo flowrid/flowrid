@@ -2,6 +2,7 @@
   "nav": {
     "3plDirectory": "3PL 目录",
     "tools": "工具",
+    "rfq": "询价",
     "login": "登录",
     "signOut": "退出登录"
   },
@@ -9,6 +10,9 @@
     "tagline": "为您的品牌寻找和比较最合适的 3PL 服务商。",
     "privacyPolicy": "隐私政策",
     "termsOfService": "服务条款",
+    "productLinks": "产品",
+    "companyLinks": "公司",
+    "compare": "对比 3PL",
     "copyright": "© {year} Flowrid. 保留所有权利。"
   },
   "language": {
