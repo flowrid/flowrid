@@ -81,9 +81,6 @@ export default async function RootLayout({
                 <a href="/tools" className="hover:text-text transition-colors">
                   {t("nav.tools")}
                 </a>
-                <a href="/rfq" className="hover:text-text transition-colors">
-                  {t("nav.rfq")}
-                </a>
                 <NavUser />
                 <LanguageSwitcher />
               </div>
@@ -91,33 +88,22 @@ export default async function RootLayout({
           </header>
           <main className="flex-1">{children}</main>
           <footer className="border-t border-border bg-card mt-16">
-            <div className="max-w-[1460px] mx-auto px-4 py-10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* Brand */}
+            <div className="max-w-[1460px] mx-auto px-4 py-8 text-sm text-text-secondary">
+              <div className="flex flex-wrap gap-6 justify-between">
                 <div>
-                  <img src="/images/flowrid-logo-footer.png?v=2" alt="Flowrid" className="h-6 w-auto mb-3" />
-                  <p className="text-sm text-text-secondary leading-relaxed">{t("footer.tagline")}</p>
+                  <img src="/images/flowrid-logo-footer.png?v=2" alt="Flowrid" className="h-6 w-auto mb-[30px]" />
+                  <p>{t("footer.tagline")}</p>
                 </div>
-                {/* Product links */}
-                <div>
-                  <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-3">{t("footer.productLinks")}</p>
-                  <div className="flex flex-col gap-2">
-                    <a href="/3pl" className="text-sm text-text-secondary hover:text-text transition-colors">{t("nav.3plDirectory")}</a>
-                    <a href="/tools" className="text-sm text-text-secondary hover:text-text transition-colors">{t("nav.tools")}</a>
-                    <a href="/rfq" className="text-sm text-text-secondary hover:text-text transition-colors">{t("nav.rfq")}</a>
-                    <a href="/compare" className="text-sm text-text-secondary hover:text-text transition-colors">{t("footer.compare")}</a>
-                  </div>
-                </div>
-                {/* Company links */}
-                <div>
-                  <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-3">{t("footer.companyLinks")}</p>
-                  <div className="flex flex-col gap-2">
-                    <a href="/privacy-policy" className="text-sm text-text-secondary hover:text-text transition-colors">{t("footer.privacyPolicy")}</a>
-                    <a href="/terms-of-service" className="text-sm text-text-secondary hover:text-text transition-colors">{t("footer.termsOfService")}</a>
-                  </div>
+                <div className="flex gap-6">
+                  <a href="/privacy-policy" className="hover:text-text transition-colors">
+                    {t("footer.privacyPolicy")}
+                  </a>
+                  <a href="/terms-of-service" className="hover:text-text transition-colors">
+                    {t("footer.termsOfService")}
+                  </a>
                 </div>
               </div>
-              <p className="mt-8 pt-6 border-t border-border text-xs text-text-secondary/60">
+              <p className="mt-4 text-xs">
                 {t("footer.copyright", { year: new Date().getFullYear() })}
               </p>
             </div>
