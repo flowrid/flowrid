@@ -53,6 +53,31 @@ export default async function ProfileSidebar({ threePL: p }: ProfileSidebarProps
           </div>
         </div>
       )}
+
+      {/* 数据可信度 */}
+      <div className="border-t border-border pt-4">
+        <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">
+          数据可信度
+        </p>
+        {p.data_last_verified ? (
+          <p className="text-xs text-text-secondary">
+            最近验证：{new Date(p.data_last_verified).toLocaleDateString("zh-CN")}
+          </p>
+        ) : (
+          <p className="text-xs text-text-secondary">数据验证中，来源标注逐步完善</p>
+        )}
+        {p.data_sources && Object.keys(p.data_sources).length > 0 && (
+          <p className="text-xs text-text-secondary mt-1">
+            {Object.keys(p.data_sources).length} 个字段已标注来源
+          </p>
+        )}
+        <div className="flex items-center gap-1 mt-1.5">
+          <div className={`w-2 h-2 rounded-full ${p.data_last_verified ? "bg-green-500" : "bg-yellow-500"}`} />
+          <span className="text-[10px] text-text-secondary">
+            {p.data_last_verified ? "已验证" : "待验证"}
+          </span>
+        </div>
+      </div>
     </aside>
   );
 }

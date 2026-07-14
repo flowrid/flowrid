@@ -26,6 +26,10 @@ export default async function Sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/tools/compliance-documents`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     { url: `${baseUrl}/tools/shipping-calculator`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
     { url: `${baseUrl}/tools/rfq-generator`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
+    { url: `${baseUrl}/tools/fulfillment-cost-estimator`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
+    // AI 可读数据层
+    { url: `${baseUrl}/llms.txt`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
+    { url: `${baseUrl}/api/knowledge`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
   ];
 
   try {

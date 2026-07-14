@@ -1,5 +1,11 @@
 // Flowrid 核心 TypeScript 类型定义
 
+export interface DataSourceMeta {
+  source: string;
+  verified_at: string;
+  confidence: "high" | "medium" | "low";
+}
+
 export interface ThreePL {
   id: string;
   name: string;
@@ -27,6 +33,9 @@ export interface ThreePL {
   website?: string;
   logo?: string;
   hero_image?: string;
+
+  data_sources?: Record<string, DataSourceMeta>;
+  data_last_verified?: string;
 
   created_at: string;
 }
