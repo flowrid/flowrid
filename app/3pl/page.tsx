@@ -40,7 +40,7 @@ export default async function Page({
   const from = page * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
-  let query = supabase.from("pl_providers").select("*").range(from, to).order("rating", { ascending: false });
+  let query = supabase.from("pl_providers").select("*").range(from, to);
 
   if (params.state) {
     query = query.eq("state", params.state);
